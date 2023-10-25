@@ -6,7 +6,7 @@ const baseUrl =
         ? import.meta.env.VITE_DEV_URL
         : import.meta.env.VITE_SERVER_URL;
 
-const socket = getSocket();
+// const socket = getSocket();
 
 const apiSlice = createApi({
     reducerPath: 'api',
