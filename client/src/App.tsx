@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Container, Spinner } from 'react-bootstrap';
 import Theme from './contexts/theme/Theme';
+import Locale from './contexts/locale/Locale';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const MainLayoutLazy = React.lazy(() => import('./pages/layouts/mainLayout/MainLayout'));
@@ -20,16 +21,18 @@ function App() {
             }
         >
             <Theme>
-                <Routes>
-                    <Route path='/' element={<MainLayoutLazy />}>
-                        <Route index element={<HomeLazy />} />
-                    </Route>
-                    <Route element={<AuthLayoutLazy />}>
-                        <Route path='/login' element={<LoginLazy />} />
-                        <Route path='/register' element={<RegisterLazy />} />
-                    </Route>
-                    <Route path='*' element={<Navigate to={'/'} replace />} />
-                </Routes>
+                <Locale>
+                    <Routes>
+                        <Route path='/' element={<MainLayoutLazy />}>
+                            <Route index element={<HomeLazy />} />
+                        </Route>
+                        <Route element={<AuthLayoutLazy />}>
+                            <Route path='/login' element={<LoginLazy />} />
+                            <Route path='/register' element={<RegisterLazy />} />
+                        </Route>
+                        <Route path='*' element={<Navigate to={'/'} replace />} />
+                    </Routes>
+                </Locale>
             </Theme>
         </Suspense>
     );

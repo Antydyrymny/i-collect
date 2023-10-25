@@ -1,21 +1,22 @@
 import express from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
-import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import cors from 'cors';
 import { notFound, errorHandler } from './middleware';
-import { ServerToClientEvents } from './types';
-// import subscribeToFeatures from './features/rooms/roomEvents';
+import { subscribeAdminsToUserEvents } from './features/manageUsers/usersEvents';
+import { ClientToServerEvents, ServerToClientEvents } from './types';
 
 const app = express();
 const server = createServer(app);
 app.use(cors());
 
-export const io = new Server<DefaultEventsMap, ServerToClientEvents>(server, {
+export const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
     cors: {
         origin: '*',
     },
 });
+
+subscribeAdminsToUserEvents();
 
 app.get('/', (req, res) => {
     res.status(200).json({ status: 'OK' });
@@ -23,7 +24,5 @@ app.get('/', (req, res) => {
 
 app.use(notFound);
 app.use(errorHandler);
-
-// subscribeToFeatures();
 
 export default server;
