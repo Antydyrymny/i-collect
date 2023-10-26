@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useAppSelector } from '../../../storeHooks';
-import { selectCurrentUser } from './authSlice';
+import { selectCurrentUser } from '.';
 
 type ProtectedRouteProps = {
     Component: React.FunctionComponent;

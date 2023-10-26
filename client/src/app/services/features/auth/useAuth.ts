@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
+import { storeAuth } from '.';
 import { useAppDispatch } from '../../../storeHooks';
-import { storeAuth } from './authSlice';
 import { authStateKey } from '../../../../data/localStorageKeys';
 import { getTypedStorageItem } from '../../../../utils/typesLocalStorage';
 

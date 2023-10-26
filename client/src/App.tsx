@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Container, Spinner } from 'react-bootstrap';
+import { useAuth } from './app/services/features/auth';
 import Theme from './contexts/theme/Theme';
 import Locale from './contexts/locale/Locale';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,6 +13,8 @@ const LoginLazy = React.lazy(() => import('./pages/login/Login'));
 const RegisterLazy = React.lazy(() => import('./pages/register/Register'));
 
 function App() {
+    useAuth();
+
     return (
         <Suspense
             fallback={

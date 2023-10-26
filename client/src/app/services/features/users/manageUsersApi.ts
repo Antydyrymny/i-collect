@@ -1,27 +1,54 @@
-import { Routes, ApiBuilder, User } from '../../../../types';
+import {
+    Routes,
+    ApiBuilder,
+    User,
+    ToggleBlockRequest,
+    ToggleAdminRequest,
+    GetUsersRequest,
+} from '../../../../types';
+
+const defaultGetUsersQueryParams = {
+    limit: '20',
+};
 
 export const getUsers = (builder: ApiBuilder) =>
-    builder.query<User[], void>({
-        query: () => Routes.GetUsers,
+    builder.query<User[], GetUsersRequest>({
+        query: (request) => ({
+            url: Routes.GetUsers,
+            params: { ...defaultGetUsersQueryParams, ...request },
+        }),
+        serializeQueryArgs: ({ endpointName }) => {
+            return endpointName;
+        },
+        forceRefetch: ({ currentArg, previousArg }) => {
+            return (
+                typeof currentArg !== typeof previousArg ||
+                (!!currentArg &&
+                    !!previousArg &&
+                    !Object.values(currentArg).every(
+                        (el, ind) => Object.values(previousArg)[ind] === el
+                    ))
+            );
+        },
         providesTags: ['Users'],
     });
 
-export const blockUsers = (builder: ApiBuilder) =>
-    builder.mutation<string, string[]>({
-        query: (usersToBlock) => ({
-            url: Routes.BlockUsers,
+export const toggleBlock = (builder: ApiBuilder) =>
+    builder.mutation<string, ToggleBlockRequest>({
+        query: (toggleBlockRequest) => ({
+            url: Routes.ToggleBlock,
             method: 'PATCH',
-            body: usersToBlock,
+            body: toggleBlockRequest,
         }),
         invalidatesTags: ['Users'],
     });
 
-export const unblockUsers = (builder: ApiBuilder) =>
-    builder.mutation<string, string[]>({
-        query: (blockedUsers) => ({
-            url: Routes.UnblockUsers,
+export const toggleAdmins = (builder: ApiBuilder) =>
+    builder.mutation<string, ToggleAdminRequest>({
+        query: (toggleAdminRequest) => ({
+            url: Routes.ToggleAdmin,
             method: 'PATCH',
-            body: blockedUsers,
+            body: toggleAdminRequest,
         }),
         invalidatesTags: ['Users'],
     });
@@ -32,26 +59,6 @@ export const deleteUsers = (builder: ApiBuilder) =>
             url: Routes.DeleteUsers,
             method: 'DELETE',
             body: usersToDelete,
-        }),
-        invalidatesTags: ['Users'],
-    });
-
-export const makeAdmins = (builder: ApiBuilder) =>
-    builder.mutation<string, string[]>({
-        query: (usersToMakeAdmin) => ({
-            url: Routes.MakeAdmins,
-            method: 'PATCH',
-            body: usersToMakeAdmin,
-        }),
-        invalidatesTags: ['Users'],
-    });
-
-export const stripAdmins = (builder: ApiBuilder) =>
-    builder.mutation<string, string[]>({
-        query: (strippedAdmins) => ({
-            url: Routes.MakeAdmins,
-            method: 'PATCH',
-            body: strippedAdmins,
         }),
         invalidatesTags: ['Users'],
     });

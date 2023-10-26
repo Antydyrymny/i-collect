@@ -6,9 +6,9 @@ export function notFound(req: Request, res: Response, next: NextFunction) {
     next(error);
 }
 
-interface ResponseError extends Error {
+export type ResponseError = Error & {
     status?: number;
-}
+};
 
 export function errorHandler(err: ResponseError, req: Request, res: Response) {
     const statusCode = err.status || 500;

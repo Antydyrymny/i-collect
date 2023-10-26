@@ -1,14 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { login, register, logout } from './features/auth/authApi';
-import { subscribeToUsers } from './features/users/subscribeToUserUpdates';
+import { login, register, logout } from './features/auth';
 import {
+    subscribeToUsers,
     getUsers,
-    blockUsers,
-    unblockUsers,
+    toggleBlock,
+    toggleAdmins,
     deleteUsers,
-    makeAdmins,
-    stripAdmins,
-} from './features/users/manageUsersApi';
+} from './features/users';
 import { RootState } from '../store';
 
 const baseUrl =
@@ -35,11 +33,9 @@ const apiSlice = createApi({
         logout: logout(builder),
         subscribeToUsers: subscribeToUsers(builder),
         getUsers: getUsers(builder),
-        blockUsers: blockUsers(builder),
-        unblockUsers: unblockUsers(builder),
+        toggleBlock: toggleBlock(builder),
+        toggleAdmins: toggleAdmins(builder),
         deleteUsers: deleteUsers(builder),
-        makeAdmins: makeAdmins(builder),
-        stripAdmins: stripAdmins(builder),
     }),
 });
 

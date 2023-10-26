@@ -1,6 +1,4 @@
-import { User } from 'src/types';
-
-export const adminsAwaitingUserUpdates = new Map<string, User>();
+export const adminsAwaitingUserUpdates = new Set<string>();
 export const updatesRequired = {
     usersStateForAdmins: false,
 };

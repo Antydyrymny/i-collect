@@ -26,11 +26,9 @@ export enum Routes {
     Register = '/register',
     Logout = '/logout',
     GetUsers = '/users',
-    BlockUsers = '/block',
-    UnblockUsers = '/unblock',
+    ToggleBlock = '/block',
     DeleteUsers = '/deleteUsers',
-    MakeAdmins = '/makeAdmins',
-    StripAdmins = '/stripAdmins',
+    ToggleAdmin = '/toggleAdmin',
 }
 
 export type ColorTheme = 'light' | 'dark';
@@ -55,10 +53,24 @@ export type LoginRequest = {
 };
 export type RegisterRequest = LoginRequest & { name: string };
 
+export type ToggleBlockRequest = {
+    action: 'block' | 'unblock';
+    userIds: string[];
+};
+
+export type ToggleAdminRequest = {
+    action: 'makeAdmin' | 'stripAdmin';
+    userIds: string[];
+};
+
+export type GetUsersRequest = {
+    page: number;
+};
+
 export type UserType = 'admin' | 'user';
 export type User = {
     _id: string;
-    userType: UserType;
+    admin: boolean;
     name: string;
     email: string;
     createdAt: string;

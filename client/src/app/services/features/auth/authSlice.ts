@@ -36,7 +36,7 @@ const authSlice = createSlice({
                 if (!returnedCurrentUser || returnedCurrentUser.status === 'blocked') {
                     window.localStorage.removeItem(authStateKey);
                     return initialState;
-                } else if (returnedCurrentUser.userType !== 'admin') {
+                } else if (!returnedCurrentUser.admin) {
                     const updatedUser = {
                         _id: returnedCurrentUser._id,
                         admin: false,
@@ -48,27 +48,43 @@ const authSlice = createSlice({
                 }
             })
             .addMatcher(
-                isAnyOf(
-                    apiSlice.endpoints.blockUsers.matchFulfilled,
-                    apiSlice.endpoints.deleteUsers.matchFulfilled
-                ),
+                apiSlice.endpoints.toggleAdmins.matchFulfilled,
                 (state, action) => {
-                    if (action.meta.arg.originalArgs.find((id) => id === state._id)) {
-                        window.localStorage.removeItem(authStateKey);
-                        return initialState;
-                    }
-                }
-            )
-            .addMatcher(
-                apiSlice.endpoints.stripAdmins.matchFulfilled,
-                (state, action) => {
-                    if (action.meta.arg.originalArgs.find((id) => id === state._id)) {
+                    if (
+                        action.meta.arg.originalArgs.action === 'stripAdmin' &&
+                        action.meta.arg.originalArgs.userIds.find(
+                            (id) => id === state._id
+                        )
+                    ) {
                         const updatedUser: AuthState = {
                             ...state,
                             admin: false,
                         };
                         setTypedStorageItem(authStateKey, updatedUser);
                         return updatedUser;
+                    }
+                }
+            )
+            .addMatcher(
+                apiSlice.endpoints.toggleBlock.matchFulfilled,
+                (state, action) => {
+                    if (
+                        action.meta.arg.originalArgs.action === 'block' &&
+                        action.meta.arg.originalArgs.userIds.find(
+                            (id) => id === state._id
+                        )
+                    ) {
+                        window.localStorage.removeItem(authStateKey);
+                        return initialState;
+                    }
+                }
+            )
+            .addMatcher(
+                apiSlice.endpoints.deleteUsers.matchFulfilled,
+                (state, action) => {
+                    if (action.meta.arg.originalArgs.find((id) => id === state._id)) {
+                        window.localStorage.removeItem(authStateKey);
+                        return initialState;
                     }
                 }
             );

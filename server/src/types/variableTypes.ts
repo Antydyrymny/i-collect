@@ -5,11 +5,9 @@ export enum Routes {
     Register = '/register',
     Logout = '/logout',
     GetUsers = '/users',
-    BlockUsers = '/block',
-    UnblockUsers = '/unblock',
+    ToggleBlock = '/block',
     DeleteUsers = '/deleteUsers',
-    MakeAdmins = '/makeAdmins',
-    StripAdmins = '/stripAdmins',
+    ToggleAdmin = '/toggleAdmin',
 }
 
 export type AuthResponse = {
@@ -26,10 +24,20 @@ export type LoginRequest = {
 };
 export type RegisterRequest = LoginRequest & { name: string };
 
+export type ToggleBlockRequest = {
+    action: 'block' | 'unblock';
+    userIds: string[];
+};
+
+export type ToggleAdminRequest = {
+    action: 'makeAdmin' | 'stripAdmin';
+    userIds: string[];
+};
+
 export type UserType = 'admin' | 'user';
-export type User = {
+export type ClientUser = {
     _id: string;
-    userType: UserType;
+    admin: boolean;
     name: string;
     email: string;
     createdAt: string;
@@ -37,3 +45,4 @@ export type User = {
     status: 'online' | 'offline' | 'blocked';
     collectionIds: string[];
 };
+export type User = ClientUser & { password: string };
