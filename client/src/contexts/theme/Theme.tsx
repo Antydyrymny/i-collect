@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ThemeContext } from './themeContext';
+import { ThemeContext } from '.';
 import { useLocalStorageState } from '../../hooks/useLocalStorageState';
 import { colorThemeKey } from '../../data/localStorageKeys';
 

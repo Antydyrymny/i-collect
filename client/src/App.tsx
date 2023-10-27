@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { Container, Spinner } from 'react-bootstrap';
 import { useAuth } from './app/services/features/auth';
 import Theme from './contexts/theme/Theme';
-import Locale from './contexts/locale/Locale';
+import Locale from './contexts/locale';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const MainLayoutLazy = React.lazy(() => import('./pages/layouts/mainLayout/MainLayout'));

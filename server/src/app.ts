@@ -6,7 +6,7 @@ import { Server } from 'socket.io';
 import { connectDB, disconnectDB } from './database/setupConnection';
 import { notFound, errorHandler } from './middleware';
 import { subscribeAdminsToUserEvents } from './features/manageUsers';
-import { router, protectedRouter } from './routes';
+import { router, protectedRouter, adminRouter } from './routes';
 import { ClientToServerEvents, ServerToClientEvents } from './types';
 
 const app = express();
@@ -32,6 +32,7 @@ app.get('/', (req, res) => {
 
 app.use('/v1', router);
 app.use('/v1', protectedRouter);
+app.use('/v1', adminRouter);
 
 app.use(notFound);
 app.use(errorHandler);

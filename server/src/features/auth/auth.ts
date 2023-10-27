@@ -3,7 +3,7 @@ import passportJwt from 'passport-jwt';
 import dotenv from 'dotenv';
 import { Request, Response, NextFunction } from 'express';
 import { ResponseError } from '../../middleware';
-import { UserModel } from '../../models';
+import { UserModel, UserModelType } from '../../models';
 
 dotenv.config();
 
@@ -21,9 +21,11 @@ const authenticateJWT = async (
 ) => {
     try {
         const userAuthenticated = await UserModel.findOne({ _id: jwtPayload._id });
-        if (userAuthenticated) done(null, userAuthenticated);
-    } catch (error) {
-        done(error);
+        if (!userAuthenticated || userAuthenticated.status === 'blocked')
+            done(new Error('Unauthorized'));
+        else done(null, userAuthenticated);
+    } catch {
+        done(new Error('Error connecting to the database'));
     }
 };
 
@@ -39,6 +41,22 @@ export const protectedRoutesMiddleware = (
     authMiddleware(req, res, (err: ResponseError) => {
         if (err) {
             next(err);
+        } else next();
+    });
+};
+
+export const adminRoutesMiddleware = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    authMiddleware(req, res, (err: ResponseError) => {
+        if (err) {
+            next(err);
+        }
+        const user = req.user as UserModelType;
+        if (!user || !user.admin) {
+            next(new Error('Unauthorized'));
         } else next();
     });
 };

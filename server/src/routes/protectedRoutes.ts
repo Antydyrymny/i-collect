@@ -1,20 +1,11 @@
 import express from 'express';
 import { protectedRoutesMiddleware, logout } from '../features/auth';
-import {
-    getUsers,
-    toggleAdmins,
-    toggleBlock,
-    deleteUsers,
-} from '../features/manageUsers';
+import { forwardErrors } from './forwardErrors';
 import { Routes } from '../types';
 
 const protectedRouter = express.Router();
 protectedRouter.use(protectedRoutesMiddleware);
 
-protectedRouter.post(Routes.Logout, logout);
-protectedRouter.get(Routes.GetUsers, getUsers);
-protectedRouter.patch(Routes.ToggleAdmin, toggleAdmins);
-protectedRouter.patch(Routes.ToggleBlock, toggleBlock);
-protectedRouter.delete(Routes.DeleteUsers, deleteUsers);
+protectedRouter.post(Routes.Logout, forwardErrors(logout));
 
 export { protectedRouter };

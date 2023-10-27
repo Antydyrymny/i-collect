@@ -10,7 +10,13 @@ export type ResponseError = Error & {
     status?: number;
 };
 
-export function errorHandler(err: ResponseError, req: Request, res: Response) {
+export function errorHandler(
+    err: ResponseError,
+    req: Request,
+    res: Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    next: NextFunction
+) {
     const statusCode = err.status || 500;
     res.status(statusCode);
     res.json({

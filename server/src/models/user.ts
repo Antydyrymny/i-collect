@@ -4,6 +4,11 @@ import type { User } from '../types';
 export type UserModelType = User & Document;
 
 const userSchema = new mongoose.Schema<UserModelType>({
+    admin: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
     name: {
         type: String,
         required: true,

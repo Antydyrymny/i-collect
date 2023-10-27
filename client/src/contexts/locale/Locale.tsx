@@ -3,7 +3,7 @@ import { useLocalStorageState } from '../../hooks/useLocalStorageState';
 import { localeKey } from '../../data/localStorageKeys';
 import { Locale } from '../../types';
 
-function Locale({ children }: { children: React.ReactNode }) {
+export default function Locale({ children }: { children: React.ReactNode }) {
     const defaultGeorgian = /^(ka|ka-GE)$/.test(navigator.language);
 
     const [locale, setLocale] = useLocalStorageState(
@@ -19,5 +19,3 @@ function Locale({ children }: { children: React.ReactNode }) {
         </LocaleContext.Provider>
     );
 }
-
-export default Locale;

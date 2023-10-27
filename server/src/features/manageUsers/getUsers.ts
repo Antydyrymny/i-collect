@@ -6,12 +6,10 @@ type UsersQuery = {
     page: string;
     limit: string;
 };
-export const getUsers = async (
-    req: Request<object, object, object, UsersQuery>,
-    res: Response
-) => {
-    const page = parseInt(req.query.page) || 1;
-    const limimt = parseInt(req.query.limit) || 10;
+export const getUsers = async (req: Request, res: Response) => {
+    const queryParams = req.query as UsersQuery;
+    const page = parseInt(queryParams.page) || 1;
+    const limimt = parseInt(queryParams.limit) || 10;
 
     const users = await UserModel.find({})
         .skip((page - 1) * limimt)
