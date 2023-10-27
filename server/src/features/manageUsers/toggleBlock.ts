@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { UserModel } from '../../models';
+import { informOfUpdates } from './utils';
 import type { ToggleBlockRequest } from '../../types';
 
 export const toggleBlock = async (req: Request, res: Response) => {
@@ -10,6 +11,8 @@ export const toggleBlock = async (req: Request, res: Response) => {
         (user) => (user.status = action === 'block' ? 'blocked' : 'offline')
     );
     await Promise.all(usersToToggleBlock.map((user) => user.save()));
+
+    informOfUpdates(req.user);
 
     res.status(200).json(
         `Users ${action === 'block' ? 'blocked' : 'unblocked'} successfully`

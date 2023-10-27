@@ -1,10 +1,14 @@
-import { ApiBuilder, ServerToAdmin } from '../../../../types';
+import { AdminToServer, ApiBuilder, ServerToAdmin } from '../../../../types';
 import apiSlice from '../../api';
 import { getUserManagerSocket } from '../../getSocket';
 
 export const subscribeToUsers = (builder: ApiBuilder) =>
-    builder.query<void, void>({
-        queryFn: () => ({ data: undefined }),
+    builder.query<void, string>({
+        queryFn: (adminId) => {
+            const userManagerSocket = getUserManagerSocket();
+            userManagerSocket.emit(AdminToServer.SubscribingToUserUpdates, adminId);
+            return { data: undefined };
+        },
         async onCacheEntryAdded(_, { cacheDataLoaded, cacheEntryRemoved, dispatch }) {
             try {
                 await cacheDataLoaded;

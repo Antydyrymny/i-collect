@@ -1,10 +1,11 @@
 export enum Routes {
-    Api = '/api',
+    Api = '/v1',
     ManageUsers = '/manageUsers',
     Login = '/login',
     Register = '/register',
     Logout = '/logout',
     GetUsers = '/users',
+    GetUserPage = '/userPage',
     ToggleBlock = '/block',
     DeleteUsers = '/deleteUsers',
     ToggleAdmin = '/toggleAdmin',
@@ -35,14 +36,16 @@ export type ToggleAdminRequest = {
 };
 
 export type UserType = 'admin' | 'user';
-export type ClientUser = {
+export type UserPreview = {
     _id: string;
     admin: boolean;
     name: string;
+    status: 'online' | 'offline' | 'blocked';
+};
+export type ClientUser = UserPreview & {
     email: string;
     createdAt: string;
     lastLogin: string;
-    status: 'online' | 'offline' | 'blocked';
     collectionIds: string[];
 };
 export type User = ClientUser & { password: string };

@@ -19,13 +19,22 @@ export type ApiBuilder = EndpointBuilder<
     'api'
 >;
 
+export enum ClientRoutes {
+    Home = '/',
+    Register = '/register',
+    Login = '/login',
+    ManageUsers = '/users',
+    UserPage = '/:userId',
+}
+
 export enum Routes {
-    Api = '/api',
+    Api = '/v1',
     ManageUsers = '/manageUsers',
     Login = '/login',
     Register = '/register',
     Logout = '/logout',
     GetUsers = '/users',
+    GetUserPage = '/userPage',
     ToggleBlock = '/block',
     DeleteUsers = '/deleteUsers',
     ToggleAdmin = '/toggleAdmin',
@@ -68,13 +77,15 @@ export type GetUsersRequest = {
 };
 
 export type UserType = 'admin' | 'user';
-export type User = {
+export type UserPreview = {
     _id: string;
     admin: boolean;
     name: string;
+    status: 'online' | 'offline' | 'blocked';
+};
+export type ClientUser = UserPreview & {
     email: string;
     createdAt: string;
     lastLogin: string;
-    status: 'online' | 'offline' | 'blocked';
     collectionIds: string[];
 };

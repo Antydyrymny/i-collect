@@ -1,7 +1,8 @@
 import {
     Routes,
     ApiBuilder,
-    User,
+    UserPreview,
+    ClientUser,
     ToggleBlockRequest,
     ToggleAdminRequest,
     GetUsersRequest,
@@ -12,7 +13,7 @@ const defaultGetUsersQueryParams = {
 };
 
 export const getUsers = (builder: ApiBuilder) =>
-    builder.query<User[], GetUsersRequest>({
+    builder.query<UserPreview[], GetUsersRequest>({
         query: (request) => ({
             url: Routes.GetUsers,
             params: { ...defaultGetUsersQueryParams, ...request },
@@ -31,6 +32,14 @@ export const getUsers = (builder: ApiBuilder) =>
             );
         },
         providesTags: ['Users'],
+    });
+
+export const getUserPage = (builder: ApiBuilder) =>
+    builder.query<ClientUser, string>({
+        query: (userId) => ({
+            url: Routes.GetUserPage,
+            params: { id: userId },
+        }),
     });
 
 export const toggleBlock = (builder: ApiBuilder) =>

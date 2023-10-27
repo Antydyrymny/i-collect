@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { UserModel } from '../../models';
+import { updatesRequired } from '../../data';
 import type { RegisterRequest, AuthResponse } from '../../types';
 
 dotenv.config();
@@ -29,6 +30,9 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
             name,
             token: jwtToken,
         };
+
+        updatesRequired.usersStateForAdmins = true;
+
         res.status(200).json(response);
     } catch (error) {
         if (error.code === 11000 && error.message.includes('duplicate'))

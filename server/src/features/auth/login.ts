@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { UserModel } from '../../models';
 import type { LoginRequest, AuthResponse } from '../../types';
+import { updatesRequired } from '../../data';
 
 dotenv.config();
 
@@ -35,5 +36,8 @@ export const login = async (req: Request, res: Response) => {
         name: userWithEmail.name,
         token: jwtToken,
     };
+
+    updatesRequired.usersStateForAdmins = true;
+
     res.status(200).json(response);
 };

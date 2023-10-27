@@ -6,6 +6,7 @@ export type ServerToClientEvents = ServerToAdminEvents & ServerToCollectionViewe
 
 export type AdminToServerEvents = {
     [DefaultEvents.Connection]: () => void;
+    [AdminToServer.SubscribingToUserUpdates]: (adminId: string) => void;
     [DefaultEvents.Disconnecting]: () => void;
 };
 export type ServerToAdminEvents = {
@@ -27,12 +28,14 @@ export enum DefaultEvents {
     Disconnecting = 'disconnecting',
 }
 
+export enum AdminToServer {
+    SubscribingToUserUpdates = 'subToUsers',
+}
 export enum ServerToAdmin {
     UsersUpdated = 'usersUpdated',
 }
 
 export enum CollectionViewerToServer {}
-
 export enum ServerToCollectionViewer {
     NewItems = 'newItems',
     NewComments = 'newComments',

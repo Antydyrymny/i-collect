@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-
 import { UserModel } from '../../models';
+import { UserPreview } from '../../types';
 
 type UsersQuery = {
     page: string;
@@ -15,5 +15,14 @@ export const getUsers = async (req: Request, res: Response) => {
         .skip((page - 1) * limimt)
         .limit(limimt);
 
-    res.status(200).json(users);
+    const usersPreview = users.map(
+        (user): UserPreview => ({
+            _id: user._id,
+            admin: user.admin,
+            name: user.name,
+            status: user.status,
+        })
+    );
+
+    res.status(200).json(usersPreview);
 };

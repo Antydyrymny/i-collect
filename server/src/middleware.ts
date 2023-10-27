@@ -1,14 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
+import { ResponseError } from './types';
 
 export function notFound(req: Request, res: Response, next: NextFunction) {
     res.status(404);
     const error = new Error(`Not Found: ${req.originalUrl}`);
     next(error);
 }
-
-export type ResponseError = Error & {
-    status?: number;
-};
 
 export function errorHandler(
     err: ResponseError,
