@@ -3,7 +3,7 @@ import { ThemeContext } from '.';
 import { useLocalStorageState } from '../../hooks/useLocalStorageState';
 import { colorThemeKey } from '../../data/localStorageKeys';
 
-function Theme({ children }: { children: React.ReactNode }) {
+export default function Theme({ children }: { children: React.ReactNode }) {
     const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const [theme, setTheme] = useLocalStorageState(
         colorThemeKey,
@@ -23,5 +23,3 @@ function Theme({ children }: { children: React.ReactNode }) {
         </ThemeContext.Provider>
     );
 }
-
-export default Theme;

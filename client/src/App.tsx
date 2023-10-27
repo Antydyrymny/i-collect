@@ -2,8 +2,7 @@ import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Container, Spinner } from 'react-bootstrap';
 import ProtectedRoute, { useAuth } from './app/services/features/auth';
-import Theme from './contexts/theme/Theme';
-import Locale from './contexts/locale';
+import AllContexts from './contexts/AllContexts';
 import { ClientRoutes } from './types';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -27,39 +26,31 @@ function App() {
                 </Container>
             }
         >
-            <Theme>
-                <Locale>
-                    <Routes>
-                        <Route path={ClientRoutes.Home} element={<MainLayoutLazy />}>
-                            <Route index element={<HomeLazy />} />
-                            <Route
-                                path={ClientRoutes.UserPage}
-                                element={<ProtectedRoute Component={UserPageLazy} />}
-                            />
-                            <Route
-                                path={ClientRoutes.UserPage}
-                                element={
-                                    <ProtectedRoute
-                                        Component={ManageUsersLazy}
-                                        adminRoute
-                                    />
-                                }
-                            />
-                        </Route>
-                        <Route element={<AuthLayoutLazy />}>
-                            <Route path={ClientRoutes.Login} element={<LoginLazy />} />
-                            <Route
-                                path={ClientRoutes.Register}
-                                element={<RegisterLazy />}
-                            />
-                        </Route>
+            <AllContexts>
+                <Routes>
+                    <Route path={ClientRoutes.Home} element={<MainLayoutLazy />}>
+                        <Route index element={<HomeLazy />} />
                         <Route
-                            path='*'
-                            element={<Navigate to={ClientRoutes.Home} replace />}
+                            path={ClientRoutes.UserPage}
+                            element={<ProtectedRoute Component={UserPageLazy} />}
                         />
-                    </Routes>
-                </Locale>
-            </Theme>
+                        <Route
+                            path={ClientRoutes.UserPage}
+                            element={
+                                <ProtectedRoute Component={ManageUsersLazy} adminRoute />
+                            }
+                        />
+                    </Route>
+                    <Route element={<AuthLayoutLazy />}>
+                        <Route path={ClientRoutes.Login} element={<LoginLazy />} />
+                        <Route path={ClientRoutes.Register} element={<RegisterLazy />} />
+                    </Route>
+                    <Route
+                        path='*'
+                        element={<Navigate to={ClientRoutes.Home} replace />}
+                    />
+                </Routes>
+            </AllContexts>
         </Suspense>
     );
 }

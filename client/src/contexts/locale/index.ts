@@ -1,5 +1,7 @@
 import Locale from './Locale';
+import LocalePicker from './LocalePicker';
 
-export default Locale;
+export { Locale };
+export { LocalePicker };
 export * from './localeContext';
 export * from './useLocaleContext';

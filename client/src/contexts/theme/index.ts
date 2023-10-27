@@ -1,5 +1,7 @@
 import Theme from './Theme';
+import ThemeSwitcher from './ThemeSwitcher';
 
-export default Theme;
+export { Theme };
+export { ThemeSwitcher };
 export * from './themeContext';
 export * from './useThemeContext';
