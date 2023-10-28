@@ -1,6 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useAppSelector } from '../../../storeHooks';
-import { selectCurrentUser } from '.';
+import { useSelectUser } from '.';
 import { ClientRoutes } from '../../../../types';
 
 type ProtectedRouteProps = {
@@ -14,7 +13,7 @@ function ProtectedRoute({
     adminRoute = false,
     redirectRoute = ClientRoutes.Login,
 }: ProtectedRouteProps) {
-    const isAuthenticated = useAppSelector(selectCurrentUser);
+    const isAuthenticated = useSelectUser();
     const isAdmin = isAuthenticated && isAuthenticated.admin;
     const protectedCondition = adminRoute ? isAdmin : isAuthenticated;
 

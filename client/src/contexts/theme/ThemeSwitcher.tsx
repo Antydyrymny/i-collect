@@ -13,6 +13,7 @@ export default function ThemeSwitcher() {
             onChange={toggleTheme}
             type='checkbox'
             id='ThemeSwitcher'
+            variant='outline-primary'
         >
             <>
                 {theme === 'light' && <Image src={light} aria-label='light theme' />}

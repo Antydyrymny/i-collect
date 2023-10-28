@@ -5,6 +5,7 @@ import ProtectedRoute, { useAuth } from './app/services/features/auth';
 import AllContexts from './contexts/AllContexts';
 import { ClientRoutes } from './types';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MainLayoutLazy = React.lazy(() => import('./pages/layouts/mainLayout/MainLayout'));
 const HomeLazy = React.lazy(() => import('./pages/home/Home'));

@@ -31,6 +31,23 @@ export const getUsers = (builder: ApiBuilder) =>
                     ))
             );
         },
+        async onCacheEntryAdded(
+            request,
+            { cacheDataLoaded, cacheEntryRemoved, updateCachedData, getCacheEntry }
+        ) {
+            try {
+                await cacheDataLoaded;
+
+                if (request.page > 1) {
+                    updateCachedData((draft) => ({ ...draft, ...getCacheEntry().data }));
+                }
+
+                await cacheEntryRemoved;
+            } catch {
+                // if cacheEntryRemoved resolved before cacheDataLoaded,
+                // cacheDataLoaded throws
+            }
+        },
         providesTags: ['Users'],
     });
 

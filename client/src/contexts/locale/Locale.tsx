@@ -1,7 +1,7 @@
 import { LocaleContext } from './localeContext';
 import { useLocalStorageState } from '../../hooks/useLocalStorageState';
 import { localeKey } from '../../data/localStorageKeys';
-import { Locale } from '../../types';
+import type { Locale as LocaleType } from '../../types';
 
 export default function Locale({ children }: { children: React.ReactNode }) {
     const defaultGeorgian = /^(ka|ka-GE)$/.test(navigator.language);
@@ -11,7 +11,7 @@ export default function Locale({ children }: { children: React.ReactNode }) {
         defaultGeorgian ? 'KA' : 'ENG'
     );
 
-    const changeLocale = (locale: Locale) => setLocale(locale);
+    const changeLocale = (locale: LocaleType) => setLocale(locale);
 
     return (
         <LocaleContext.Provider value={{ locale, changeLocale }}>
