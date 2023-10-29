@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLoginMutation } from '../../app/services/api';
+import { useLocale } from '../../contexts/locale';
 import { Col, Button, Row, Container, Card, Form, Spinner } from 'react-bootstrap';
 
 function Login() {
@@ -8,6 +9,8 @@ function Login() {
     const [login, { isLoading, isError, error }] = useLoginMutation();
 
     const allowSubmit = !isLoading && loginState.email && loginState.password;
+
+    const t = useLocale('login');
 
     function changeLoginState(param: 'email' | 'password') {
         return (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -26,31 +29,31 @@ function Login() {
                     <Card className='shadow'>
                         <Card.Body>
                             <div className='mb-3 mt-md-4'>
-                                <h2 className='fw-bold mb-2 text-uppercase '>Sign in</h2>
-                                <p className=' mb-5'>
-                                    Please, enter your email and password!
-                                </p>
+                                <h2 className='fw-bold mb-2 text-uppercase '>
+                                    {t('header')}
+                                </h2>
+                                <p className=' mb-5'>{t('header-msg')}</p>
                                 <div className='mb-3'>
                                     <Form
                                         onSubmit={allowSubmit ? handleSubmit : undefined}
                                     >
                                         <Form.Group className='mb-3'>
                                             <Form.Label className='text-center'>
-                                                Email address
+                                                {t('email-label')}
                                             </Form.Label>
                                             <Form.Control
                                                 type='email'
-                                                placeholder='Enter email'
+                                                placeholder={t('email-placeholder')}
                                                 required
                                                 value={loginState.email}
                                                 onChange={changeLoginState('email')}
                                             />
                                         </Form.Group>
                                         <Form.Group className='mb-3'>
-                                            <Form.Label>Password</Form.Label>
+                                            <Form.Label>{t('password-label')}</Form.Label>
                                             <Form.Control
                                                 type='password'
-                                                placeholder='Password'
+                                                placeholder={t('password-placeholder')}
                                                 minLength={1}
                                                 required
                                                 value={loginState.password}
@@ -65,18 +68,18 @@ function Login() {
                                                 className='d-flex justify-content-center align-items-center'
                                                 disabled={isLoading}
                                             >
-                                                {isLoading ? <Spinner /> : 'Login'}
+                                                {isLoading ? <Spinner /> : t('btn')}
                                             </Button>
                                         </div>
                                     </Form>
                                     <div className='mt-3'>
                                         <p className='mb-0  text-center'>
-                                            Don't have an account?{' '}
+                                            {t('signup-msg')}{' '}
                                             <Link
                                                 to={'/register'}
                                                 className='text-primary fw-bold'
                                             >
-                                                Sign Up
+                                                {t('signup')}
                                             </Link>
                                         </p>
                                     </div>

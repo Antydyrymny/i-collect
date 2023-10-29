@@ -24,8 +24,8 @@ export default function LocalePicker() {
                 onChange={handleLocaleChange}
                 aria-label='Choose locale'
             >
-                <option value={'ENG'}>English</option>
-                <option value={'KA'}>ქართული</option>
+                <option value={'en'}>English</option>
+                <option value={'ru'}>Русский</option>
             </Form.Select>
         </div>
     );

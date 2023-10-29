@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { useRedirect } from '../../../hooks/useRedirect';
 import { useSelectUser } from '../../../app/services/features/auth';
 import { LocalePicker } from '../../../contexts/locale';
-import { Container, Nav } from 'react-bootstrap';
+import { Container, Navbar } from 'react-bootstrap';
 import styles from './authStyle.module.scss';
 
 function AuthLayout() {
@@ -12,9 +12,9 @@ function AuthLayout() {
         <Container
             className={`vh-100 d-flex flex-column justify-content-center align-items-center`}
         >
-            <Nav className={`${styles.nav} position-fixed top-0`}>
+            <Navbar expand='lg' className={`${styles.nav} position-fixed top-0`}>
                 <LocalePicker />
-            </Nav>
+            </Navbar>
             <Outlet />
         </Container>
     );

@@ -1,0 +1,24 @@
+{
+    "login": {
+        "header": "Войти",
+        "header-msg": "Пожалуйста, введите ваш адрес электронной почты и пароль!",
+        "email-label": "Адрес электронной почты",
+        "email-placeholder": "Введите адрес электронной почты",
+        "password-label": "Пароль",
+        "password-placeholder": "Пароль",
+        "btn": "Войти",
+        "signup": "Зарегистрироваться",
+        "signup-msg": "Нет аккаунта?"
+    },
+    "register": {
+        "header": "Зарегистрироваться",
+        "header-msg": "Создайте свой аккаунт сейчас!",
+        "name-label": "Имя",
+        "name-placeholder": "Имя",
+        "email-label": "Адрес электронной почты",
+        "email-placeholder": "Введите адрес электронной почты",
+        "password-label": "Пароль",
+        "password-placeholder": "Пароль",
+        "btn": "Зарегистрироваться"
+    }
+}

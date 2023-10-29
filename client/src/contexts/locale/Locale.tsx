@@ -4,12 +4,9 @@ import { localeKey } from '../../data/localStorageKeys';
 import type { Locale as LocaleType } from '../../types';
 
 export default function Locale({ children }: { children: React.ReactNode }) {
-    const defaultGeorgian = /^(ka|ka-GE)$/.test(navigator.language);
+    const defaultRu = /^(ru|ru-RU)$/.test(navigator.language);
 
-    const [locale, setLocale] = useLocalStorageState(
-        localeKey,
-        defaultGeorgian ? 'KA' : 'ENG'
-    );
+    const [locale, setLocale] = useLocalStorageState(localeKey, defaultRu ? 'ru' : 'en');
 
     const changeLocale = (locale: LocaleType) => setLocale(locale);
 

@@ -1,0 +1,24 @@
+{
+    "login": {
+        "header": "Sign in",
+        "header-msg": "Please, enter your email and password!",
+        "email-label": "Email address",
+        "email-placeholder": "Enter email",
+        "password-label": "Password",
+        "password-placeholder": "Password",
+        "btn": "Login",
+        "signup": "Sign up",
+        "signup-msg": "Don't have an account?"
+    },
+    "register": {
+        "header": "Sing up",
+        "header-msg": "Create your account now!",
+        "name-label": "Name",
+        "name-placeholder": "Name",
+        "email-label": "Email address",
+        "email-placeholder": "Enter email",
+        "password-label": "Password",
+        "password-placeholder": "Password",
+        "btn": "Register"
+    }
+}

@@ -41,7 +41,7 @@ export enum Routes {
 }
 
 export type ColorTheme = 'light' | 'dark';
-export type Locale = 'ENG' | 'KA';
+export type Locale = 'en' | 'ru';
 export type LocalStorageSchema = {
     [colorThemeKey]: ColorTheme;
     [authStateKey]: AuthState;
