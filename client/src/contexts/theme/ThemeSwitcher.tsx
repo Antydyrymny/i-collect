@@ -1,7 +1,8 @@
 import { useThemeContext } from '.';
 import { ToggleButton, Image } from 'react-bootstrap';
-import light from '../../assets/light24.png';
-import dark from '../../assets/dark24.png';
+import light from '../../assets/light.png';
+import dark from '../../assets/dark.png';
+import sytles from './themeSwitcherStyles.module.scss';
 
 export default function ThemeSwitcher() {
     const { theme, toggleTheme } = useThemeContext();
@@ -13,7 +14,8 @@ export default function ThemeSwitcher() {
             onChange={toggleTheme}
             type='checkbox'
             id='ThemeSwitcher'
-            variant='outline-primary'
+            variant={`outline${theme === 'dark' ? '-light' : ''}`}
+            className={`${sytles.switcher} d-flex justify-content-center align-items-center`}
         >
             <>
                 {theme === 'light' && <Image src={light} aria-label='light theme' />}

@@ -1,7 +1,0 @@
-@use '../../styles/index.scss' as *;
-
-@media (max-width: $breakpoint-mobile) {
-    .nav {
-        display: none;
-    }
-}

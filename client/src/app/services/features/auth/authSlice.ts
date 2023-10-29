@@ -12,10 +12,7 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         storeAuth: (_state, action: PayloadAction<AuthState>) => action.payload,
-        clearAuth: () => {
-            window.localStorage.removeItem(authStateKey);
-            return initialState;
-        },
+        clearAuth: clearAuthHelper,
     },
     extraReducers: (builder) => {
         builder
@@ -29,6 +26,7 @@ const authSlice = createSlice({
                     return action.payload;
                 }
             )
+            .addMatcher(apiSlice.endpoints.logout.matchPending, clearAuthHelper)
             .addMatcher(apiSlice.endpoints.getUsers.matchFulfilled, (state, action) => {
                 const returnedCurrentUser = action.payload.find(
                     (user) => user._id === state._id
@@ -90,6 +88,11 @@ const authSlice = createSlice({
             );
     },
 });
+
+function clearAuthHelper() {
+    window.localStorage.removeItem(authStateKey);
+    return initialState;
+}
 
 export default authSlice.reducer;
 

@@ -9,7 +9,6 @@ export default function Theme({ children }: { children: React.ReactNode }) {
         colorThemeKey,
         defaultDark ? 'dark' : 'light'
     );
-
     const toggleTheme = () =>
         setTheme((curTheme) => (curTheme === 'light' ? 'dark' : 'light'));
 

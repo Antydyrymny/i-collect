@@ -1,29 +1,14 @@
 import { Auth } from './auth';
 import { Theme } from './theme';
 import { Locale } from './locale';
-import { ToastContainer } from 'react-toastify';
-import { useThemeContext } from './theme';
+import { Toast } from './Toast';
 
 function AllContexts({ children }: { children: React.ReactNode }) {
-    const { theme } = useThemeContext();
-
     return (
         <Auth>
             <Theme>
                 <Locale>
-                    <ToastContainer
-                        position='top-center'
-                        autoClose={5000}
-                        hideProgressBar={false}
-                        newestOnTop={false}
-                        closeOnClick
-                        rtl={false}
-                        pauseOnFocusLoss
-                        draggable
-                        pauseOnHover
-                        theme={theme}
-                    />
-                    {children}
+                    <Toast>{children}</Toast>
                 </Locale>
             </Theme>
         </Auth>

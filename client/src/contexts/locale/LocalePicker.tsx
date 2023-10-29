@@ -3,7 +3,7 @@ import { Form, Image } from 'react-bootstrap';
 import { Locale } from '../../types';
 import { useThemeContext } from '../theme';
 import globe from '../../assets/globe.png';
-import globeDark from '../../assets/dark-dark.png';
+import globeDark from '../../assets/globe-dark.png';
 import styles from './localePickerStyles.module.scss';
 
 export default function LocalePicker() {
@@ -24,8 +24,12 @@ export default function LocalePicker() {
                 onChange={handleLocaleChange}
                 aria-label='Choose locale'
             >
-                <option value={'en'}>English</option>
-                <option value={'ru'}>Русский</option>
+                <option value={'en'} className={`bg-${theme}`}>
+                    English
+                </option>
+                <option value={'ru'} className={`bg-${theme}`}>
+                    Русский
+                </option>
             </Form.Select>
         </div>
     );

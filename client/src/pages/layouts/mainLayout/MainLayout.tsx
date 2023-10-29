@@ -1,13 +1,14 @@
 import { Outlet } from 'react-router-dom';
-import { ThemeSwitcher } from '../../../contexts/theme';
-import { LocalePicker } from '../../../contexts/locale';
+import { Container } from 'react-bootstrap';
+import MainNav from './MainNav';
 
 function MainLayout() {
     return (
-        <div>
-            <ThemeSwitcher />
-            <LocalePicker />
-            <Outlet />
+        <div className='vh-100'>
+            <MainNav />
+            <Container>
+                <Outlet />
+            </Container>
         </div>
     );
 }

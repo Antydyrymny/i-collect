@@ -1,0 +1,5 @@
+@use '../../styles/index.scss' as *;
+
+.switcher:hover {
+    background-color: $color-primary !important;
+}
