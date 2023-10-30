@@ -6,7 +6,7 @@ import { useThemeContext } from '../../../contexts/theme';
 import { ThemeSwitcher } from '../../../contexts/theme';
 import { LocalePicker } from '../../../contexts/locale';
 import { useLocale } from '../../../contexts/locale';
-import { Container, Navbar, Button, Image, Nav } from 'react-bootstrap';
+import { Container, Navbar, Button, Image, Nav, NavbarText } from 'react-bootstrap';
 import logo from '../../../assets/logo.png';
 import logoDark from '../../../assets/logo-dark.png';
 
@@ -43,13 +43,16 @@ function MainNav() {
                                 <Button size='sm'>
                                     <Link to={ClientRoutes.Login}>Sign in</Link>
                                 </Button>
-                                <Button size='sm'>
+                                <Button size='sm' variant='outline-primary'>
                                     <Link to={ClientRoutes.Register}>Sign up</Link>
                                 </Button>
                             </>
                         )}
                         {authState.name && (
                             <>
+                                <NavbarText className='text-capitalize pe-3'>
+                                    {authState.name}
+                                </NavbarText>
                                 {authState.admin && (
                                     <Button size='sm'>
                                         <Link to={ClientRoutes.ManageUsers}>Users</Link>
@@ -58,7 +61,11 @@ function MainNav() {
                                 <Button size='sm'>
                                     <Link to={ClientRoutes.UserPage}>My Collections</Link>
                                 </Button>
-                                <Button onClick={() => logout()} size='sm'>
+                                <Button
+                                    variant='outline-primary'
+                                    onClick={() => logout()}
+                                    size='sm'
+                                >
                                     Logout
                                 </Button>
                             </>

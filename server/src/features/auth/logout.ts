@@ -4,6 +4,7 @@ import { updatesRequired } from '../../data';
 
 export const logout = async (req: Request, res: Response) => {
     const userToLogout = req.user as UserModelType;
+
     userToLogout.status = 'offline';
     await userToLogout.save();
 

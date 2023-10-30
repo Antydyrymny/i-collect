@@ -27,7 +27,7 @@ function Login() {
 
     useEffect(() => {
         if (isError) {
-            toast.error(isFetchError(error) ? error.data : 'Unknown error has occurred');
+            toast.error(isFetchError(error) ? error.data : 'Error connecting to server');
         }
 
         return () => toast.dismiss();

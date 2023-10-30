@@ -31,3 +31,11 @@ export const logout = (builder: ApiBuilder) =>
             method: 'POST',
         }),
     });
+
+export const relog = (builder: ApiBuilder) =>
+    builder.mutation<string, void>({
+        query: () => ({
+            url: Routes.Relog,
+            method: 'POST',
+        }),
+    });

@@ -4,6 +4,7 @@ export enum Routes {
     Login = '/login',
     Register = '/register',
     Logout = '/logout',
+    Relog = '/relog',
     GetUsers = '/users',
     GetUserPage = '/userPage',
     ToggleBlock = '/block',

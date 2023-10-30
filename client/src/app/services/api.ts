@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { login, register, logout } from './features/auth';
+import { login, register, logout, relog } from './features/auth';
 import {
     subscribeToUsers,
     getUsers,
+    getUserPage,
     toggleBlock,
     toggleAdmins,
     deleteUsers,
@@ -31,8 +32,10 @@ const apiSlice = createApi({
         login: login(builder),
         register: register(builder),
         logout: logout(builder),
+        relog: relog(builder),
         subscribeToUsers: subscribeToUsers(builder),
         getUsers: getUsers(builder),
+        getUserPage: getUserPage(builder),
         toggleBlock: toggleBlock(builder),
         toggleAdmins: toggleAdmins(builder),
         deleteUsers: deleteUsers(builder),
@@ -41,4 +44,15 @@ const apiSlice = createApi({
 
 export default apiSlice;
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation } = apiSlice;
+export const {
+    useLoginMutation,
+    useLogoutMutation,
+    useRegisterMutation,
+    useRelogMutation,
+    useSubscribeToUsersQuery,
+    useGetUsersQuery,
+    useGetUserPageQuery,
+    useToggleBlockMutation,
+    useToggleAdminsMutation,
+    useDeleteUsersMutation,
+} = apiSlice;

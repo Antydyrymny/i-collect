@@ -9,15 +9,17 @@ dotenv.config();
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     const { name, email, password }: RegisterRequest = req.body;
-    const newUser = await UserModel.create({
-        admin: false,
-        name,
-        email,
-        password,
-        lastLogin: new Date().toISOString(),
-        status: 'online',
-    });
+
     try {
+        const newUser = await UserModel.create({
+            admin: false,
+            name,
+            email,
+            password,
+            lastLogin: new Date().toISOString(),
+            status: 'online',
+        });
+
         const jwtToken = jwt.sign(
             {
                 _id: newUser._id,
@@ -35,8 +37,8 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
         res.status(200).json(response);
     } catch (error) {
-        if (error.code === 11000 && error.message.includes('duplicate'))
+        if (error.code === 11000 && error.message.includes('duplicate')) {
             res.status(409).json('Email is already in use');
-        else next(error);
+        } else next(error);
     }
 };
