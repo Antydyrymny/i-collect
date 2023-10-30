@@ -11,7 +11,7 @@ import logo from '../../../assets/logo.png';
 import logoDark from '../../../assets/logo-dark.png';
 
 function MainNav() {
-    const t = useLocale;
+    const t = useLocale('navbar');
 
     const authState = useSelectUser();
     const [logout] = useLogoutMutation();
@@ -19,8 +19,8 @@ function MainNav() {
     const { theme } = useThemeContext();
 
     return (
-        <Navbar sticky='top' bg='primary-subtle'>
-            <Container className='d-flex justify-content-space-between'>
+        <Navbar expand='xl' sticky='top' bg='primary-subtle'>
+            <Container>
                 <Navbar.Brand>
                     <Link
                         to={ClientRoutes.Home}
@@ -31,20 +31,27 @@ function MainNav() {
                         I-Collect
                     </Link>
                 </Navbar.Brand>
-                <Nav className='d-flex gap-4'>
-                    <Navbar.Collapse>
+                <Nav className='d-xl-none d-flex flex-row'>
+                    <LocalePicker />
+                    <ThemeSwitcher />
+                    <Navbar.Toggle className='ms-5' aria-controls='navbarEexpand' />
+                </Nav>
+                <Navbar.Collapse id='navbarEexpand' className='justify-content-end gap-3'>
+                    <Nav className='d-xl-flex d-none'>
                         <LocalePicker />
                         <ThemeSwitcher />
-                    </Navbar.Collapse>
-                    <div className='vr' />
+                    </Nav>
+                    <div className='vr d-xl-block d-none' />
                     <Nav className='gap-2'>
                         {!authState.name && (
                             <>
                                 <Button size='sm'>
-                                    <Link to={ClientRoutes.Login}>Sign in</Link>
+                                    <Link to={ClientRoutes.Login}>{t('login')}</Link>
                                 </Button>
                                 <Button size='sm' variant='outline-primary'>
-                                    <Link to={ClientRoutes.Register}>Sign up</Link>
+                                    <Link to={ClientRoutes.Register}>
+                                        {t('register')}
+                                    </Link>
                                 </Button>
                             </>
                         )}
@@ -55,23 +62,27 @@ function MainNav() {
                                 </NavbarText>
                                 {authState.admin && (
                                     <Button size='sm'>
-                                        <Link to={ClientRoutes.ManageUsers}>Users</Link>
+                                        <Link to={ClientRoutes.ManageUsers}>
+                                            {t('users')}
+                                        </Link>
                                     </Button>
                                 )}
                                 <Button size='sm'>
-                                    <Link to={ClientRoutes.UserPage}>My Collections</Link>
+                                    <Link to={ClientRoutes.UserPagePath + authState._id}>
+                                        {t('myPage')}
+                                    </Link>
                                 </Button>
                                 <Button
                                     variant='outline-primary'
                                     onClick={() => logout()}
                                     size='sm'
                                 >
-                                    Logout
+                                    {t('logout')}
                                 </Button>
                             </>
                         )}
                     </Nav>
-                </Nav>
+                </Navbar.Collapse>
             </Container>
         </Navbar>
     );

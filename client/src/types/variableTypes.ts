@@ -24,7 +24,8 @@ export enum ClientRoutes {
     Register = '/register',
     Login = '/login',
     ManageUsers = '/users',
-    UserPage = '/:userId',
+    UserPage = '/user/:userId',
+    UserPagePath = '/user/',
 }
 
 export enum Routes {

@@ -1,11 +1,8 @@
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import { UserModel } from '../../models';
-import type { LoginRequest, AuthResponse } from '../../types';
+import type { LoginRequest } from '../../types';
+import { signJWT } from './signJWT';
 import { updatesRequired } from '../../data';
-
-dotenv.config();
 
 export const login = async (req: Request, res: Response) => {
     const { email, password }: LoginRequest = req.body;
@@ -19,23 +16,11 @@ export const login = async (req: Request, res: Response) => {
         return;
     }
 
-    userWithEmail.lastLogin = new Date().toISOString();
     userWithEmail.status = 'online';
+    userWithEmail.lastLogin = new Date().toISOString();
     await userWithEmail.save();
 
-    const jwtToken = jwt.sign(
-        {
-            _id: userWithEmail._id,
-        },
-        process.env.JWT_SECRET
-    );
-
-    const response: AuthResponse = {
-        _id: userWithEmail._id,
-        admin: userWithEmail.admin,
-        name: userWithEmail.name,
-        token: jwtToken,
-    };
+    const response = signJWT(userWithEmail);
 
     updatesRequired.usersStateForAdmins = true;
 

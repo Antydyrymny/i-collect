@@ -33,7 +33,7 @@ export const logout = (builder: ApiBuilder) =>
     });
 
 export const relog = (builder: ApiBuilder) =>
-    builder.mutation<string, void>({
+    builder.mutation<AuthResponse, void>({
         query: () => ({
             url: Routes.Relog,
             method: 'POST',

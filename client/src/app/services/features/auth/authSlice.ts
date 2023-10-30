@@ -3,10 +3,7 @@ import type { RootState } from '../../../store';
 import apiSlice from '../../api';
 import { AuthState } from '../../../../types';
 import { authStateKey } from '../../../../data/localStorageKeys';
-import {
-    getTypedStorageItem,
-    setTypedStorageItem,
-} from '../../../../utils/typesLocalStorage';
+import { setTypedStorageItem } from '../../../../utils/typesLocalStorage';
 
 const initialState: AuthState = { _id: null, admin: null, name: null, token: null };
 
@@ -22,6 +19,7 @@ const authSlice = createSlice({
             .addMatcher(
                 isAnyOf(
                     apiSlice.endpoints.login.matchFulfilled,
+                    apiSlice.endpoints.relog.matchFulfilled,
                     apiSlice.endpoints.register.matchFulfilled
                 ),
                 (_state, action) => {
@@ -29,9 +27,6 @@ const authSlice = createSlice({
                     return action.payload;
                 }
             )
-            .addMatcher(apiSlice.endpoints.relog.matchFulfilled, () => {
-                return getTypedStorageItem(authStateKey, 'sessionStorage')!;
-            })
             .addMatcher(apiSlice.endpoints.logout.matchFulfilled, clearAuthHelper)
             .addMatcher(apiSlice.endpoints.getUsers.matchFulfilled, (state, action) => {
                 const returnedCurrentUser = action.payload.find(

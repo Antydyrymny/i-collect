@@ -1,11 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import { UserModel } from '../../models';
 import { updatesRequired } from '../../data';
-import type { RegisterRequest, AuthResponse } from '../../types';
-
-dotenv.config();
+import type { RegisterRequest } from '../../types';
+import { signJWT } from './signJWT';
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     const { name, email, password }: RegisterRequest = req.body;
@@ -20,18 +17,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
             status: 'online',
         });
 
-        const jwtToken = jwt.sign(
-            {
-                _id: newUser._id,
-            },
-            process.env.JWT_SECRET
-        );
-        const response: AuthResponse = {
-            _id: newUser._id,
-            admin: false,
-            name,
-            token: jwtToken,
-        };
+        const response = signJWT(newUser);
 
         updatesRequired.usersStateForAdmins = true;
 

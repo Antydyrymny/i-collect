@@ -20,5 +20,12 @@
         "password-label": "Password",
         "password-placeholder": "Password",
         "btn": "Register"
+    },
+    "navbar": {
+        "login": "Sign in",
+        "register": "Sign up",
+        "users": "Manage users",
+        "myPage": "My Collections",
+        "logout": "Logout"
     }
 }
