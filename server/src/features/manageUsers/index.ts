@@ -1,4 +1,5 @@
 export * from './usersEvents';
+export * from './countUserPages';
 export * from './getUsers';
 export * from './toggleBlock';
 export * from './toggleAdmin';

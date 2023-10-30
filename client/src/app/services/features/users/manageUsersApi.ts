@@ -9,8 +9,13 @@ import {
 } from '../../../../types';
 
 const defaultGetUsersQueryParams = {
-    limit: '20',
+    limit: '10',
 };
+
+export const countUserPages = (builder: ApiBuilder) =>
+    builder.query<number, void>({
+        query: () => ({ url: Routes.CountUserPages }),
+    });
 
 export const getUsers = (builder: ApiBuilder) =>
     builder.query<UserPreview[], GetUsersRequest>({
@@ -31,23 +36,23 @@ export const getUsers = (builder: ApiBuilder) =>
                     ))
             );
         },
-        async onCacheEntryAdded(
-            request,
-            { cacheDataLoaded, cacheEntryRemoved, updateCachedData, getCacheEntry }
-        ) {
-            try {
-                await cacheDataLoaded;
+        // async onCacheEntryAdded(
+        //     request,
+        //     { cacheDataLoaded, cacheEntryRemoved, updateCachedData, getCacheEntry }
+        // ) {
+        //     try {
+        //         await cacheDataLoaded;
 
-                if (request.page > 1) {
-                    updateCachedData((draft) => ({ ...draft, ...getCacheEntry().data }));
-                }
+        //         if (request.page > 1) {
+        //             updateCachedData((draft) => ({ ...draft, ...getCacheEntry().data }));
+        //         }
 
-                await cacheEntryRemoved;
-            } catch {
-                // if cacheEntryRemoved resolved before cacheDataLoaded,
-                // cacheDataLoaded throws
-            }
-        },
+        //         await cacheEntryRemoved;
+        //     } catch {
+        //         // if cacheEntryRemoved resolved before cacheDataLoaded,
+        //         // cacheDataLoaded throws
+        //     }
+        // },
         providesTags: ['Users'],
     });
 

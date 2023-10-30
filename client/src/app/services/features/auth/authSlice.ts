@@ -32,9 +32,9 @@ const authSlice = createSlice({
                 const returnedCurrentUser = action.payload.find(
                     (user) => user._id === state._id
                 );
-                if (!returnedCurrentUser || returnedCurrentUser.status === 'blocked') {
+                if (returnedCurrentUser && returnedCurrentUser.status === 'blocked') {
                     return clearAuthHelper();
-                } else if (!returnedCurrentUser.admin) {
+                } else if (returnedCurrentUser && !returnedCurrentUser.admin) {
                     const updatedUser = {
                         _id: returnedCurrentUser._id,
                         admin: false,

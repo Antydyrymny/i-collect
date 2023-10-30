@@ -31,4 +31,6 @@ setInterval(() => {
             .to(socketId)
             .emit(ServerToAdmin.UsersUpdated);
     });
+
+    updatesRequired.usersStateForAdmins = false;
 }, 10000);

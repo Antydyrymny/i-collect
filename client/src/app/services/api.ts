@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { login, register, logout, relog } from './features/auth';
 import {
     subscribeToUsers,
+    countUserPages,
     getUsers,
     getUserPage,
     toggleBlock,
@@ -27,13 +28,14 @@ const apiSlice = createApi({
             return headers;
         },
     }),
-    tagTypes: ['Users'],
+    tagTypes: ['UserPages', 'Users'],
     endpoints: (builder) => ({
         login: login(builder),
         register: register(builder),
         logout: logout(builder),
         relog: relog(builder),
         subscribeToUsers: subscribeToUsers(builder),
+        countUserPages: countUserPages(builder),
         getUsers: getUsers(builder),
         getUserPage: getUserPage(builder),
         toggleBlock: toggleBlock(builder),
@@ -50,6 +52,7 @@ export const {
     useRegisterMutation,
     useRelogMutation,
     useSubscribeToUsersQuery,
+    useCountUserPagesQuery,
     useGetUsersQuery,
     useGetUserPageQuery,
     useToggleBlockMutation,

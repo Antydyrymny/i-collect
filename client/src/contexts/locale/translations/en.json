@@ -27,5 +27,14 @@
         "users": "Manage users",
         "myPage": "My Collections",
         "logout": "Logout"
+    },
+    "manageUsers": {
+        "block": "Block",
+        "admin": "Make admin",
+        "name": "Name",
+        "email": "Email",
+        "adminRights": "Admin rights",
+        "login": "Last login",
+        "status": "Status"
     }
 }

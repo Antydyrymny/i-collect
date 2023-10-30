@@ -13,8 +13,9 @@ function ProtectedRoute({
     adminRoute = false,
     redirectRoute = ClientRoutes.Login,
 }: ProtectedRouteProps) {
-    const isAuthenticated = useSelectUser();
-    const isAdmin = isAuthenticated && isAuthenticated.admin;
+    const authState = useSelectUser();
+    const isAuthenticated = !!authState._id;
+    const isAdmin = isAuthenticated && authState.admin;
     const protectedCondition = adminRoute ? isAdmin : isAuthenticated;
 
     return protectedCondition ? <Component /> : <Navigate to={redirectRoute} replace />;

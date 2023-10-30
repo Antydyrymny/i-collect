@@ -36,7 +36,7 @@ function App() {
                             element={<ProtectedRoute Component={UserPageLazy} />}
                         />
                         <Route
-                            path={ClientRoutes.UserPage}
+                            path={ClientRoutes.ManageUsers}
                             element={
                                 <ProtectedRoute Component={ManageUsersLazy} adminRoute />
                             }

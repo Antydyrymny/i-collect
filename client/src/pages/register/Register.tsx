@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRegisterMutation } from '../../app/services/api';
-import { isFetchError } from '../../types';
+import { useInformOfError } from '../../hooks';
 import { useLocale } from '../../contexts/locale';
 import { Button, Card, Form, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
@@ -15,6 +15,8 @@ function Register() {
         password: '',
     });
 
+    useInformOfError(isError, error);
+
     const allowSubmit = !isLoading && registerState.email && registerState.password;
 
     function changeregisterState(param: 'name' | 'email' | 'password') {
@@ -27,14 +29,6 @@ function Register() {
         toast.dismiss();
         await register(registerState);
     }
-
-    useEffect(() => {
-        if (isError) {
-            toast.error(isFetchError(error) ? error.data : 'Error connecting to server');
-        }
-
-        return () => toast.dismiss();
-    }, [error, isError]);
 
     return (
         <>

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLoginMutation } from '../../app/services/api';
-import { isFetchError } from '../../types';
+import { useInformOfError } from '../../hooks';
 import { useLocale } from '../../contexts/locale';
 import { Button, Card, Form, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
@@ -11,6 +11,8 @@ function Login() {
 
     const [loginState, setLoginState] = useState({ email: '', password: '' });
     const [login, { isLoading, isError, error }] = useLoginMutation();
+
+    useInformOfError(isError, error);
 
     const allowSubmit = !isLoading && loginState.email && loginState.password;
 
@@ -24,14 +26,6 @@ function Login() {
         toast.dismiss();
         await login(loginState);
     }
-
-    useEffect(() => {
-        if (isError) {
-            toast.error(isFetchError(error) ? error.data : 'Error connecting to server');
-        }
-
-        return () => toast.dismiss();
-    }, [error, isError]);
 
     return (
         <>

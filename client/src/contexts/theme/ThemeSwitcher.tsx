@@ -1,5 +1,6 @@
 import { useThemeContext } from '.';
 import { ToggleButton, Image } from 'react-bootstrap';
+import { nanoid } from '@reduxjs/toolkit';
 import light from '../../assets/light.png';
 import dark from '../../assets/dark.png';
 import sytles from './themeSwitcherStyles.module.scss';
@@ -13,7 +14,7 @@ export default function ThemeSwitcher() {
             checked={theme === 'light'}
             onChange={toggleTheme}
             type='checkbox'
-            id='ThemeSwitcher'
+            id={'ThemeSwitcher' + nanoid()}
             variant={`outline${theme === 'dark' ? '-light' : ''}`}
             className={`${sytles.switcher} d-flex justify-content-center align-items-center`}
         >
