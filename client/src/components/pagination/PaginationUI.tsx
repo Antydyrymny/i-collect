@@ -1,5 +1,6 @@
 import { usePagination } from '../../hooks/usePagination';
 import { Pagination } from 'react-bootstrap';
+import styles from './paginationStyles.module.scss';
 
 function PaginationUI({ pages }: { pages: number }) {
     const {
@@ -19,13 +20,13 @@ function PaginationUI({ pages }: { pages: number }) {
             <Pagination.Prev onClick={goToPrevPage} disabled={!allowPrevPage} />
             <Pagination.Item
                 onClick={() => goToPageX(1)}
-                className={`${curPage > 3 ? 'd-block' : 'd-none'} d-none d-md-block`}
+                className={`${curPage > 3 ? 'd-block' : styles.none} d-none d-md-block`}
             >
                 {1}
             </Pagination.Item>
             <Pagination.Ellipsis
                 onClick={() => goToPageX(curPage - 3)}
-                className={`${curPage > 4 ? 'd-block' : 'd-none'} d-none d-md-block`}
+                className={`${curPage > 4 ? 'd-block' : styles.none} d-none d-md-block`}
             />
 
             <Pagination.Item
@@ -57,13 +58,13 @@ function PaginationUI({ pages }: { pages: number }) {
             <Pagination.Ellipsis
                 onClick={() => goToPageX(curPage + 3)}
                 className={`${
-                    pages - curPage > 3 ? 'd-block' : 'd-none'
+                    pages - curPage > 3 ? 'd-block' : styles.none
                 } d-none d-md-block`}
             />
             <Pagination.Item
                 onClick={() => goToPageX(pages)}
                 className={`${
-                    pages - curPage > 2 ? 'd-block' : 'd-none'
+                    pages - curPage > 2 ? 'd-block' : styles.none
                 } d-none d-md-block`}
             >
                 {pages}

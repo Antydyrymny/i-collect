@@ -24,6 +24,7 @@ import stripAdminDark from '../../assets/stripAdmin-dark.png';
 import trash from '../../assets/deleteUser.png';
 import trashDark from '../../assets/deleteUser-dark.png';
 import { Container, Button, Row, Image, Spinner, ButtonToolbar } from 'react-bootstrap';
+import UserTable from './UserTable';
 
 function ManageUsers() {
     const authUser = useSelectUser();
@@ -38,6 +39,7 @@ function ManageUsers() {
 
     const {
         data: users = [],
+        isLoading,
         isFetching,
         isError,
         error,
@@ -112,81 +114,99 @@ function ManageUsers() {
         <Container className='mt-5'>
             <Row className='mb-3 '>
                 <ButtonToolbar className='gap-2'>
-                    <Button
-                        disabled={!allowChanges}
-                        onClick={() => handleAllocatingRights('block', false)}
-                        variant='outline-primary'
-                        className='d-flex justify-content-center align-items-center gap-1'
-                    >
-                        {blockUtils.isLoading &&
-                        blockUtils.originalArgs?.action === 'block' ? (
-                            <Spinner size='sm' />
-                        ) : (
-                            <Image src={theme === 'light' ? block : blockDark} />
-                        )}
-                        {t('block')}
-                    </Button>
-                    <Button
-                        disabled={!allowChanges}
-                        onClick={() => handleAllocatingRights('block', true)}
-                        variant='outline-primary'
-                        className='me-3 d-flex justify-content-center align-items-center gap-1'
-                    >
-                        {blockUtils.isLoading &&
-                        blockUtils.originalArgs?.action === 'unblock' ? (
-                            <Spinner size='sm' />
-                        ) : (
-                            <Image src={theme === 'light' ? unblock : unblockDark} />
-                        )}
-                    </Button>
-                    <Button
-                        disabled={!allowChanges}
-                        onClick={() => handleAllocatingRights('admin', true)}
-                        variant='outline-primary'
-                        className='d-flex justify-content-center align-items-center gap-1'
-                    >
-                        {adminUtils.isLoading &&
-                        adminUtils.originalArgs?.action === 'makeAdmin' ? (
-                            <Spinner size='sm' />
-                        ) : (
-                            <Image src={theme === 'light' ? admin : adminDark} />
-                        )}
-                        {t('admin')}
-                    </Button>
-                    <Button
-                        disabled={!allowChanges}
-                        onClick={() => handleAllocatingRights('admin', false)}
-                        variant='outline-primary'
-                        className='me-3 d-flex justify-content-center align-items-center gap-1'
-                    >
-                        {adminUtils.isLoading &&
-                        adminUtils.originalArgs?.action === 'stripAdmin' ? (
-                            <Spinner size='sm' />
-                        ) : (
-                            <Image
-                                src={theme === 'light' ? stripAdmin : stripAdminDark}
-                            />
-                        )}
-                    </Button>
-                    <Button
-                        disabled={!allowChanges}
-                        onClick={handleDeleteUsers}
-                        variant='danger'
-                        className='d-flex justify-content-center align-items-center gap-1'
-                    >
-                        {deleteUtils.isLoading ? (
-                            <Spinner size='sm' />
-                        ) : (
-                            <Image src={theme === 'light' ? trash : trashDark} />
-                        )}
-                    </Button>
+                    <ButtonToolbar className='gap-2'>
+                        <Button
+                            disabled={!allowChanges}
+                            onClick={() => handleAllocatingRights('block', false)}
+                            variant='outline-primary'
+                            className='d-flex justify-content-center align-items-center gap-1'
+                        >
+                            {blockUtils.isLoading &&
+                            blockUtils.originalArgs?.action === 'block' ? (
+                                <Spinner size='sm' />
+                            ) : (
+                                <Image src={theme === 'light' ? block : blockDark} />
+                            )}
+                            {t('block')}
+                        </Button>
+                        <Button
+                            disabled={!allowChanges}
+                            onClick={() => handleAllocatingRights('block', true)}
+                            variant='outline-primary'
+                            className='me-3 d-flex justify-content-center align-items-center gap-1'
+                        >
+                            {blockUtils.isLoading &&
+                            blockUtils.originalArgs?.action === 'unblock' ? (
+                                <Spinner size='sm' />
+                            ) : (
+                                <Image src={theme === 'light' ? unblock : unblockDark} />
+                            )}
+                        </Button>
+                    </ButtonToolbar>
+                    <ButtonToolbar className='gap-2'>
+                        <Button
+                            disabled={!allowChanges}
+                            onClick={() => handleAllocatingRights('admin', true)}
+                            variant='outline-primary'
+                            className='d-flex justify-content-center align-items-center gap-1'
+                        >
+                            {adminUtils.isLoading &&
+                            adminUtils.originalArgs?.action === 'makeAdmin' ? (
+                                <Spinner size='sm' />
+                            ) : (
+                                <Image src={theme === 'light' ? admin : adminDark} />
+                            )}
+                            {t('admin')}
+                        </Button>
+                        <Button
+                            disabled={!allowChanges}
+                            onClick={() => handleAllocatingRights('admin', false)}
+                            variant='outline-primary'
+                            className='me-lg-3 d-flex justify-content-center align-items-center gap-1'
+                        >
+                            {adminUtils.isLoading &&
+                            adminUtils.originalArgs?.action === 'stripAdmin' ? (
+                                <Spinner size='sm' />
+                            ) : (
+                                <Image
+                                    src={theme === 'light' ? stripAdmin : stripAdminDark}
+                                />
+                            )}
+                        </Button>
+                        <Button
+                            disabled={!allowChanges}
+                            onClick={handleDeleteUsers}
+                            variant='danger'
+                            className='me-lg-3 d-flex justify-content-center align-items-center gap-1'
+                        >
+                            {deleteUtils.isLoading ? (
+                                <Spinner size='sm' />
+                            ) : (
+                                <Image src={theme === 'light' ? trash : trashDark} />
+                            )}
+                        </Button>
+                    </ButtonToolbar>
+                    {isFetching && (
+                        <div className='d-none d-md-flex align-items-center'>
+                            <Spinner />
+                        </div>
+                    )}
                 </ButtonToolbar>
             </Row>
             <Row>
-                {isFetching && (
+                {isLoading && (
                     <Container className='mt-5 d-flex justify-content-center align-items-center'>
                         <Spinner className='mt-5' />
                     </Container>
+                )}
+                {!isLoading && (
+                    <UserTable
+                        users={users}
+                        selected={selected}
+                        allowChanges={allowChanges}
+                        handleSelectOne={handleSelectOne}
+                        handleSelectAll={handleSelectAll}
+                    />
                 )}
             </Row>
             <Row>

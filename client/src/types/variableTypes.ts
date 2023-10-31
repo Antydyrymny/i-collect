@@ -85,10 +85,10 @@ export type UserPreview = {
     admin: boolean;
     name: string;
     status: 'online' | 'offline' | 'blocked';
+    lastLogin: string;
 };
 export type ClientUser = UserPreview & {
     email: string;
     createdAt: string;
-    lastLogin: string;
     collectionIds: string[];
 };

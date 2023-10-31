@@ -21,6 +21,7 @@ export const getUsers = async (req: Request, res: Response) => {
             admin: user.admin,
             name: user.name,
             status: user.status,
+            lastLogin: user.lastLogin,
         })
     );
 

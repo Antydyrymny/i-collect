@@ -32,9 +32,12 @@
         "block": "Block",
         "admin": "Make admin",
         "name": "Name",
-        "email": "Email",
         "adminRights": "Admin rights",
-        "login": "Last login",
-        "status": "Status"
+        "adminTrue": "Administrator",
+        "adminFalse": "User",
+        "lastLogin": "Last login",
+        "status": "Status",
+        "collections": "Collections",
+        "toCollections": "Open"
     }
 }

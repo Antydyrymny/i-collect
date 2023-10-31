@@ -1,0 +1,35 @@
+@use '../../styles/index.scss' as *;
+
+.table {
+    td {
+        vertical-align: middle;
+    }
+}
+
+.sort {
+    white-space: nowrap;
+    img {
+        margin-left: 0.2rem;
+        cursor: pointer;
+    }
+}
+
+.sortUp {
+    @include transition(200);
+    transform: rotate(180deg);
+}
+
+.online,
+.offline {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.online {
+    background-color: green;
+}
+.offline {
+    background-color: red;
+}
