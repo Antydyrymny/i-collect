@@ -7,7 +7,7 @@ export const relog = async (req: Request, res: Response) => {
     const relogingUser = req.user as UserModelType;
 
     relogingUser.status = 'online';
-    relogingUser.lastLogin = new Date().toISOString();
+    relogingUser.lastLogin = new Date();
     await relogingUser.save();
 
     const response = signJWT(relogingUser);

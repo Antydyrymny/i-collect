@@ -1,7 +1,9 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useThemeContext } from '../../contexts/theme';
 import { useLocale } from '../../contexts/locale';
+import { useSelectUser } from '../../app/services/features/auth';
 import { FormCheck, Image, Button } from 'react-bootstrap';
 import block from '../../assets/block.png';
 import blockDark from '../../assets/block-dark.png';
@@ -10,20 +12,25 @@ import styles from './usersStyles.module.scss';
 
 type UserRowProps = {
     user: UserPreview;
-    selected: string[];
+    selected: boolean;
     handleSelectOne: (id: string) => (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-function UserRow({ user, selected, handleSelectOne }: UserRowProps) {
+const UserRow = memo(function UserRow({ user, selected, handleSelectOne }: UserRowProps) {
     const t = useLocale('manageUsers');
     const { theme } = useThemeContext();
+    const adminState = useSelectUser();
 
     return (
-        <tr className={`${selected.includes(user._id) ? 'table-active ' : null}`}>
+        <tr
+            className={`${selected ? 'table-active ' : ''} ${
+                adminState._id === user._id ? 'border-primary border-2' : ''
+            }`}
+        >
             <td className='text-center'>
                 <FormCheck aria-label='check/uncheck all'>
                     <FormCheck.Input
-                        checked={selected.includes(user._id)}
+                        checked={selected}
                         onChange={handleSelectOne(user._id)}
                     />
                 </FormCheck>
@@ -52,6 +59,6 @@ function UserRow({ user, selected, handleSelectOne }: UserRowProps) {
             </td>
         </tr>
     );
-}
+});
 
 export default UserRow;

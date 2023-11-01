@@ -11,26 +11,29 @@ const userSchema = new mongoose.Schema<UserModelType>({
     },
     name: {
         type: String,
+        maxlength: 255,
         required: true,
     },
     email: {
         type: String,
+        maxlength: 255,
         unique: true,
         required: true,
     },
     password: {
         type: String,
+        minlength: 8,
+        maxlength: 255,
         required: true,
-        minlength: 1,
     },
     createdAt: {
-        type: String,
+        type: Date,
         immutable: true,
         required: true,
-        default: () => new Date().toISOString(),
+        default: () => new Date(),
     },
     lastLogin: {
-        type: String,
+        type: Date,
         required: true,
     },
     status: {
@@ -41,7 +44,7 @@ const userSchema = new mongoose.Schema<UserModelType>({
     collectionIds: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Collections',
+            ref: 'CollectionModel',
         },
     ],
 });

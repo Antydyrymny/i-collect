@@ -1,6 +1,6 @@
 import { useLocaleContext } from '.';
-import en from './translations/en.json';
-import ru from './translations/ru.json';
+import en from '../../data/translations/en.json';
+import ru from '../../data/translations/ru.json';
 
 const translations = { en, ru };
 type Translation = typeof en | typeof ru;

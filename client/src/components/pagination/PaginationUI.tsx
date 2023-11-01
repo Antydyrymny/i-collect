@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { usePagination } from '../../hooks/usePagination';
 import { Pagination } from 'react-bootstrap';
 import styles from './paginationStyles.module.scss';
 
-function PaginationUI({ pages }: { pages: number }) {
+const PaginationUI = memo(function PaginationUI({ pages }: { pages: number }) {
     const {
         curPage,
         allowPrevPage,
@@ -73,6 +74,6 @@ function PaginationUI({ pages }: { pages: number }) {
             <Pagination.Last onClick={goToLastPage} className='d-none d-md-block' />
         </Pagination>
     );
-}
+});
 
 export default PaginationUI;

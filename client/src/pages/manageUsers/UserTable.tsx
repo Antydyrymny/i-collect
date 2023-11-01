@@ -72,7 +72,7 @@ function UserTable({
                     <UserRow
                         key={user._id}
                         user={user}
-                        selected={selected}
+                        selected={selected.includes(user._id)}
                         handleSelectOne={handleSelectOne}
                     />
                 ))}

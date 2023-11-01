@@ -17,7 +17,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     userWithEmail.status = 'online';
-    userWithEmail.lastLogin = new Date().toISOString();
+    userWithEmail.lastLogin = new Date();
     await userWithEmail.save();
 
     const response = signJWT(userWithEmail);

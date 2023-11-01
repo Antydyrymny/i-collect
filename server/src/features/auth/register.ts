@@ -13,7 +13,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
             name,
             email,
             password,
-            lastLogin: new Date().toISOString(),
+            lastLogin: new Date(),
             status: 'online',
         });
 

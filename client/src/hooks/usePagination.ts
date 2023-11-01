@@ -27,18 +27,17 @@ type PaginationResult = {
 export function usePagination(pages: number): PaginationResult {
     const [searchParams, setSearchParams] = useSearchParams();
     const curPage = useMemo(() => Number(searchParams.get('page') || 1), [searchParams]);
-
     // if curPage is less than 0 - go to page 1,
     // if it is larger than the last page - go to last page
     useEffect(() => {
         if (curPage < 0) {
             goToFirstPage();
-        } else if (curPage > pages) {
+        } else if (curPage > pages && pages !== 1) {
             goToLastPage();
         }
         // setURLSearchParams of useSearchParams is not stable, considered a bug
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [curPage]);
+    }, [curPage, pages]);
 
     const allowPrevPage = useMemo(() => curPage > 1, [curPage]);
     const allowNextPage = useMemo(() => curPage < pages, [curPage, pages]);
@@ -68,7 +67,7 @@ export function usePagination(pages: number): PaginationResult {
     const goToLastPage = useCallback(
         () => setSearchParams({ page: pages.toString() }),
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
+        [pages]
     );
     const goToPageX = useCallback(
         (pageNumber: number) => setSearchParams({ page: pageNumber.toString() }),

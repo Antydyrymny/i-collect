@@ -36,7 +36,6 @@ function ManageUsers() {
     const { data: pages, ...countPagesUtils } = useCountUserPagesQuery();
 
     const { curPage } = usePagination(pages || 1);
-
     const {
         data: users = [],
         isLoading,
