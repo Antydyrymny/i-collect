@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import type { UserModelType } from '../../models';
-import type { AuthResponse } from '../../types';
+import type { AuthResponse, UserModelType } from '../../types';
 
 dotenv.config();
 

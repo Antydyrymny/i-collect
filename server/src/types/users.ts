@@ -24,3 +24,7 @@ export type ClientUser = UserPreview & {
     collectionIds: Schema.Types.ObjectId[];
 };
 export type User = ClientUser & { password: string };
+
+export type UserQuery = {
+    id: string;
+};

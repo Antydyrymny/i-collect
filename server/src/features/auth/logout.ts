@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { UserModelType } from '../../models';
 import { updatesRequired } from '../../data';
+import { UserModelType } from '../../types';
 
 export const logout = async (req: Request, res: Response) => {
     const userToLogout = req.user as UserModelType;

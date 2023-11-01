@@ -4,3 +4,4 @@ export * from './register';
 export * from './logout';
 export * from './relog';
 export * from './signJWT';
+export * from './validators';

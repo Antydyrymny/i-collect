@@ -2,8 +2,8 @@ import passport from 'passport';
 import passportJwt from 'passport-jwt';
 import dotenv from 'dotenv';
 import { Request, Response, NextFunction } from 'express';
-import { UserModel, UserModelType } from '../../models';
-import { ResponseError } from '../../types';
+import { UserModel } from '../../models';
+import { ResponseError, UserModelType } from '../../types';
 
 dotenv.config();
 

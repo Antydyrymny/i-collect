@@ -1,7 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { ItemCollection, FormatField } from '../types';
-
-export type CollectionModelType = ItemCollection & Document;
+import mongoose, { Schema } from 'mongoose';
+import { Models, CollectionModelType, FormatField } from '../types';
 
 const FormatFieldSchema = new mongoose.Schema<FormatField>({
     fieldName: {
@@ -40,7 +38,7 @@ const collectionSchema = new mongoose.Schema<CollectionModelType>({
     },
     authorId: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: Models.User,
         required: true,
     },
     format: [FormatFieldSchema],
@@ -52,6 +50,6 @@ const collectionSchema = new mongoose.Schema<CollectionModelType>({
 });
 
 export const CollectionModel = mongoose.model<CollectionModelType>(
-    'CollectionModel',
+    Models.Collection,
     collectionSchema
 );

@@ -16,3 +16,7 @@ export type FormatField = {
 };
 export type FieldType = 'Boolean' | 'Number' | 'String' | 'Text' | 'Date';
 export type CollectionTheme = 'Books' | 'Signs' | 'Films' | 'Other';
+
+export type NewCollectionReq = Omit<ItemCollection, 'itemModelName' | 'authorId'> & {
+    authorId: string;
+};

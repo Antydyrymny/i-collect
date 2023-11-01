@@ -1,10 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { UserModel, UserModelType } from '../../models';
-import { ResponseError } from '../../types';
+import { UserModel } from '../../models';
+import { ResponseError, UserModelType, UserQuery } from '../../types';
 
-type UserQuery = {
-    id: string;
-};
 export const getUserPage = async (req: Request, res: Response, next: NextFunction) => {
     const queryParams = req.query as UserQuery;
     const targetId = queryParams.id;

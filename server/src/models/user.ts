@@ -1,7 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import type { User } from '../types';
-
-export type UserModelType = User & Document;
+import mongoose, { Schema } from 'mongoose';
+import { Models, UserModelType } from '../types';
 
 const userSchema = new mongoose.Schema<UserModelType>({
     admin: {
@@ -44,9 +42,9 @@ const userSchema = new mongoose.Schema<UserModelType>({
     collectionIds: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'CollectionModel',
+            ref: Models.Collection,
         },
     ],
 });
 
-export const UserModel = mongoose.model<UserModelType>('User', userSchema);
+export const UserModel = mongoose.model<UserModelType>(Models.User, userSchema);

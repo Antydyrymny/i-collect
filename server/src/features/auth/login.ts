@@ -8,6 +8,7 @@ export const login = async (req: Request, res: Response) => {
     const { email, password }: LoginRequest = req.body;
 
     const userWithEmail = await UserModel.findOne({ email });
+
     if (!userWithEmail || userWithEmail.password !== password) {
         res.status(401).json('Email or password does not match');
         return;

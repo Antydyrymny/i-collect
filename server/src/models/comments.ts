@@ -1,12 +1,10 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { Comment } from '../types';
-
-export type CommentModelType = Comment & Document;
+import mongoose, { Schema } from 'mongoose';
+import { Models, CommentModelType } from '../types';
 
 const commentSchema = new mongoose.Schema<CommentModelType>({
     author: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: Models.User,
         required: true,
     },
     toItem: {
@@ -27,9 +25,12 @@ const commentSchema = new mongoose.Schema<CommentModelType>({
     likesBy: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'User',
+            ref: Models.User,
         },
     ],
 });
 
-export const CommentModel = mongoose.model<CommentModelType>('Comment', commentSchema);
+export const CommentModel = mongoose.model<CommentModelType>(
+    Models.Comment,
+    commentSchema
+);

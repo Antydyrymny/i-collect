@@ -3,7 +3,7 @@ import {
     onlineAdminsIdsToSocketIds,
     adminsSkippingUserUpdate,
 } from '../../data';
-import { UserModelType } from '../../models';
+import { UserModelType } from '../../types';
 
 export const informOfUpdates = (reqUser: Express.User) => {
     updatesRequired.usersStateForAdmins = true;

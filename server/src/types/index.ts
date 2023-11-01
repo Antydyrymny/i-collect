@@ -5,3 +5,4 @@ export * from './errors';
 export * from './routeTypes';
 export * from './collections';
 export * from './comments';
+export * from './models';
