@@ -43,7 +43,7 @@ function MainNav() {
                     </Nav>
                     <div className='vr d-xl-block d-none' />
                     <Nav className='gap-2'>
-                        {!authState.name && (
+                        {!authState._id && (
                             <>
                                 <Button size='sm'>
                                     <Link to={ClientRoutes.Login}>{t('login')}</Link>
@@ -55,7 +55,7 @@ function MainNav() {
                                 </Button>
                             </>
                         )}
-                        {authState.name && (
+                        {authState._id && (
                             <>
                                 <NavbarText className='text-capitalize pe-3'>
                                     {authState.name}
@@ -74,7 +74,7 @@ function MainNav() {
                                 </Button>
                                 <Button
                                     variant='outline-primary'
-                                    onClick={() => logout()}
+                                    onClick={() => logout(authState._id!)}
                                     size='sm'
                                 >
                                     {t('logout')}

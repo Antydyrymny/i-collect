@@ -9,12 +9,7 @@ const commentSchema = new mongoose.Schema<CommentModelType>({
     },
     toItem: {
         type: Schema.Types.ObjectId,
-        refPath: 'itemModelName',
-        required: true,
-    },
-    itemModelName: {
-        type: String,
-        maxlength: 255,
+        ref: Models.Item,
         required: true,
     },
     content: {
@@ -22,12 +17,6 @@ const commentSchema = new mongoose.Schema<CommentModelType>({
         minlength: 1,
         required: true,
     },
-    likesBy: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: Models.User,
-        },
-    ],
 });
 
 export const CommentModel = mongoose.model<CommentModelType>(

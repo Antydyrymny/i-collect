@@ -23,5 +23,5 @@ export type UserPreview = {
 export type ClientUser = UserPreview & {
     email: string;
     createdAt: Date;
-    collectionIds: string[];
+    collections: string[];
 };

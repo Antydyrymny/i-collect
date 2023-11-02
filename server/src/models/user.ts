@@ -4,7 +4,6 @@ import { Models, UserModelType } from '../types';
 const userSchema = new mongoose.Schema<UserModelType>({
     admin: {
         type: Boolean,
-        required: true,
         default: false,
     },
     name: {
@@ -27,19 +26,18 @@ const userSchema = new mongoose.Schema<UserModelType>({
     createdAt: {
         type: Date,
         immutable: true,
-        required: true,
         default: () => new Date(),
     },
     lastLogin: {
         type: Date,
-        required: true,
+        default: () => new Date(),
     },
     status: {
         type: String,
         enum: ['online', 'offline', 'blocked'],
-        required: true,
+        default: 'online',
     },
-    collectionIds: [
+    collections: [
         {
             type: Schema.Types.ObjectId,
             ref: Models.Collection,

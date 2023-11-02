@@ -7,12 +7,6 @@ export const validateDeleteUsers = object({
         .of(string().required('User ID is required')),
 });
 
-export const validateUserPage = object({
-    query: object<UserQuery>().shape({
-        id: string().required('User ID is required'),
-    }),
-});
-
 export const validateUsersQuery = object({
     query: object<UserQuery>().shape({
         page: string().matches(/^\d+$/, 'Page must be a stringified number'),
@@ -23,7 +17,7 @@ export const validateUsersQuery = object({
 export const validateToggleAdmin = object({
     body: object<ToggleAdminRequest>().shape({
         action: string()
-            .oneOf(['makeAdmin', 'stripAdmin'])
+            .oneOf(['makeAdmin', 'stripAdmin'], 'Action is not recognized')
             .required('Action is required'),
         userIds: array()
             .min(1, 'User IDs are required')
@@ -33,7 +27,9 @@ export const validateToggleAdmin = object({
 
 export const validateToggleBlock = object({
     body: object<ToggleBlockRequest>().shape({
-        action: string().oneOf(['block', 'unblock']).required('Action is required'),
+        action: string()
+            .oneOf(['block', 'unblock'], 'Action is not recognized')
+            .required('Action is required'),
         userIds: array()
             .min(1, 'User IDs are required')
             .of(string().required('User ID is required')),

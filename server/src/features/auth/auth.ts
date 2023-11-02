@@ -3,7 +3,7 @@ import passportJwt from 'passport-jwt';
 import dotenv from 'dotenv';
 import { Request, Response, NextFunction } from 'express';
 import { UserModel } from '../../models';
-import { ResponseError, UserModelType } from '../../types';
+import { ResponseError, UserModelType, UserQuery } from '../../types';
 
 dotenv.config();
 
@@ -31,7 +31,7 @@ const authenticateJWT = async (
 
 passport.use(new StrategyJwt(jwtOptions, authenticateJWT));
 
-const authMiddleware = passport.authenticate('jwt', { session: false });
+export const authMiddleware = passport.authenticate('jwt', { session: false });
 
 export const protectedRoutesMiddleware = (
     req: Request,
@@ -41,6 +41,19 @@ export const protectedRoutesMiddleware = (
     authMiddleware(req, res, (err: ResponseError) => {
         if (err) {
             next(err);
+        }
+        const requestingUser = req.user as UserModelType;
+
+        const queryParams = req.query as UserQuery;
+        const targetId = queryParams.id;
+
+        if (
+            !requestingUser ||
+            !targetId ||
+            typeof targetId !== 'string' ||
+            (requestingUser._id !== targetId && !requestingUser.admin)
+        ) {
+            next(new ResponseError('Unauthorized', 401));
         } else next();
     });
 };

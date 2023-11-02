@@ -9,6 +9,8 @@ export enum ClientRoutes {
 
 export enum Routes {
     Api = '/v1',
+    Auth = '/auth',
+    Admin = '/admin',
     ManageUsers = '/manageUsers',
     Login = '/login',
     Register = '/register',

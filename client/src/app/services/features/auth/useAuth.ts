@@ -11,9 +11,9 @@ export function useAuth() {
 
     useEffect(() => {
         const storedAuth = getTypedStorageItem(authStateKey, 'sessionStorage');
-        if (storedAuth) {
+        if (storedAuth && storedAuth._id) {
             dispatch(storeAuth(storedAuth));
-            relog();
+            relog(storedAuth._id);
         }
     }, [dispatch, relog]);
 }

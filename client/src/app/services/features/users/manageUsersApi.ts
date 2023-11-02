@@ -14,13 +14,13 @@ const defaultGetUsersQueryParams = {
 
 export const countUserPages = (builder: ApiBuilder) =>
     builder.query<number, void>({
-        query: () => ({ url: Routes.CountUserPages }),
+        query: () => ({ url: Routes.Admin + Routes.CountUserPages }),
     });
 
 export const getUsers = (builder: ApiBuilder) =>
     builder.query<UserPreview[], GetUsersRequest>({
         query: (request) => ({
-            url: Routes.GetUsers,
+            url: Routes.Admin + Routes.GetUsers,
             params: { ...defaultGetUsersQueryParams, ...request },
         }),
         serializeQueryArgs: ({ endpointName }) => {
@@ -36,30 +36,13 @@ export const getUsers = (builder: ApiBuilder) =>
                     ))
             );
         },
-        // async onCacheEntryAdded(
-        //     request,
-        //     { cacheDataLoaded, cacheEntryRemoved, updateCachedData, getCacheEntry }
-        // ) {
-        //     try {
-        //         await cacheDataLoaded;
-
-        //         if (request.page > 1) {
-        //             updateCachedData((draft) => ({ ...draft, ...getCacheEntry().data }));
-        //         }
-
-        //         await cacheEntryRemoved;
-        //     } catch {
-        //         // if cacheEntryRemoved resolved before cacheDataLoaded,
-        //         // cacheDataLoaded throws
-        //     }
-        // },
         providesTags: ['Users'],
     });
 
 export const getUserPage = (builder: ApiBuilder) =>
     builder.query<ClientUser, string>({
         query: (userId) => ({
-            url: Routes.GetUserPage,
+            url: Routes.Admin + Routes.GetUserPage,
             params: { id: userId },
         }),
     });
@@ -67,7 +50,7 @@ export const getUserPage = (builder: ApiBuilder) =>
 export const toggleBlock = (builder: ApiBuilder) =>
     builder.mutation<string, ToggleBlockRequest>({
         query: (toggleBlockRequest) => ({
-            url: Routes.ToggleBlock,
+            url: Routes.Admin + Routes.ToggleBlock,
             method: 'PATCH',
             body: toggleBlockRequest,
         }),
@@ -77,7 +60,7 @@ export const toggleBlock = (builder: ApiBuilder) =>
 export const toggleAdmins = (builder: ApiBuilder) =>
     builder.mutation<string, ToggleAdminRequest>({
         query: (toggleAdminRequest) => ({
-            url: Routes.ToggleAdmin,
+            url: Routes.Admin + Routes.ToggleAdmin,
             method: 'PATCH',
             body: toggleAdminRequest,
         }),
@@ -87,7 +70,7 @@ export const toggleAdmins = (builder: ApiBuilder) =>
 export const deleteUsers = (builder: ApiBuilder) =>
     builder.mutation<string, string[]>({
         query: (usersToDelete) => ({
-            url: Routes.DeleteUsers,
+            url: Routes.Admin + Routes.DeleteUsers,
             method: 'DELETE',
             body: usersToDelete,
         }),

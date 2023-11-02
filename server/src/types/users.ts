@@ -21,7 +21,7 @@ export type UserPreview = {
 export type ClientUser = UserPreview & {
     email: string;
     createdAt: Date;
-    collectionIds: Schema.Types.ObjectId[];
+    collections: Schema.Types.ObjectId[];
 };
 export type User = ClientUser & { password: string };
 

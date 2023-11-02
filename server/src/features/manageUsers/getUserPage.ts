@@ -1,15 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { UserModel } from '../../models';
-import { ResponseError, UserModelType, UserQuery } from '../../types';
+import { UserQuery } from '../../types';
 
-export const getUserPage = async (req: Request, res: Response, next: NextFunction) => {
+export const getUserPage = async (req: Request, res: Response) => {
     const queryParams = req.query as UserQuery;
     const targetId = queryParams.id;
-
-    const requestingUser = req.user as UserModelType;
-    if (requestingUser._id !== targetId || !requestingUser.admin) {
-        next(new ResponseError('Unauthorized', 401));
-    }
 
     const user = await UserModel.findOne({ _id: targetId });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
