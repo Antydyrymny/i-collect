@@ -3,14 +3,26 @@ export type ItemCollection = {
     description: string;
     theme: CollectionTheme;
     image?: string;
-    authorId: string;
+    author: string;
     format: FormatField[];
-    itemModelName: string;
+    itemModels: string[];
 };
 
 export type FormatField = {
     fieldType: FieldType;
     fieldName: string;
 };
-export type FieldType = 'Boolean' | 'Number' | 'String' | 'Text' | 'Date';
-export type CollectionTheme = 'Books' | 'Signs' | 'Films' | 'Other';
+export type FieldType = 'boolean' | 'number' | 'string' | 'text' | 'date';
+export type CollectionTheme =
+    | 'Books'
+    | 'Signs'
+    | 'Films'
+    | 'Stamps'
+    | 'Coins'
+    | 'Comics'
+    | 'Cards'
+    | 'Cars'
+    | 'Art'
+    | 'Other';
+
+export type NewCollectionReq = Omit<ItemCollection, 'itemModels'>;

@@ -1,11 +1,9 @@
-import { Schema } from 'mongoose';
-
 export type Item = {
     name: string;
-    parentCollection: Schema.Types.ObjectId;
-    tags: Schema.Types.ObjectId[];
-    comments: Schema.Types.ObjectId[];
-    likesFrom: Schema.Types.ObjectId[];
+    parentCollection: string;
+    tags: string[];
+    comments: string[];
+    likesFrom: string[];
     booleanFields: Map<string, boolean>;
     numberFields: Map<string, number>;
     stringFields: Map<string, string>;

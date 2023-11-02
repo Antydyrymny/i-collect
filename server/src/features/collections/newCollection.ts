@@ -1,34 +1,40 @@
-// import { Request, Response } from 'express';
-// import { CollectionModel, UserModel } from '../../models';
-// import { NewCollectionReq } from '../../types';
-// import mongoose from 'mongoose';
+import { Request, Response } from 'express';
+import { CollectionModel, UserModel } from '../../models';
+import { getNameVersion } from '../../utils/nameVersioning';
+import { NewCollectionReq, ResponseError } from '../../types';
 
-// export const newCollection = async (req: Request, res: Response) => {
-//     const { name, description, theme, image, authorId, format }: NewCollectionReq =
-//         req.body;
+export const newCollection = async (req: Request, res: Response) => {
+    const { name, description, theme, image, author, format }: NewCollectionReq =
+        req.body;
 
-//     const newCollection = new CollectionModel({
-//         name,
-//         description,
-//         theme,
-//         image,
-//         authorId,
-//         format,
-//     });
-//     newCollection.itemModelName = name + 'Item' + newCollection._id.toString();
-//     await newCollection.save();
+    const existingAuthor = await UserModel.findById(author).populate<{
+        collections: { name: string }[];
+    }>('collections', 'name');
 
-//     await UserModel.updateOne(
-//         { _id: authorId },
-//         { $addToSet: { collectionIds: newCollection._id } }
-//     );
+    if (!existingAuthor)
+        throw new ResponseError(`Author with id ${author} not found`, 404);
 
-//     // const NewItem = new mongoose.Schema({
-//     //     name: {
-//     //         type: String,
-//     //         maxlength: 255,
-//     //         required: true,
-//     //     },
-//     //     // tags:
-//     // });
-// };
+    let validatedName = name;
+    if (existingAuthor.populated('collections')) {
+        validatedName = getNameVersion(
+            validatedName,
+            existingAuthor.collections.map((collection) => collection.name)
+        );
+    }
+
+    const newCollection = await CollectionModel.create({
+        name: validatedName,
+        description,
+        theme,
+        image,
+        author,
+        format,
+    });
+
+    await UserModel.updateOne(
+        { _id: author },
+        { $addToSet: { collections: newCollection._id } }
+    );
+
+    res.status(200).json(`Collection ${validatedName} created successfully`);
+};

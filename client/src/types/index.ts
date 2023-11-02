@@ -5,4 +5,6 @@ export * from './routeTypes';
 export * from './auth';
 export * from './users';
 export * from './collections';
+export * from './items';
+export * from './tags';
 export * from './comments';

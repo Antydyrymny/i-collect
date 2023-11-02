@@ -8,16 +8,28 @@ export const validateNewCollection = object({
     body: object<NewCollectionReq>().shape({
         name: string().max(255).required('Collection name is required'),
         description: string(),
-        theme: string()
-            .oneOf(['Books', 'Signs', 'Films', 'Other'], 'Theme is not recognized')
-            .required('Theme is required'),
+        theme: string().oneOf(
+            [
+                'Books',
+                'Signs',
+                'Films',
+                'Stamps',
+                'Coins',
+                'Comics',
+                'Cards',
+                'Cars',
+                'Art',
+                'Other',
+            ],
+            'Theme is not recognized'
+        ),
         image: string().matches(URL, 'Enter a valid url'),
-        authorId: string().required('Author id is required'),
+        author: string().required('Author id is required'),
         format: array().of(
             object({
                 fieldName: string().max(255).required('Field name is required'),
                 fieldType: string().oneOf(
-                    ['Boolean', 'Number', 'String', 'Text', 'Date'],
+                    ['boolean', 'number', 'string', 'text', 'date'],
                     'Field type is not recognized'
                 ),
             })

@@ -3,7 +3,6 @@ import { UserModel } from '../../models';
 import { updatesRequired } from '../../data';
 import type { RegisterRequest } from '../../types';
 import { signJWT } from './signJWT';
-import { faker } from '@faker-js/faker';
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     const { name, email, password }: RegisterRequest = req.body;
@@ -26,18 +25,3 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         } else next(error);
     }
 };
-
-const populate = async () => {
-    for (let i = 0; i < 200; i++) {
-        await UserModel.create({
-            admin: false,
-            name: faker.person.fullName(),
-            email: faker.internet.email(),
-            password: 12332112,
-            lastLogin: new Date(),
-            status: 'offline',
-        });
-    }
-};
-
-// populate();
