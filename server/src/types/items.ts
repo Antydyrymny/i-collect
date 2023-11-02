@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+import { FormatField } from './collections';
 
 export type Item = {
     name: string;
@@ -11,4 +12,11 @@ export type Item = {
     stringFields: Map<string, string>;
     textFields: Map<string, string>;
     dateFields: Map<string, Date>;
+};
+
+export type NewItemReq = {
+    name: string;
+    parentCollection: string;
+    tags: string[];
+    format: FormatField[];
 };

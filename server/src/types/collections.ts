@@ -11,8 +11,8 @@ export type ItemCollection = {
 };
 
 export type FormatField = {
-    fieldType: FieldType;
     fieldName: string;
+    fieldType: FieldType;
 };
 export type FieldType = 'boolean' | 'number' | 'string' | 'text' | 'date';
 export type CollectionTheme =
