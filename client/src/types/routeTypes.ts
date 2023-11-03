@@ -25,4 +25,10 @@ export enum Routes {
     NewCollection = '/newCollection',
     UpdateCollection = '/updateCollection',
     DeleteCOllection = '/deleteCollection',
+    NewItem = '/newItem',
+    UpdateItem = '/updateItem',
+    DeleteItem = '/deleteItem',
+    ToggleLikeItem = '/likeItem',
+    MakeAComment = '/newComment',
+    DeleteComment = '/deleteComment',
 }

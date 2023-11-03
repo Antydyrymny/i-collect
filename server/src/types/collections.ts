@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+import { ItemPreview } from './items';
 
 export type ItemCollection = {
     name: string;
@@ -27,13 +28,13 @@ export type CollectionTheme =
     | 'Art'
     | 'Other';
 
-export type NewCollectionReq = Omit<ItemCollection, 'items' | 'authorName'> & {
-    authorId: string;
+export type NewCollectionReq = Omit<ItemCollection, 'items' | 'authorName'>;
+export type NewCollectionRes = {
+    id: string;
 };
 
 export type UpdateCollectionReq = {
     id: string;
-    authorId: string;
     name?: string;
     description?: string;
     theme?: CollectionTheme;
@@ -42,5 +43,13 @@ export type UpdateCollectionReq = {
 
 export type DeleteCOllectionReq = {
     id: string;
-    authorId: string;
+};
+
+export type CollectionResponse = Omit<ItemCollection, 'items'> & {
+    _id: string;
+    items: ItemPreview[];
+};
+
+export type CollectionPreview = Omit<CollectionResponse, 'format' | 'items'> & {
+    itemNumber: number;
 };

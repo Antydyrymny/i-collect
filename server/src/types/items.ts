@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+import { Comment } from './comments';
 import { FormatField } from './collections';
 
 export type Item = {
@@ -14,9 +15,37 @@ export type Item = {
     dateFields: Map<string, Date>;
 };
 
+export type ItemReqFormatField = FormatField & {
+    fieldValue: boolean | number | string | Date;
+};
+export type ItemResFormatField = {
+    [key: string]: boolean | number | string | Date;
+};
+
 export type NewItemReq = {
     name: string;
-    parentCollection: string;
+    parentCollectionId: string;
     tags: string[];
-    format: FormatField[];
+    fields: ItemReqFormatField[];
+};
+
+export type ItemResponse = {
+    _id: string;
+    name: string;
+    parentCollection: {
+        _id: Schema.Types.ObjectId;
+        name: string;
+    };
+    tags: string[];
+    comments: Pick<Comment, 'author' | 'content'> & { _id: string }[];
+    likesFrom: Schema.Types.ObjectId[];
+    fields: ItemResFormatField[];
+};
+
+export type ItemPreview = {
+    _id: string;
+    name: string;
+    tags: string[];
+    likesNumber: number;
+    fields: ItemResFormatField[];
 };

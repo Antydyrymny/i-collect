@@ -1,10 +1,12 @@
 import { Request, Response } from 'express';
 import { CollectionModel, UserModel } from '../../models';
 import { getNameVersion } from '../../utils/nameVersioning';
-import { UpdateCollectionReq, ResponseError } from '../../types';
+import { UpdateCollectionReq, ResponseError, UserQuery } from '../../types';
 
 export const updateCollection = async (req: Request, res: Response) => {
-    const { id, authorId, name: newName }: UpdateCollectionReq = req.body;
+    const { id, name: newName }: UpdateCollectionReq = req.body;
+    const queryParams = req.query as UserQuery;
+    const authorId = queryParams.id;
 
     const existingCollection = await CollectionModel.findById(id);
     if (!existingCollection)

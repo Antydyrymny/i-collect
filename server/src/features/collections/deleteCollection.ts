@@ -1,9 +1,16 @@
 import { Request, Response } from 'express';
 import { CollectionModel, UserModel, ItemModel, CommentModel } from '../../models';
-import { DeleteCOllectionReq, ItemModelType, ResponseError } from '../../types';
+import {
+    DeleteCOllectionReq,
+    ItemModelType,
+    ResponseError,
+    UserQuery,
+} from '../../types';
 
 export const deleteCollection = async (req: Request, res: Response) => {
-    const { id, authorId }: DeleteCOllectionReq = req.body;
+    const { id }: DeleteCOllectionReq = req.body;
+    const queryParams = req.query as UserQuery;
+    const authorId = queryParams.id;
 
     const collectionToDelete = await CollectionModel.findById(id).populate<{
         items: ItemModelType[];

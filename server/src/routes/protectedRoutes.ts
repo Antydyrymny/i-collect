@@ -10,6 +10,8 @@ import {
     validateUpdateCollection,
     deleteCollection,
     validateDeleteCollection,
+    newItem,
+    validateNewItem,
 } from '../features/collections';
 import { Routes } from '../types';
 
@@ -34,5 +36,6 @@ protectedRouter.delete(
     validate(validateDeleteCollection),
     forwardErrors(deleteCollection)
 );
+protectedRouter.post(Routes.NewItem, validate(validateNewItem), forwardErrors(newItem));
 
 export { protectedRouter };
