@@ -32,23 +32,28 @@ const itemSchema = new mongoose.Schema<ItemModelType>({
     booleanFields: {
         type: Map,
         of: Boolean,
+        default: new Map(),
     },
     numberFields: {
         type: Map,
         of: Number,
+        default: new Map(),
     },
     stringFields: {
         type: Map,
         of: String,
         maxlength: 255,
+        default: new Map(),
     },
     textFields: {
         type: Map,
         of: String,
+        default: new Map(),
     },
     dateFields: {
         type: Map,
         of: Date,
+        default: new Map(),
     },
 });
 

@@ -1,4 +1,4 @@
-import { object, array, string, mixed, boolean, number, date } from 'yup';
+import { object, array, string, mixed } from 'yup';
 import {
     DeleteCOllectionReq,
     ItemReqFormatField,
@@ -108,29 +108,24 @@ export const validateNewItem = object({
                         fieldName: string()
                             .max(255, 'Field name is too long')
                             .required('Field name is required'),
-                        fieldValue: mixed()
+                        fieldValue: mixed().required('Field value is required'),
+                        fieldType: string()
                             .oneOf(
-                                [boolean(), number(), string(), date()],
-                                `Incorrect generic field's value type`
+                                ['boolean', 'number', 'string', 'text', 'date'],
+                                'Field type is not recognized'
                             )
-                            .required('Field value is required'),
-                        fieldType: string().oneOf(
-                            ['boolean', 'number', 'string', 'text', 'date'],
-                            'Field type is not recognized'
-                        ),
+                            .required('Field type is required'),
                     })
                     .test(
                         'valueConformsToType',
                         `Generic field's value does not conform to it type`,
-                        (object) => {
-                            if (object.fieldType === 'date')
-                                return object.fieldValue instanceof Date;
-                            else if (object.fieldType === 'text')
-                                return (
-                                    typeof object.fieldValue === 'string' &&
-                                    object.fieldValue.length < 256
-                                );
-                            else return typeof object.fieldValue === object.fieldType;
+                        ({ fieldType: type, fieldValue: val }) => {
+                            if (type === 'date')
+                                return !isNaN(new Date(val as string).getTime());
+                            else if (type === 'text') return typeof val === 'string';
+                            else if (type === 'string')
+                                return typeof val === 'string' && val.length < 256;
+                            else return typeof val === type;
                         }
                     )
             )

@@ -51,14 +51,17 @@ export const newItem = async (req: Request, res: Response<ItemPreview>) => {
         parentCollection: existingCollection._id,
         tags,
     });
-    fields.forEach((genericField) => {
-        newItem[genericField.fieldType + 'Fields'].set(
-            genericField.fieldName,
-            genericField.fieldValue
+    fields.forEach(({ fieldName: key, fieldValue: val, fieldType: type }) => {
+        newItem[type + 'Fields'].set(
+            key,
+            type === 'date' ? new Date(val as string) : val
         );
     });
 
     await newItem.save();
+
+    existingCollection.items.push(newItem._id);
+    await existingCollection.save();
 
     res.status(200).json(getItemPreview(newItem));
 };

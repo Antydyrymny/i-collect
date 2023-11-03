@@ -21,7 +21,7 @@ export const deleteCollection = async (req: Request, res: Response) => {
     const existingAuthor = await UserModel.findById(authorId);
     if (existingAuthor) {
         existingAuthor.collections = existingAuthor.collections.filter(
-            (collection) => collection !== collectionToDelete._id
+            (collection) => !collectionToDelete._id.equals(collection)
         );
         await existingAuthor.save();
     }
