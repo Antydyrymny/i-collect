@@ -13,8 +13,8 @@ const itemSchema = new mongoose.Schema<ItemModelType>({
     },
     tags: [
         {
-            type: Schema.Types.ObjectId,
-            ref: Models.Tag,
+            type: String,
+            maxlength: 255,
         },
     ],
     comments: [

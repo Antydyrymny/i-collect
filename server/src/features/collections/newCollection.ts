@@ -4,15 +4,15 @@ import { getNameVersion } from '../../utils/nameVersioning';
 import { NewCollectionReq, ResponseError } from '../../types';
 
 export const newCollection = async (req: Request, res: Response) => {
-    const { name, description, theme, image, author, format }: NewCollectionReq =
+    const { name, description, theme, image, authorId, format }: NewCollectionReq =
         req.body;
 
-    const existingAuthor = await UserModel.findById(author).populate<{
+    const existingAuthor = await UserModel.findById(authorId).populate<{
         collections: { name: string }[];
     }>('collections', 'name');
 
     if (!existingAuthor)
-        throw new ResponseError(`Author with id ${author} not found`, 404);
+        throw new ResponseError(`Author with id ${authorId} not found`, 404);
 
     let validatedName = name;
     if (existingAuthor.populated('collections')) {
@@ -27,14 +27,12 @@ export const newCollection = async (req: Request, res: Response) => {
         description,
         theme,
         image,
-        author,
+        authorName: existingAuthor.name,
         format,
     });
 
-    await UserModel.updateOne(
-        { _id: author },
-        { $addToSet: { collections: newCollection._id } }
-    );
+    existingAuthor.collections.push(newCollection._id);
+    await existingAuthor.save();
 
     res.status(200).json(`Collection ${validatedName} created successfully`);
 };

@@ -4,7 +4,7 @@ import { FormatField } from './collections';
 export type Item = {
     name: string;
     parentCollection: Schema.Types.ObjectId;
-    tags: Schema.Types.ObjectId[];
+    tags: string[];
     comments: Schema.Types.ObjectId[];
     likesFrom: Schema.Types.ObjectId[];
     booleanFields: Map<string, boolean>;

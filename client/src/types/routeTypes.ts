@@ -23,4 +23,6 @@ export enum Routes {
     DeleteUsers = '/deleteUsers',
     ToggleAdmin = '/toggleAdmin',
     NewCollection = '/newCollection',
+    UpdateCollection = '/updateCollection',
+    DeleteCOllection = '/deleteCollection',
 }

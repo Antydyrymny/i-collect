@@ -1,4 +1,4 @@
-import mongoose, { Schema, Types } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { Models, CollectionModelType, FormatField } from '../types';
 
 const formatFieldSchema = new mongoose.Schema<FormatField>({
@@ -45,16 +45,12 @@ const collectionSchema = new mongoose.Schema<CollectionModelType>({
         maxlength: 255,
         required: false,
     },
-    author: {
-        type: Schema.Types.ObjectId,
-        ref: Models.User,
-        required: true,
-        set: function (author: string) {
-            return new Types.ObjectId(author);
-        },
+    authorName: {
+        type: String,
+        maxlength: 255,
     },
     format: [formatFieldSchema],
-    itemModels: [
+    items: [
         {
             type: Schema.Types.ObjectId,
             ref: Models.Item,

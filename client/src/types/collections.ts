@@ -3,9 +3,9 @@ export type ItemCollection = {
     description: string;
     theme: CollectionTheme;
     image?: string;
-    author: string;
+    authorName: string;
     format: FormatField[];
-    itemModels: string[];
+    items: string[];
 };
 
 export type FormatField = {
@@ -25,4 +25,6 @@ export type CollectionTheme =
     | 'Art'
     | 'Other';
 
-export type NewCollectionReq = Omit<ItemCollection, 'itemModels'>;
+export type NewCollectionReq = Omit<ItemCollection, 'items' | 'authorName'> & {
+    authorId: string;
+};
