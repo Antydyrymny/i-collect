@@ -4,3 +4,8 @@ export * from './updateCollection';
 export * from './deleteCollection';
 export * from './newItem';
 export * from './updateItem';
+export * from './deleteItem';
+export * from './toggleLikeItem';
+export * from './newComment';
+export * from './editComment';
+export * from './deleteComment';

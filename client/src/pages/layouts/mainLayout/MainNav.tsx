@@ -74,7 +74,7 @@ function MainNav() {
                                 </Button>
                                 <Button
                                     variant='outline-primary'
-                                    onClick={() => logout(authState._id!)}
+                                    onClick={() => logout()}
                                     size='sm'
                                 >
                                     {t('logout')}

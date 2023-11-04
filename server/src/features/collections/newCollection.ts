@@ -1,17 +1,13 @@
 import { Request, Response } from 'express';
 import { CollectionModel, UserModel } from '../../models';
 import { getNameVersion } from '../../utils/nameVersioning';
-import {
-    NewCollectionReq,
-    NewCollectionRes,
-    ResponseError,
-    UserQuery,
-} from '../../types';
+import { authorizeResourceOwnership } from '../manageUsers';
+import { NewCollectionReq, NewCollectionRes, ResponseError } from '../../types';
 
 export const newCollection = async (req: Request, res: Response<NewCollectionRes>) => {
     const { name, description, theme, image, format }: NewCollectionReq = req.body;
-    const queryParams = req.query as UserQuery;
-    const authorId = queryParams.id;
+
+    const authorId = authorizeResourceOwnership(req);
 
     const existingAuthor = await UserModel.findById(authorId).populate<{
         collections: { name: string }[];
@@ -40,5 +36,5 @@ export const newCollection = async (req: Request, res: Response<NewCollectionRes
     existingAuthor.collections.push(newCollection._id);
     await existingAuthor.save();
 
-    res.status(200).json({ id: newCollection._id });
+    res.status(200).json({ _id: newCollection._id });
 };

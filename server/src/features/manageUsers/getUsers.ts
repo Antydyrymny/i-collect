@@ -1,11 +1,7 @@
 import { Request, Response } from 'express';
 import { UserModel } from '../../models';
-import { UserPreview } from '../../types';
+import { UserPreview, UsersQuery } from '../../types';
 
-type UsersQuery = {
-    page: string;
-    limit: string;
-};
 export const getUsers = async (req: Request, res: Response) => {
     const queryParams = req.query as UsersQuery;
     const page = parseInt(queryParams.page) || 1;

@@ -1,5 +1,5 @@
 import { object, array, string } from 'yup';
-import { UserQuery, ToggleAdminRequest, ToggleBlockRequest } from '../../types';
+import { UsersQuery, ToggleAdminRequest, ToggleBlockRequest } from '../../types';
 
 export const validateDeleteUsers = object({
     body: array()
@@ -8,7 +8,7 @@ export const validateDeleteUsers = object({
 });
 
 export const validateUsersQuery = object({
-    query: object<UserQuery>().shape({
+    query: object<UsersQuery>().shape({
         page: string().matches(/^\d+$/, 'Page must be a stringified number'),
         limit: string().matches(/^\d+$/, 'Limit must be a stringified number'),
     }),

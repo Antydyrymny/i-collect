@@ -2,9 +2,14 @@ import mongoose, { Schema } from 'mongoose';
 import { Models, CommentModelType } from '../types';
 
 const commentSchema = new mongoose.Schema<CommentModelType>({
-    author: {
+    authorId: {
         type: Schema.Types.ObjectId,
         ref: Models.User,
+        required: true,
+    },
+    authorName: {
+        type: String,
+        maxlength: 255,
         required: true,
     },
     toItem: {

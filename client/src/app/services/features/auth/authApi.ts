@@ -25,19 +25,17 @@ export const register = (builder: ApiBuilder) =>
     });
 
 export const logout = (builder: ApiBuilder) =>
-    builder.mutation<string, string>({
-        query: (userId) => ({
+    builder.mutation<string, void>({
+        query: () => ({
             url: Routes.Auth + Routes.Logout,
             method: 'POST',
-            params: { id: userId },
         }),
     });
 
 export const relog = (builder: ApiBuilder) =>
-    builder.mutation<AuthResponse, string>({
-        query: (userId) => ({
+    builder.mutation<AuthResponse, void>({
+        query: () => ({
             url: Routes.Auth + Routes.Relog,
             method: 'POST',
-            params: { id: userId },
         }),
     });

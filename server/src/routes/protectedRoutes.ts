@@ -4,16 +4,26 @@ import validate from './validate';
 import forwardErrors from './forwardErrors';
 import { getUserPage } from '../features/manageUsers';
 import {
-    newCollection,
     validateNewCollection,
-    updateCollection,
+    newCollection,
     validateUpdateCollection,
-    deleteCollection,
+    updateCollection,
     validateDeleteCollection,
-    newItem,
+    deleteCollection,
     validateNewItem,
-    updateItem,
+    newItem,
     validateUpdateItem,
+    updateItem,
+    validateDeleteItem,
+    deleteItem,
+    validateToggleLikeReq,
+    toggleLikeItem,
+    validateNewComment,
+    newComment,
+    validateEditComment,
+    editComment,
+    validateDeleteComment,
+    deleteComment,
 } from '../features/collections';
 import { Routes } from '../types';
 
@@ -34,15 +44,40 @@ protectedRouter.patch(
     forwardErrors(updateCollection)
 );
 protectedRouter.delete(
-    Routes.DeleteCOllection,
+    Routes.DeleteCollection,
     validate(validateDeleteCollection),
     forwardErrors(deleteCollection)
 );
 protectedRouter.post(Routes.NewItem, validate(validateNewItem), forwardErrors(newItem));
-protectedRouter.post(
+protectedRouter.patch(
     Routes.UpdateItem,
     validate(validateUpdateItem),
     forwardErrors(updateItem)
+);
+protectedRouter.delete(
+    Routes.DeleteItem,
+    validate(validateDeleteItem),
+    forwardErrors(deleteItem)
+);
+protectedRouter.patch(
+    Routes.ToggleLikeItem,
+    validate(validateToggleLikeReq),
+    forwardErrors(toggleLikeItem)
+);
+protectedRouter.post(
+    Routes.NewComment,
+    validate(validateNewComment),
+    forwardErrors(newComment)
+);
+protectedRouter.patch(
+    Routes.EditComment,
+    validate(validateEditComment),
+    forwardErrors(editComment)
+);
+protectedRouter.delete(
+    Routes.DeleteComment,
+    validate(validateDeleteComment),
+    forwardErrors(deleteComment)
 );
 
 export { protectedRouter };

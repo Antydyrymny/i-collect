@@ -1,7 +1,12 @@
 import { Request, Response } from 'express';
 import { CollectionModel, ItemModel } from '../../models';
 import { getNameVersion } from '../../utils/nameVersioning';
-import { getItemPreview, setItemFields, updateTags } from './utils';
+import {
+    authorizeCollectionOwnership,
+    getItemPreview,
+    setItemFields,
+    updateTags,
+} from './utils';
 import { ItemPreview, NewItemReq, ResponseError } from '../../types';
 
 export const newItem = async (req: Request, res: Response<ItemPreview>) => {
@@ -15,6 +20,8 @@ export const newItem = async (req: Request, res: Response<ItemPreview>) => {
             `Collection with id ${parentCollectionId} not found`,
             404
         );
+
+    authorizeCollectionOwnership(req, existingCollection._id);
 
     const formatTypes = existingCollection.format
         .map((formatEntry) => formatEntry.fieldType)

@@ -30,19 +30,19 @@ export type CollectionTheme =
 
 export type NewCollectionReq = Omit<ItemCollection, 'items' | 'authorName'>;
 export type NewCollectionRes = {
-    id: string;
+    _id: string;
 };
 
 export type UpdateCollectionReq = {
-    id: string;
+    _id: string;
     name?: string;
     description?: string;
     theme?: CollectionTheme;
     image?: string;
 };
 
-export type DeleteCOllectionReq = {
-    id: string;
+export type DeleteCollectionReq = {
+    _id: string;
 };
 
 export type CollectionResponse = Omit<ItemCollection, 'items'> & {

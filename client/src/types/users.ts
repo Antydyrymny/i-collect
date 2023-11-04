@@ -25,3 +25,7 @@ export type ClientUser = UserPreview & {
     createdAt: Date;
     collections: string[];
 };
+
+export type AdminQuery = {
+    ownerId: string;
+};

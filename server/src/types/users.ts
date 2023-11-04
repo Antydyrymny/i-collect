@@ -25,6 +25,11 @@ export type ClientUser = UserPreview & {
 };
 export type User = ClientUser & { password: string };
 
-export type UserQuery = {
-    id: string;
+export type AdminQuery = {
+    ownerId: string;
+};
+
+export type UsersQuery = {
+    page: string;
+    limit: string;
 };

@@ -1,10 +1,14 @@
 import { object, array, string, mixed } from 'yup';
 import {
-    DeleteCOllectionReq,
+    DeleteCollectionReq,
     ItemReqFormatField,
     NewCollectionReq,
     ItemReq,
     UpdateCollectionReq,
+    DeleteItemReq,
+    ToggleLikeItemReq,
+    NewCommentReq,
+    EditCommentReq,
 } from '../../types';
 
 const URL =
@@ -64,7 +68,7 @@ export const validateNewCollection = object({
 
 export const validateUpdateCollection = object({
     body: object<UpdateCollectionReq>().shape({
-        id: string().max(255).required('Collection id is required'),
+        _id: string().max(255).required('Collection id is required'),
         name: string().max(255),
         description: string(),
         theme: string().oneOf(
@@ -87,14 +91,13 @@ export const validateUpdateCollection = object({
 });
 
 export const validateDeleteCollection = object({
-    body: object<DeleteCOllectionReq>().shape({
-        id: string().max(255).required('Collection id is required'),
+    body: object<DeleteCollectionReq>().shape({
+        _id: string().max(255).required('Collection id is required'),
     }),
 });
 
 const validateItem = object({
     body: object<ItemReq>().shape({
-        parentCollectionId: string().required('Parent collection id is required'),
         tags: array()
             .of(string().max(255, 'Incorrect tag format'))
             .test('unique', 'Only unique tags allowed', (array) =>
@@ -139,6 +142,7 @@ const validateItem = object({
 export const validateNewItem = validateItem.shape({
     body: object().shape({
         name: string().max(255).required('Item name is required'),
+        parentCollectionId: string().required('Parent collection id is required'),
     }),
 });
 
@@ -146,5 +150,40 @@ export const validateUpdateItem = validateItem.shape({
     body: object().shape({
         _id: string().max(255).required('Item id is required'),
         name: string().max(255),
+    }),
+});
+
+export const validateDeleteItem = object({
+    body: object<DeleteItemReq>().shape({
+        _id: string().max(255).required('Item id is required'),
+    }),
+});
+
+export const validateToggleLikeReq = object({
+    body: object<ToggleLikeItemReq>().shape({
+        _id: string().max(255).required('Item id is required'),
+        action: string()
+            .oneOf(['like', 'dislike'], 'Action is not recognized')
+            .required('Action is required'),
+    }),
+});
+
+export const validateNewComment = object({
+    body: object<NewCommentReq>().shape({
+        toItem: string().max(255).required('Item id is required'),
+        content: string().required('Comment content is required'),
+    }),
+});
+
+export const validateEditComment = object({
+    body: object<EditCommentReq>().shape({
+        _id: string().max(255).required('Comment id is required'),
+        content: string().required('Comment content is required'),
+    }),
+});
+
+export const validateDeleteComment = object({
+    body: object<EditCommentReq>().shape({
+        _id: string().max(255).required('Comment id is required'),
     }),
 });

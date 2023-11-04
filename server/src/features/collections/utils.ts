@@ -1,4 +1,5 @@
-import { ObjectId } from 'mongoose';
+import { Request } from 'express';
+import { ObjectId, Schema, Types } from 'mongoose';
 import { TagModel } from '../../models';
 import {
     ItemResFormatField,
@@ -6,7 +7,24 @@ import {
     ItemPreview,
     ItemReqFormatField,
     ItemResponse,
+    UserModelType,
+    ResponseError,
 } from '../../types';
+
+export const authorizeCollectionOwnership = (
+    req: Request,
+    collectionId: Types.ObjectId
+) => {
+    const requestingUser = req.user as UserModelType;
+    if (requestingUser.admin) return;
+
+    if (
+        !requestingUser.collections.some((collection) =>
+            collectionId.equals(collection as unknown as string)
+        )
+    )
+        throw new ResponseError('Unauthorized', 401);
+};
 
 export const getItemPreview = (item: Omit<ItemModelType, 'comments'>): ItemPreview => {
     const previewFields: ItemResFormatField[] = [];
@@ -36,7 +54,7 @@ export const getItemPreview = (item: Omit<ItemModelType, 'comments'>): ItemPrevi
 
 export const getItemResponse = (
     populatedItem: Omit<ItemModelType, 'comments'> & {
-        comments: { _id: ObjectId; author: ObjectId; content: string }[];
+        comments: { _id: ObjectId; authorName: string; content: string }[];
     },
     parentCollectionId: ObjectId,
     parentCollectionName: string
@@ -70,4 +88,10 @@ export const updateTags = async (tags: string[]) => {
             if (!existingTag) await TagModel.create({ name: tagName });
         })
     );
+};
+
+export const authorizeCommentEdit = (req: Request, authorId: Schema.Types.ObjectId) => {
+    const editor = req.user as UserModelType;
+    if (!editor.admin || !editor._id.equals(authorId))
+        throw new ResponseError('Unauthorized', 401);
 };

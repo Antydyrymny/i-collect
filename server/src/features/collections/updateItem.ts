@@ -1,35 +1,33 @@
 import { Request, Response } from 'express';
+import { ObjectId } from 'mongoose';
 import { CollectionModel, ItemModel } from '../../models';
 import { getNameVersion } from '../../utils/nameVersioning';
-import { getItemResponse, setItemFields, updateTags } from './utils';
+import {
+    authorizeCollectionOwnership,
+    getItemResponse,
+    setItemFields,
+    updateTags,
+} from './utils';
 import { UpdateItemReq, ItemResponse, ResponseError } from '../../types';
-import { ObjectId } from 'mongoose';
 
 export const updateItem = async (req: Request, res: Response<ItemResponse>) => {
-    const {
-        _id,
-        name: newName,
-        parentCollectionId,
-        tags,
-        fields,
-    }: UpdateItemReq = req.body;
+    const { _id, name: newName, tags, fields }: UpdateItemReq = req.body;
 
     const existingItem = await ItemModel.findById(_id).populate<{
-        comments: { _id: ObjectId; author: ObjectId; content: string }[];
-    }>('comments', 'author content');
+        comments: { _id: ObjectId; authorName: string; content: string }[];
+    }>('comments', 'authorName content');
     if (!existingItem) throw new ResponseError(`Item with id ${_id} not found`, 404);
 
-    const existingCollection = newName
-        ? await CollectionModel.findById(parentCollectionId).populate<{
+    const parentCollection = newName
+        ? await CollectionModel.findById(existingItem.parentCollection).populate<{
               items: { name: string }[];
           }>('items', 'name')
-        : await CollectionModel.findById(parentCollectionId);
+        : await CollectionModel.findById(existingItem.parentCollection);
 
-    if (!existingCollection)
-        throw new ResponseError(
-            `Collection with id ${parentCollectionId} not found`,
-            404
-        );
+    if (!parentCollection)
+        throw new ResponseError(`No parent collection for item ${_id} was found`, 404);
+
+    authorizeCollectionOwnership(req, parentCollection._id);
 
     const itemConformsToCollectionFormat = fields.every(
         ({ fieldName: key, fieldType: type }) => {
@@ -43,10 +41,10 @@ export const updateItem = async (req: Request, res: Response<ItemResponse>) => {
         );
 
     let validatedName = newName ?? existingItem.name;
-    if (newName && existingCollection.populated('items')) {
+    if (newName && parentCollection.populated('items')) {
         validatedName = getNameVersion(
             validatedName,
-            (existingCollection.items as { name: string }[]).map((item) => item.name)
+            (parentCollection.items as { name: string }[]).map((item) => item.name)
         );
     }
 
@@ -59,6 +57,6 @@ export const updateItem = async (req: Request, res: Response<ItemResponse>) => {
     await existingItem.save();
 
     res.status(200).json(
-        getItemResponse(existingItem, existingCollection._id, existingCollection.name)
+        getItemResponse(existingItem, parentCollection._id, parentCollection.name)
     );
 };

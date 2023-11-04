@@ -1,16 +1,17 @@
 import { Request, Response } from 'express';
 import { CollectionModel, UserModel } from '../../models';
 import { getNameVersion } from '../../utils/nameVersioning';
-import { UpdateCollectionReq, ResponseError, UserQuery } from '../../types';
+import { authorizeResourceOwnership } from '../manageUsers';
+import { UpdateCollectionReq, ResponseError } from '../../types';
 
 export const updateCollection = async (req: Request, res: Response) => {
-    const { id, name: newName }: UpdateCollectionReq = req.body;
-    const queryParams = req.query as UserQuery;
-    const authorId = queryParams.id;
+    const { _id, name: newName }: UpdateCollectionReq = req.body;
 
-    const existingCollection = await CollectionModel.findById(id);
+    const authorId = authorizeResourceOwnership(req);
+
+    const existingCollection = await CollectionModel.findById(_id);
     if (!existingCollection)
-        throw new ResponseError(`Collection with id ${id} not found`, 404);
+        throw new ResponseError(`Collection with id ${_id} not found`, 404);
 
     const existingAuthor = await UserModel.findById(authorId).populate<{
         collections: { _id: string; name: string }[];
@@ -24,7 +25,7 @@ export const updateCollection = async (req: Request, res: Response) => {
             validatedName,
             existingAuthor.collections.reduce(
                 (acc: string[], collection) =>
-                    collection._id === id ? acc : acc.concat(collection.name),
+                    collection._id === _id ? acc : acc.concat(collection.name),
                 []
             )
         );
@@ -38,5 +39,5 @@ export const updateCollection = async (req: Request, res: Response) => {
     );
     await existingCollection.save();
 
-    res.status(200).json(`Collection with id: ${id} updated successfully`);
+    res.status(200).json(`Collection with id: ${_id} updated successfully`);
 };

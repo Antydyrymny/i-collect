@@ -13,7 +13,7 @@ export function useAuth() {
         const storedAuth = getTypedStorageItem(authStateKey, 'sessionStorage');
         if (storedAuth && storedAuth._id) {
             dispatch(storeAuth(storedAuth));
-            relog(storedAuth._id);
+            relog();
         }
     }, [dispatch, relog]);
 }

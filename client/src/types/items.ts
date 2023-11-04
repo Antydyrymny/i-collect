@@ -8,17 +8,20 @@ export type ItemResFormatField = {
 };
 
 export type ItemReq = {
-    parentCollectionId: string;
     tags: string[];
     fields: ItemReqFormatField[];
 };
 
 export type NewItemReq = ItemReq & {
     name: string;
+    parentCollectionId: string;
 };
 export type UpdateItemReq = ItemReq & {
     _id: string;
     name?: string;
+};
+export type DeleteItemReq = {
+    _id: string;
 };
 
 export type ItemResponse = {
@@ -29,7 +32,7 @@ export type ItemResponse = {
         name: string;
     };
     tags: string[];
-    comments: Pick<Comment, 'author' | 'content'> & { _id: string }[];
+    comments: Pick<Comment, 'authorName' | 'content'> & { _id: string }[];
     likesFrom: string[];
     fields: ItemResFormatField[];
 };

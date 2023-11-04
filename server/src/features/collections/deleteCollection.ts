@@ -1,22 +1,18 @@
 import { Request, Response } from 'express';
 import { CollectionModel, UserModel, ItemModel, CommentModel } from '../../models';
-import {
-    DeleteCOllectionReq,
-    ItemModelType,
-    ResponseError,
-    UserQuery,
-} from '../../types';
+import { authorizeResourceOwnership } from '../manageUsers';
+import { DeleteCollectionReq, ItemModelType, ResponseError } from '../../types';
 
 export const deleteCollection = async (req: Request, res: Response) => {
-    const { id }: DeleteCOllectionReq = req.body;
-    const queryParams = req.query as UserQuery;
-    const authorId = queryParams.id;
+    const { _id }: DeleteCollectionReq = req.body;
 
-    const collectionToDelete = await CollectionModel.findById(id).populate<{
+    const authorId = authorizeResourceOwnership(req);
+
+    const collectionToDelete = await CollectionModel.findById(_id).populate<{
         items: ItemModelType[];
     }>('items');
     if (!collectionToDelete)
-        throw new ResponseError(`Collection with id ${id} not found`, 404);
+        throw new ResponseError(`Collection with id ${_id} not found`, 404);
 
     const existingAuthor = await UserModel.findById(authorId);
     if (existingAuthor) {
@@ -35,5 +31,5 @@ export const deleteCollection = async (req: Request, res: Response) => {
     });
     await collectionToDelete.deleteOne();
 
-    res.status(200).json(`Collection with id: ${id} successfully deleted`);
+    res.status(200).json(`Collection with id: ${_id} successfully deleted`);
 };

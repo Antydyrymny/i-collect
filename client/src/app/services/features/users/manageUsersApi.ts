@@ -6,6 +6,7 @@ import {
     ToggleBlockRequest,
     ToggleAdminRequest,
     GetUsersRequest,
+    AdminQuery,
 } from '../../../../types';
 
 const defaultGetUsersQueryParams = {
@@ -40,10 +41,10 @@ export const getUsers = (builder: ApiBuilder) =>
     });
 
 export const getUserPage = (builder: ApiBuilder) =>
-    builder.query<ClientUser, string>({
-        query: (userId) => ({
+    builder.query<ClientUser, AdminQuery | void>({
+        query: (adminQuery) => ({
             url: Routes.Admin + Routes.GetUserPage,
-            params: { id: userId },
+            params: adminQuery ?? undefined,
         }),
     });
 
