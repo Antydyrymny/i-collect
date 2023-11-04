@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { CollectionModel, ItemModel, TagModel } from '../../models';
+import { CollectionModel, ItemModel } from '../../models';
 import { getNameVersion } from '../../utils/nameVersioning';
-import { getItemPreview } from './utils';
+import { getItemPreview, setItemFields, updateTags } from './utils';
 import { ItemPreview, NewItemReq, ResponseError } from '../../types';
 
 export const newItem = async (req: Request, res: Response<ItemPreview>) => {
@@ -39,24 +39,14 @@ export const newItem = async (req: Request, res: Response<ItemPreview>) => {
         );
     }
 
-    await Promise.all(
-        tags.map(async (tagName) => {
-            const existingTag = await TagModel.findOne({ name: tagName });
-            if (!existingTag) await TagModel.create({ name: tagName });
-        })
-    );
+    await updateTags(tags);
 
     const newItem = new ItemModel({
         name: validatedName,
         parentCollection: existingCollection._id,
         tags,
     });
-    fields.forEach(({ fieldName: key, fieldValue: val, fieldType: type }) => {
-        newItem[type + 'Fields'].set(
-            key,
-            type === 'date' ? new Date(val as string) : val
-        );
-    });
+    setItemFields(newItem, fields);
 
     await newItem.save();
 

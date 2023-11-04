@@ -3,7 +3,7 @@ import {
     DeleteCOllectionReq,
     ItemReqFormatField,
     NewCollectionReq,
-    NewItemReq,
+    ItemReq,
     UpdateCollectionReq,
 } from '../../types';
 
@@ -92,9 +92,8 @@ export const validateDeleteCollection = object({
     }),
 });
 
-export const validateNewItem = object({
-    body: object<NewItemReq>().shape({
-        name: string().max(255).required('Item name is required'),
+const validateItem = object({
+    body: object<ItemReq>().shape({
         parentCollectionId: string().required('Parent collection id is required'),
         tags: array()
             .of(string().max(255, 'Incorrect tag format'))
@@ -134,5 +133,18 @@ export const validateNewItem = object({
                 'Generic fields array should not hold more than 15 elements',
                 (array) => array.length < 16
             ),
+    }),
+});
+
+export const validateNewItem = validateItem.shape({
+    body: object().shape({
+        name: string().max(255).required('Item name is required'),
+    }),
+});
+
+export const validateUpdateItem = validateItem.shape({
+    body: object().shape({
+        _id: string().max(255).required('Item id is required'),
+        name: string().max(255),
     }),
 });
