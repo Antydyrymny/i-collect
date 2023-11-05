@@ -3,8 +3,8 @@ import {
     Routes,
     AdminToServerEvents,
     ServerToAdminEvents,
-    CollectionViewerToServerEvents,
-    ServerToCollectionViewerEvents,
+    ItemViewerToServerEvents,
+    ServerToItemViewerEvents,
 } from '../../types';
 
 const url =
@@ -15,18 +15,15 @@ const url =
 let userManagerSocket: Socket<ServerToAdminEvents, AdminToServerEvents>;
 export const getUserManagerSocket = () => {
     if (!userManagerSocket) {
-        userManagerSocket = io(url + Routes.ManageUsers);
+        userManagerSocket = io(url + Routes.ManageUsersSocket);
     }
     return userManagerSocket;
 };
 
-let collectionViewerSocket: Socket<
-    ServerToCollectionViewerEvents,
-    CollectionViewerToServerEvents
->;
+let collectionViewerSocket: Socket<ItemViewerToServerEvents, ServerToItemViewerEvents>;
 export const getCollectionViewerSocket = () => {
     if (!collectionViewerSocket) {
-        collectionViewerSocket = io(url + Routes.ManageUsers); //!------
+        collectionViewerSocket = io(url + Routes.ManageUsersSocket); //!------
     }
     return collectionViewerSocket;
 };

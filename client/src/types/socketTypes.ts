@@ -1,9 +1,10 @@
+import { CommentRes, CommentUpdate } from '.';
 import { getUserManagerSocket } from '../app/services/getSocket';
 
 export type UserManagerSocket = ReturnType<typeof getUserManagerSocket>;
 
-export type ClientToServerEvents = AdminToServerEvents & CollectionViewerToServerEvents;
-export type ServerToClientEvents = ServerToAdminEvents & ServerToCollectionViewerEvents;
+export type ClientToServerEvents = AdminToServerEvents & ItemViewerToServerEvents;
+export type ServerToClientEvents = ServerToAdminEvents & ServerToItemViewerEvents;
 
 export type AdminToServerEvents = {
     [DefaultEvents.Connection]: () => void;
@@ -14,14 +15,17 @@ export type ServerToAdminEvents = {
     [ServerToAdmin.UsersUpdated]: () => void;
 };
 
-export type CollectionViewerToServerEvents = {
+export type ItemViewerToServerEvents = {
     [DefaultEvents.Connection]: () => void;
+    [ItemViewerToServer.SubscribingToItem]: (itemdId: string) => void;
+    [ItemViewerToServer.AutocompleteTag]: (query: string) => void;
     [DefaultEvents.Disconnecting]: () => void;
 };
-export type ServerToCollectionViewerEvents = {
-    [ServerToCollectionViewer.NewItems]: () => void;
-    [ServerToCollectionViewer.NewComments]: () => void;
-    [ServerToCollectionViewer.NewLikes]: () => void;
+export type ServerToItemViewerEvents = {
+    [ServerToItemViewer.LikesUpdated]: (newLikesNumber: number) => void;
+    [ServerToItemViewer.NewComment]: (newComment: CommentRes) => void;
+    [ServerToItemViewer.CommentUpdated]: (commentUpdate: CommentUpdate) => void;
+    [ServerToItemViewer.CommentDeleted]: (_id: string) => void;
 };
 
 export enum DefaultEvents {
@@ -36,9 +40,13 @@ export enum ServerToAdmin {
     UsersUpdated = 'usersUpdated',
 }
 
-export enum CollectionViewerToServer {}
-export enum ServerToCollectionViewer {
-    NewItems = 'newItems',
-    NewComments = 'newComments',
-    NewLikes = 'newLikes',
+export enum ItemViewerToServer {
+    SubscribingToItem = 'subToItem',
+    AutocompleteTag = 'autocompleteTag',
+}
+export enum ServerToItemViewer {
+    LikesUpdated = 'likesUpdated',
+    NewComment = 'newComment',
+    CommentUpdated = 'commentUpdated',
+    CommentDeleted = 'commentDeleted',
 }

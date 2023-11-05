@@ -1,6 +1,13 @@
 import { Request, Response } from 'express';
 import { ItemModel } from '../../models';
-import { ResponseError, ToggleLikeItemReq, UserModelType } from '../../types';
+import { io } from '../../app';
+import {
+    ResponseError,
+    Routes,
+    ServerToItemViewer,
+    ToggleLikeItemReq,
+    UserModelType,
+} from '../../types';
 
 export const toggleLikeItem = async (req: Request, res: Response) => {
     const { _id, action }: ToggleLikeItemReq = req.body;
@@ -29,6 +36,10 @@ export const toggleLikeItem = async (req: Request, res: Response) => {
               );
 
     await existingItem.save();
+
+    io.of(Routes.Api + Routes.ItemSocket)
+        .to(_id)
+        .emit(ServerToItemViewer.LikesUpdated, existingItem.likesFrom.length);
 
     res.status(200).json(action === 'like' ? 'Like added' : 'Like removed');
 };

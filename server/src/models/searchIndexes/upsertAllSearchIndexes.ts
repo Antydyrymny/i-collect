@@ -1,5 +1,11 @@
-import { upsertAutocompleteIndex } from './searchIndexes';
+import {
+    upsertUserAutocompleteIndex,
+    upsertTagAutocompleteIndex,
+    upsertItemFuzzySearchIndex,
+} from './searchIndexes';
 
 export const upsertAllSearchIndexes = async () => {
-    await upsertAutocompleteIndex();
+    await upsertUserAutocompleteIndex();
+    await upsertTagAutocompleteIndex();
+    await upsertItemFuzzySearchIndex();
 };

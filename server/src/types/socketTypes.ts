@@ -1,8 +1,13 @@
 import { Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
+import { CommentRes, CommentUpdate } from './comments';
 
-export type ClientToServerEvents = AdminToServerEvents & CollectionViewerToServerEvents;
-export type ServerToClientEvents = ServerToAdminEvents & ServerToCollectionViewerEvents;
+export type ClientToServerEvents = AdminToServerEvents &
+    ItemViewerToServerEvents &
+    HomeToServerEvents;
+export type ServerToClientEvents = ServerToAdminEvents &
+    ServerToItemViewerEvents &
+    ServerToHomeEvents;
 
 export type AdminToServerEvents = {
     [DefaultEvents.Connection]: () => void;
@@ -13,14 +18,29 @@ export type ServerToAdminEvents = {
     [ServerToAdmin.UsersUpdated]: () => void;
 };
 
-export type CollectionViewerToServerEvents = {
+export type ItemViewerToServerEvents = {
     [DefaultEvents.Connection]: () => void;
+    [ItemViewerToServer.SubscribingToItem]: (itemdId: string) => void;
+    [ItemViewerToServer.AutocompleteTag]: (
+        query: string,
+        acknowledgeTag: (tagSuggestions: string[]) => void
+    ) => void;
+};
+export type ServerToItemViewerEvents = {
+    [ServerToItemViewer.LikesUpdated]: (newLikesNumber: number) => void;
+    [ServerToItemViewer.NewComment]: (newComment: CommentRes) => void;
+    [ServerToItemViewer.CommentUpdated]: (commentUpdate: CommentUpdate) => void;
+    [ServerToItemViewer.CommentDeleted]: (_id: string) => void;
+};
+
+export type HomeToServerEvents = {
+    [DefaultEvents.Connection]: () => void;
+    [HomeToServer.SubscribingToHome]: () => void;
     [DefaultEvents.Disconnecting]: () => void;
 };
-export type ServerToCollectionViewerEvents = {
-    [ServerToCollectionViewer.NewItems]: () => void;
-    [ServerToCollectionViewer.NewComments]: () => void;
-    [ServerToCollectionViewer.NewLikes]: () => void;
+export type ServerToHomeEvents = {
+    [ServerToHome.TopCollectionsUpdated]: () => void;
+    [ServerToHome.LastItemsUpdated]: () => void;
 };
 
 export enum DefaultEvents {
@@ -35,11 +55,23 @@ export enum ServerToAdmin {
     UsersUpdated = 'usersUpdated',
 }
 
-export enum CollectionViewerToServer {}
-export enum ServerToCollectionViewer {
-    NewItems = 'newItems',
-    NewComments = 'newComments',
-    NewLikes = 'newLikes',
+export enum ItemViewerToServer {
+    SubscribingToItem = 'subToItem',
+    AutocompleteTag = 'autocompleteTag',
+}
+export enum ServerToItemViewer {
+    LikesUpdated = 'likesUpdated',
+    NewComment = 'newComment',
+    CommentUpdated = 'commentUpdated',
+    CommentDeleted = 'commentDeleted',
+}
+
+export enum HomeToServer {
+    SubscribingToHome = 'subToHome',
+}
+export enum ServerToHome {
+    TopCollectionsUpdated = 'topCollectionsUpdated',
+    LastItemsUpdated = 'lastItemsUpdated',
 }
 
 export enum DefaultRooms {
@@ -54,8 +86,15 @@ export type AdminSocket = Socket<
 >;
 
 export type CollectionsSocket = Socket<
-    DefaultEventsMap, //! -------------------
-    ServerToCollectionViewerEvents,
+    ItemViewerToServerEvents,
+    ServerToItemViewerEvents,
+    DefaultEventsMap,
+    unknown
+>;
+
+export type HomeSocket = Socket<
+    HomeToServerEvents,
+    ServerToHomeEvents,
     DefaultEventsMap,
     unknown
 >;

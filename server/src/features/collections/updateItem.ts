@@ -54,6 +54,6 @@ export const updateItem = async (req: Request, res: Response<ItemResponse>) => {
     await existingItem.save();
 
     res.status(200).json(
-        getItemResponse(existingItem, parentCollection._id, parentCollection.name)
+        getItemResponse(existingItem, parentCollection._id, parentCollection.name, req)
     );
 };

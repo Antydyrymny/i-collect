@@ -7,18 +7,21 @@ import {
 import { Routes, AdminToServer, DefaultEvents, ServerToAdmin } from '../../types';
 
 export function subscribeAdminsToUserEvents() {
-    io.of(Routes.Api + Routes.ManageUsers).on(DefaultEvents.Connection, (socket) => {
-        socket.on(AdminToServer.SubscribingToUserUpdates, (adminId) => {
-            onlineAdminsIdsToSocketIds.set(adminId, socket.id);
-        });
+    io.of(Routes.Api + Routes.ManageUsersSocket).on(
+        DefaultEvents.Connection,
+        (socket) => {
+            socket.on(AdminToServer.SubscribingToUserUpdates, (adminId) => {
+                onlineAdminsIdsToSocketIds.set(adminId, socket.id);
+            });
 
-        socket.on(DefaultEvents.Disconnecting, () => {
-            const adminId = Array.from(onlineAdminsIdsToSocketIds.entries()).find(
-                (entry) => entry[1] === socket.id
-            )?.[0];
-            if (adminId) onlineAdminsIdsToSocketIds.delete(adminId);
-        });
-    });
+            socket.on(DefaultEvents.Disconnecting, () => {
+                const adminId = Array.from(onlineAdminsIdsToSocketIds.entries()).find(
+                    (entry) => entry[1] === socket.id
+                )?.[0];
+                if (adminId) onlineAdminsIdsToSocketIds.delete(adminId);
+            });
+        }
+    );
 }
 
 setInterval(() => {
@@ -27,7 +30,7 @@ setInterval(() => {
     Array.from(onlineAdminsIdsToSocketIds.values()).forEach((socketId) => {
         if (adminsSkippingUserUpdate.has(socketId)) return;
 
-        io.of(Routes.Api + Routes.ManageUsers)
+        io.of(Routes.Api + Routes.ManageUsersSocket)
             .to(socketId)
             .emit(ServerToAdmin.UsersUpdated);
     });

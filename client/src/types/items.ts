@@ -45,7 +45,8 @@ export type ItemResponse = {
         name: string;
     };
     tags: string[];
-    likesFrom: string[];
+    userLikes: boolean;
+    likesNumber: number;
     fields: ItemResFormatField[];
 };
 

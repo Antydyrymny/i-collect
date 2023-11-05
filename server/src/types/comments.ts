@@ -27,3 +27,4 @@ export type CommentRes = {
     authorName: string;
     content: string;
 };
+export type CommentUpdate = Omit<CommentRes, 'authorName'>;

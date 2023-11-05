@@ -17,7 +17,8 @@ export const getItem = async (req: Request, res: Response<ItemResponse>) => {
         getItemResponse(
             existingItem,
             existingItem.parentCollection._id,
-            existingItem.parentCollection.name
+            existingItem.parentCollection.name,
+            req
         )
     );
 };

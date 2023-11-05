@@ -52,10 +52,11 @@ export const getItemPreview = (
 export const getItemResponse = (
     item: Omit<ItemModelType, 'comments' | 'parentCollection'>,
     parentCollectionId: ObjectId,
-    parentCollectionName: string
+    parentCollectionName: string,
+    req: Request
 ): ItemResponse => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { likesNumber, ...previewPart } = getItemPreview(item);
+    const requestingUser = req.user as UserModelType;
+    const previewPart = getItemPreview(item);
     return {
         ...previewPart,
         authorId: item.authorId,
@@ -63,7 +64,11 @@ export const getItemResponse = (
             _id: parentCollectionId,
             name: parentCollectionName,
         },
-        likesFrom: item.likesFrom,
+        userLikes: requestingUser
+            ? item.likesFrom.some((likeAuthorId) =>
+                  requestingUser._id.equals(likeAuthorId)
+              )
+            : false,
     };
 };
 

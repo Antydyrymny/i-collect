@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
+import { io } from '../../app';
 import { CommentModel, ItemModel } from '../../models';
-import { DeleteCommentReq, ResponseError } from '../../types';
+import { DeleteCommentReq, ResponseError, Routes, ServerToItemViewer } from '../../types';
 import { authorizeCommentEdit } from './utils';
 
 export const deleteComment = async (req: Request, res: Response) => {
@@ -24,6 +25,10 @@ export const deleteComment = async (req: Request, res: Response) => {
         );
 
     await existingComment.deleteOne();
+
+    io.of(Routes.Api + Routes.ItemSocket)
+        .to(existingComment.toItem.toString())
+        .emit(ServerToItemViewer.CommentDeleted, _id);
 
     res.status(200).json('Comment deleted successfully');
 };

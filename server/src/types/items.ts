@@ -60,7 +60,8 @@ export type ItemResponse = {
         name: string;
     };
     tags: string[];
-    likesFrom: Schema.Types.ObjectId[];
+    userLikes: boolean;
+    likesNumber: number;
     fields: ItemResFormatField[];
 };
 
