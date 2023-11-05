@@ -6,7 +6,6 @@ import { NewCollectionReq, NewCollectionRes, ResponseError } from '../../types';
 
 export const newCollection = async (req: Request, res: Response<NewCollectionRes>) => {
     const { name, description, theme, image, format }: NewCollectionReq = req.body;
-
     const authorId = authorizeResourceOwnership(req);
 
     const existingAuthor = await UserModel.findById(authorId).populate<{
@@ -29,6 +28,7 @@ export const newCollection = async (req: Request, res: Response<NewCollectionRes
         description,
         theme,
         image,
+        authorId: existingAuthor._id,
         authorName: existingAuthor.name,
         format,
     });

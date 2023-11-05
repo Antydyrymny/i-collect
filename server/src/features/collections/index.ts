@@ -9,3 +9,8 @@ export * from './toggleLikeItem';
 export * from './newComment';
 export * from './editComment';
 export * from './deleteComment';
+export * from './userCollections';
+export * from './getCollection';
+export * from './getCollectionItems';
+export * from './getItem';
+export * from './getItemComments';

@@ -10,7 +10,7 @@ import {
 import { ItemPreview, NewItemReq, ResponseError } from '../../types';
 
 export const newItem = async (req: Request, res: Response<ItemPreview>) => {
-    const { name, parentCollectionId, tags, fields }: NewItemReq = req.body;
+    const { name, parentCollectionId, tags = [], fields = [] }: NewItemReq = req.body;
 
     const existingCollection = await CollectionModel.findById(
         parentCollectionId
@@ -50,6 +50,7 @@ export const newItem = async (req: Request, res: Response<ItemPreview>) => {
 
     const newItem = new ItemModel({
         name: validatedName,
+        authorId: existingCollection.authorId,
         parentCollection: existingCollection._id,
         tags,
     });

@@ -5,11 +5,11 @@ import { UserPreview, UsersQuery } from '../../types';
 export const getUsers = async (req: Request, res: Response) => {
     const queryParams = req.query as UsersQuery;
     const page = parseInt(queryParams.page) || 1;
-    const limimt = parseInt(queryParams.limit) || 10;
+    const limit = parseInt(queryParams.limit) || 10;
 
     const users = await UserModel.find({})
-        .skip((page - 1) * limimt)
-        .limit(limimt);
+        .skip((page - 1) * limit)
+        .limit(limit);
 
     const usersPreview = users.map(
         (user): UserPreview => ({

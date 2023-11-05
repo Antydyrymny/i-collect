@@ -41,7 +41,7 @@ export const protectedRoutesMiddleware = (
     authMiddleware(req, res, (err: ResponseError) => {
         if (err) {
             next(err);
-        }
+        } else next();
     });
 };
 

@@ -26,14 +26,11 @@ export const authorizeCollectionOwnership = (
         throw new ResponseError('Unauthorized', 401);
 };
 
-export const getItemPreview = (item: Omit<ItemModelType, 'comments'>): ItemPreview => {
+const ordering = ['stringFields', 'dateFields', 'booleanFields', 'numberFields'] as const;
+export const getItemPreview = (
+    item: Omit<ItemModelType, 'comments' | 'parentCollection'>
+): ItemPreview => {
     const previewFields: ItemResFormatField[] = [];
-    const ordering = [
-        'stringFields',
-        'dateFields',
-        'booleanFields',
-        'numberFields',
-    ] as const;
     main: for (const fieldType of ordering) {
         for (const [key, value] of Array.from(
             (item[fieldType] as Map<string, boolean | number | Date>).entries()
@@ -53,22 +50,20 @@ export const getItemPreview = (item: Omit<ItemModelType, 'comments'>): ItemPrevi
 };
 
 export const getItemResponse = (
-    populatedItem: Omit<ItemModelType, 'comments'> & {
-        comments: { _id: ObjectId; authorName: string; content: string }[];
-    },
+    item: Omit<ItemModelType, 'comments' | 'parentCollection'>,
     parentCollectionId: ObjectId,
     parentCollectionName: string
 ): ItemResponse => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { likesNumber, ...previewPart } = getItemPreview(populatedItem);
+    const { likesNumber, ...previewPart } = getItemPreview(item);
     return {
         ...previewPart,
+        authorId: item.authorId,
         parentCollection: {
             _id: parentCollectionId,
             name: parentCollectionName,
         },
-        comments: populatedItem.comments,
-        likesFrom: populatedItem.likesFrom,
+        likesFrom: item.likesFrom,
     };
 };
 

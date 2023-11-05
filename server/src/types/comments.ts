@@ -16,3 +16,14 @@ export type EditCommentReq = Pick<Comment, 'content'> & {
 export type DeleteCommentReq = {
     _id: string;
 };
+export type GetItemCommentsQuery = {
+    itemId: string;
+    page: string;
+    limit: string;
+};
+
+export type CommentRes = {
+    _id: Schema.Types.ObjectId;
+    authorName: string;
+    content: string;
+};

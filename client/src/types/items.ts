@@ -1,4 +1,4 @@
-import { Comment, FormatField } from '.';
+import { FormatField } from '.';
 
 export type ItemReqFormatField = FormatField & {
     fieldValue: boolean | number | string | Date;
@@ -23,16 +23,28 @@ export type UpdateItemReq = ItemReq & {
 export type DeleteItemReq = {
     _id: string;
 };
+export type ToggleLikeItemReq = {
+    _id: string;
+    action: 'like' | 'dislike';
+};
+export type GetCollectionItemsQuery = {
+    collectionId: string;
+    page: string;
+    limit: string;
+};
+export type GetItemQuery = {
+    _id: string;
+};
 
 export type ItemResponse = {
     _id: string;
+    authorId: string;
     name: string;
     parentCollection: {
         _id: string;
         name: string;
     };
     tags: string[];
-    comments: Pick<Comment, 'authorName' | 'content'> & { _id: string }[];
     likesFrom: string[];
     fields: ItemResFormatField[];
 };

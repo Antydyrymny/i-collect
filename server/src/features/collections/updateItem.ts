@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { ObjectId } from 'mongoose';
 import { CollectionModel, ItemModel } from '../../models';
 import { getNameVersion } from '../../utils/nameVersioning';
 import {
@@ -11,11 +10,9 @@ import {
 import { UpdateItemReq, ItemResponse, ResponseError } from '../../types';
 
 export const updateItem = async (req: Request, res: Response<ItemResponse>) => {
-    const { _id, name: newName, tags, fields }: UpdateItemReq = req.body;
+    const { _id, name: newName, tags = [], fields }: UpdateItemReq = req.body;
 
-    const existingItem = await ItemModel.findById(_id).populate<{
-        comments: { _id: ObjectId; authorName: string; content: string }[];
-    }>('comments', 'authorName content');
+    const existingItem = await ItemModel.findById(_id);
     if (!existingItem) throw new ResponseError(`Item with id ${_id} not found`, 404);
 
     const parentCollection = newName
@@ -29,11 +26,11 @@ export const updateItem = async (req: Request, res: Response<ItemResponse>) => {
 
     authorizeCollectionOwnership(req, parentCollection._id);
 
-    const itemConformsToCollectionFormat = fields.every(
-        ({ fieldName: key, fieldType: type }) => {
+    const itemConformsToCollectionFormat =
+        !fields ||
+        fields.every(({ fieldName: key, fieldType: type }) => {
             existingItem[type + 'Fields'].has(key);
-        }
-    );
+        });
     if (!itemConformsToCollectionFormat)
         throw new ResponseError(
             `Request's field formats are incompatible with the collection schema`,
@@ -52,7 +49,7 @@ export const updateItem = async (req: Request, res: Response<ItemResponse>) => {
 
     existingItem.name = validatedName;
     existingItem.tags = tags;
-    setItemFields(existingItem, fields);
+    if (fields) setItemFields(existingItem, fields);
 
     await existingItem.save();
 

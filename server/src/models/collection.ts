@@ -45,9 +45,15 @@ const collectionSchema = new mongoose.Schema<CollectionModelType>({
         maxlength: 255,
         required: false,
     },
+    authorId: {
+        type: Schema.Types.ObjectId,
+        ref: Models.User,
+        required: true,
+    },
     authorName: {
         type: String,
         maxlength: 255,
+        required: true,
     },
     format: [formatFieldSchema],
     items: [

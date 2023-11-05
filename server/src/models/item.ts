@@ -6,6 +6,11 @@ const itemSchema = new mongoose.Schema<ItemModelType>({
         type: String,
         required: true,
     },
+    authorId: {
+        type: Schema.Types.ObjectId,
+        ref: Models.User,
+        required: true,
+    },
     parentCollection: {
         type: Schema.Types.ObjectId,
         ref: Models.Collection,

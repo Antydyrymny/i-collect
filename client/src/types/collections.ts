@@ -1,10 +1,9 @@
-import { ItemPreview } from '.';
-
 export type ItemCollection = {
     name: string;
     description: string;
     theme: CollectionTheme;
     image?: string;
+    authorId: string;
     authorName: string;
     format: FormatField[];
     items: string[];
@@ -27,7 +26,7 @@ export type CollectionTheme =
     | 'Art'
     | 'Other';
 
-export type NewCollectionReq = Omit<ItemCollection, 'items' | 'authorName'>;
+export type NewCollectionReq = Omit<ItemCollection, 'items' | 'authorId' | 'authorName'>;
 export type NewCollectionRes = {
     _id: string;
 };
@@ -44,11 +43,15 @@ export type DeleteCollectionReq = {
     _id: string;
 };
 
-export type CollectionResponse = Omit<ItemCollection, 'items'> & {
-    _id: string;
-    items: ItemPreview[];
+export type CollectionsPreviewQuery = {
+    ownerId?: string;
+    page: string;
 };
 
-export type CollectionPreview = Omit<CollectionResponse, 'format' | 'items'> & {
+export type CollectionResponse = Omit<ItemCollection, 'items'> & {
+    _id: string;
+};
+
+export type CollectionPreview = Omit<CollectionResponse, 'format' | 'authorId'> & {
     itemNumber: number;
 };

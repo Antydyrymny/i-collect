@@ -9,6 +9,11 @@ import {
     ToggleLikeItemReq,
     NewCommentReq,
     EditCommentReq,
+    CollectionsPreviewQuery,
+    GetCollectionQuery,
+    GetCollectionItemsQuery,
+    GetItemQuery,
+    GetItemCommentsQuery,
 } from '../../types';
 
 const URL =
@@ -185,5 +190,41 @@ export const validateEditComment = object({
 export const validateDeleteComment = object({
     body: object<EditCommentReq>().shape({
         _id: string().max(255).required('Comment id is required'),
+    }),
+});
+
+export const validateUserCollections = object({
+    query: object<CollectionsPreviewQuery>().shape({
+        ownerId: string().max(255),
+        page: string().max(255),
+        limit: string().max(255),
+    }),
+});
+
+export const validateGetCollection = object({
+    query: object<GetCollectionQuery>().shape({
+        _id: string().max(255).required('Collection id is required'),
+    }),
+});
+
+export const validateGetCollectionItems = object({
+    query: object<GetCollectionItemsQuery>().shape({
+        collectionId: string().max(255).required(),
+        page: string().max(255),
+        limit: string().max(255),
+    }),
+});
+
+export const validateGetItem = object({
+    query: object<GetItemQuery>().shape({
+        _id: string().max(255).required('Item id is required'),
+    }),
+});
+
+export const validateGetItemComments = object({
+    query: object<GetItemCommentsQuery>().shape({
+        itemId: string().max(255).required(),
+        page: string().max(255),
+        limit: string().max(255),
     }),
 });

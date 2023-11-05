@@ -1,9 +1,9 @@
 import { Schema } from 'mongoose';
-import { Comment } from './comments';
 import { FormatField } from './collections';
 
 export type Item = {
     name: string;
+    authorId: Schema.Types.ObjectId;
     parentCollection: Schema.Types.ObjectId;
     tags: string[];
     comments: Schema.Types.ObjectId[];
@@ -42,18 +42,24 @@ export type ToggleLikeItemReq = {
     _id: string;
     action: 'like' | 'dislike';
 };
+export type GetCollectionItemsQuery = {
+    collectionId: string;
+    page: string;
+    limit: string;
+};
+export type GetItemQuery = {
+    _id: string;
+};
 
 export type ItemResponse = {
     _id: string;
+    authorId: Schema.Types.ObjectId;
     name: string;
     parentCollection: {
         _id: Schema.Types.ObjectId;
         name: string;
     };
     tags: string[];
-    comments: (Pick<Comment, 'authorName' | 'content'> & {
-        _id: Schema.Types.ObjectId;
-    })[];
     likesFrom: Schema.Types.ObjectId[];
     fields: ItemResFormatField[];
 };

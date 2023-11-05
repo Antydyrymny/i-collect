@@ -32,4 +32,10 @@ export enum Routes {
     NewComment = '/newComment',
     EditComment = '/editComment',
     DeleteComment = '/deleteComment',
+    GetUserCollections = '/userCollections',
+    GetCollection = '/getCollection',
+    GetCollectionItems = '/collectionItems',
+    GetItem = '/getItem',
+    GetItemComments = '/itemComments',
+    SearchItems = '/searchItems',
 }
