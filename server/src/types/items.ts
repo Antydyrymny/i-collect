@@ -5,6 +5,7 @@ export type Item = {
     name: string;
     authorId: Schema.Types.ObjectId;
     parentCollection: Schema.Types.ObjectId;
+    createdAt: Date;
     tags: string[];
     comments: Schema.Types.ObjectId[];
     likesFrom: Schema.Types.ObjectId[];

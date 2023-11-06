@@ -5,8 +5,7 @@ import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { connectDB, disconnectDB } from './database/setupConnection';
 import { notFound, errorHandler } from './middleware';
-import { subscribeAdminsToUserEvents } from './features/manageUsers';
-import { router, protectedRouter, adminRouter } from './routes';
+import { router, protectedRouter, adminRouter, subscribeToSocketEvents } from './routes';
 import { Routes, ClientToServerEvents, ServerToClientEvents } from './types';
 
 const app = express();
@@ -23,10 +22,9 @@ export const io = new Server<ClientToServerEvents, ServerToClientEvents>(server,
         origin: '*',
     },
 });
+subscribeToSocketEvents();
 
-subscribeAdminsToUserEvents();
-
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     res.status(200).json({ status: 'OK' });
 });
 

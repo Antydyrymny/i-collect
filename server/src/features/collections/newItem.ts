@@ -3,11 +3,19 @@ import { CollectionModel, ItemModel } from '../../models';
 import { getNameVersion } from '../../utils/nameVersioning';
 import {
     authorizeCollectionOwnership,
+    getCollectionPreview,
     getItemPreview,
     setItemFields,
     updateTags,
 } from './utils';
 import { ItemPreview, NewItemReq, ResponseError } from '../../types';
+import {
+    largestCollections,
+    largestCollectionsLimit,
+    latestItems,
+    latestItemsLimit,
+    updatesRequired,
+} from '../../data';
 
 export const newItem = async (req: Request, res: Response<ItemPreview>) => {
     const { name, parentCollectionId, tags = [], fields = [] }: NewItemReq = req.body;
@@ -61,5 +69,16 @@ export const newItem = async (req: Request, res: Response<ItemPreview>) => {
     existingCollection.items.push(newItem._id);
     await existingCollection.save();
 
-    res.status(200).json(getItemPreview(newItem));
+    const itemPreview = getItemPreview(newItem);
+    res.status(200).json(itemPreview);
+
+    if (latestItems.length > latestItemsLimit) latestItems.pop();
+    latestItems.unshift(itemPreview);
+    updatesRequired.latestItems = true;
+    if (existingCollection.items.length > largestCollections.at(-1)?.itemNumber) {
+        if (largestCollections.length > largestCollectionsLimit) largestCollections.pop();
+        largestCollections.push(getCollectionPreview(existingCollection));
+        largestCollections.sort((a, b) => b.itemNumber - a.itemNumber);
+        updatesRequired.largestCollections = true;
+    }
 };

@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { CollectionModel, UserModel, ItemModel, CommentModel } from '../../models';
 import { authorizeResourceOwnership } from '../manageUsers';
 import { DeleteCollectionReq, ItemModelType, ResponseError } from '../../types';
+import { latestItems, updatesRequired } from '../../data';
+import { handleHomeOnDeleteUpdates } from './utils';
 
 export const deleteCollection = async (req: Request, res: Response) => {
     const { _id }: DeleteCollectionReq = req.body;
@@ -29,6 +31,11 @@ export const deleteCollection = async (req: Request, res: Response) => {
     await ItemModel.deleteMany({
         _id: { $in: collectionToDelete.items.map((item) => item._id) },
     });
+
+    latestItems.length = 0;
+    updatesRequired.latestItems = true;
+    handleHomeOnDeleteUpdates('largestCollections', collectionToDelete._id);
+
     await collectionToDelete.deleteOne();
 
     res.status(200).json(`Collection with id: ${_id} successfully deleted`);

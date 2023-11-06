@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { CollectionModel, CommentModel, ItemModel } from '../../models';
-import { authorizeCollectionOwnership } from './utils';
+import { authorizeCollectionOwnership, handleHomeOnDeleteUpdates } from './utils';
 import { DeleteItemReq, ResponseError } from '../../types';
 
 export const deleteItem = async (req: Request, res: Response) => {
@@ -23,6 +23,9 @@ export const deleteItem = async (req: Request, res: Response) => {
     await parentCollection.save();
 
     await CommentModel.deleteMany({ _id: { $in: itemToDelete.comments } });
+
+    handleHomeOnDeleteUpdates('latestItems', itemToDelete._id);
+    handleHomeOnDeleteUpdates('largestCollections', parentCollection._id);
 
     await itemToDelete.deleteOne();
 

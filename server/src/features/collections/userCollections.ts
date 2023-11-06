@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UserModel } from '../../models';
 import { authorizeResourceOwnership } from '../manageUsers';
+import { getCollectionPreview } from './utils';
 import {
     CollectionModelType,
     CollectionPreview,
@@ -28,14 +29,6 @@ export const userCollections = async (
     if (!existingUser) throw new ResponseError(`User with id: ${userId} not found`, 404);
 
     res.status(200).json(
-        existingUser.collections.map((collection) => ({
-            _id: collection._id,
-            name: collection.name,
-            description: collection.description,
-            theme: collection.theme,
-            image: collection.image,
-            authorName: collection.authorName,
-            itemNumber: collection.items.length,
-        }))
+        existingUser.collections.map((collection) => getCollectionPreview(collection))
     );
 };

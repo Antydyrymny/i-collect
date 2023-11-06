@@ -16,6 +16,11 @@ const itemSchema = new mongoose.Schema<ItemModelType>({
         ref: Models.Collection,
         required: true,
     },
+    createdAt: {
+        type: Date,
+        immutable: true,
+        default: () => new Date(),
+    },
     tags: [
         {
             type: String,

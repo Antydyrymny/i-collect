@@ -28,10 +28,17 @@ export function subscribeToItemUpdates() {
                 },
             });
 
-            const result = await TagModel.aggregate(pipeline)
-                .sort({ score: -1 })
-                .limit(4);
-            acknowledgeTag(result.map((tag) => tag.name));
+            try {
+                const result = await TagModel.aggregate(pipeline)
+                    .sort({ score: -1 })
+                    .limit(4);
+                acknowledgeTag(result.map((tag) => tag.name));
+            } catch (error) {
+                console.log(
+                    `Tag autocomplete search failed with error: ${error.message}`
+                );
+                acknowledgeTag([]);
+            }
         });
     });
 }

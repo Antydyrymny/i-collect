@@ -6,41 +6,6 @@ import findIndexByName, {
 } from './findIndexByName';
 import { Indexes, Models } from '../../types';
 
-export async function upsertUserAutocompleteIndex() {
-    const userAutocompleteIndex = await findIndexByName(
-        Indexes.UserAutocomplete,
-        Models.User
-    );
-
-    if (!userAutocompleteIndex) {
-        await request(SEARCH_INDEX_API_URL, {
-            data: {
-                name: Indexes.UserAutocomplete,
-                database: MONGODB_DATABASE,
-                collectionName: Models.User,
-                mappings: {
-                    dynamic: false,
-                    fields: {
-                        name: [
-                            {
-                                foldDiacritics: false,
-                                maxGrams: 7,
-                                minGrams: 3,
-                                tokenization: 'edgeGram',
-                                type: 'autocomplete',
-                            },
-                        ],
-                    },
-                },
-            },
-            dataType: 'json',
-            contentType: 'application/json',
-            method: 'POST',
-            digestAuth: DIGEST_AUTH,
-        });
-    }
-}
-
 export async function upsertTagAutocompleteIndex() {
     const tagAutocompleteIndex = await findIndexByName(
         Indexes.TagAutoComplete,
@@ -76,16 +41,16 @@ export async function upsertTagAutocompleteIndex() {
     }
 }
 
-export async function upsertItemFuzzySearchIndex() {
-    const itemFuzzySearchIndex = await findIndexByName(
-        Indexes.ItemFuzzySearch,
+export async function upsertItemFullTextSearchIndex() {
+    const itemFullTextSearchIndex = await findIndexByName(
+        Indexes.ItemFullTextSearch,
         Models.Item
     );
 
-    if (!itemFuzzySearchIndex) {
+    if (!itemFullTextSearchIndex) {
         await request(SEARCH_INDEX_API_URL, {
             data: {
-                name: Indexes.ItemFuzzySearch,
+                name: Indexes.ItemFullTextSearch,
                 database: MONGODB_DATABASE,
                 collectionName: Models.Item,
                 mappings: {
@@ -105,6 +70,70 @@ export async function upsertItemFuzzySearchIndex() {
                             type: 'document',
                             dynamic: true,
                         },
+                    },
+                },
+            },
+            dataType: 'json',
+            contentType: 'application/json',
+            method: 'POST',
+            digestAuth: DIGEST_AUTH,
+        });
+    }
+}
+
+export async function upsertCommentFullTextSearchIndex() {
+    const commentFullTextSearchIndex = await findIndexByName(
+        Indexes.CommentFullTextSearch,
+        Models.Comment
+    );
+
+    if (!commentFullTextSearchIndex) {
+        await request(SEARCH_INDEX_API_URL, {
+            data: {
+                name: Indexes.CommentFullTextSearch,
+                database: MONGODB_DATABASE,
+                collectionName: Models.Comment,
+                mappings: {
+                    dynamic: false,
+                    fields: {
+                        content: {
+                            type: 'string',
+                        },
+                    },
+                },
+            },
+            dataType: 'json',
+            contentType: 'application/json',
+            method: 'POST',
+            digestAuth: DIGEST_AUTH,
+        });
+    }
+}
+
+export async function upsertUserAutocompleteIndex() {
+    const userAutocompleteIndex = await findIndexByName(
+        Indexes.UserAutocomplete,
+        Models.User
+    );
+
+    if (!userAutocompleteIndex) {
+        await request(SEARCH_INDEX_API_URL, {
+            data: {
+                name: Indexes.UserAutocomplete,
+                database: MONGODB_DATABASE,
+                collectionName: Models.User,
+                mappings: {
+                    dynamic: false,
+                    fields: {
+                        name: [
+                            {
+                                foldDiacritics: false,
+                                maxGrams: 12,
+                                minGrams: 3,
+                                tokenization: 'edgeGram',
+                                type: 'autocomplete',
+                            },
+                        ],
                     },
                 },
             },

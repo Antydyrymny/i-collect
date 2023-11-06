@@ -14,9 +14,10 @@ export enum Models {
 }
 
 export enum Indexes {
-    UserAutocomplete = 'userAutocomplete',
     TagAutoComplete = 'tagAutocomplete',
-    ItemFuzzySearch = 'itemFuzzySearch',
+    ItemFullTextSearch = 'itemFullTextSearch',
+    CommentFullTextSearch = 'commentFullTextSearch',
+    UserAutocomplete = 'userAutocomplete',
 }
 
 export type UserModelType = User & Document;

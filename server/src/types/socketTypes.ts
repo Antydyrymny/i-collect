@@ -1,6 +1,8 @@
 import { Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { CommentRes, CommentUpdate } from './comments';
+import { ItemPreview } from './items';
+import { CollectionPreview } from './collections';
 
 export type ClientToServerEvents = AdminToServerEvents &
     ItemViewerToServerEvents &
@@ -35,12 +37,17 @@ export type ServerToItemViewerEvents = {
 
 export type HomeToServerEvents = {
     [DefaultEvents.Connection]: () => void;
-    [HomeToServer.SubscribingToHome]: () => void;
+    [HomeToServer.SubscribingToHome]: (
+        acknowledgeHomeData: (homeInitialData: HomeInitialData) => void
+    ) => void;
+    [HomeToServer.SearchingItems]: (
+        query: string,
+        acknowledgeSearch: (foundItems: ItemPreview[]) => void
+    ) => void;
     [DefaultEvents.Disconnecting]: () => void;
 };
 export type ServerToHomeEvents = {
-    [ServerToHome.TopCollectionsUpdated]: () => void;
-    [ServerToHome.LastItemsUpdated]: () => void;
+    [ServerToHome.HomeUpdated]: (homeUpdate: HomeUpdate) => void;
 };
 
 export enum DefaultEvents {
@@ -68,14 +75,20 @@ export enum ServerToItemViewer {
 
 export enum HomeToServer {
     SubscribingToHome = 'subToHome',
+    SearchingItems = 'searchingItems',
 }
 export enum ServerToHome {
-    TopCollectionsUpdated = 'topCollectionsUpdated',
-    LastItemsUpdated = 'lastItemsUpdated',
+    HomeUpdated = 'homeUpdated',
 }
 
+export type HomeInitialData = {
+    latestItems: ItemPreview[];
+    largestCollections: CollectionPreview[];
+};
+export type HomeUpdate = Partial<HomeInitialData>;
+
 export enum DefaultRooms {
-    onlineAdmins = 'onlineAdmins',
+    Home = 'home',
 }
 
 export type AdminSocket = Socket<

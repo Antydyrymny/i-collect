@@ -1,11 +1,13 @@
 import {
-    upsertUserAutocompleteIndex,
+    // upsertUserAutocompleteIndex,
     upsertTagAutocompleteIndex,
-    upsertItemFuzzySearchIndex,
+    upsertItemFullTextSearchIndex,
+    upsertCommentFullTextSearchIndex,
 } from './searchIndexes';
 
 export const upsertAllSearchIndexes = async () => {
-    await upsertUserAutocompleteIndex();
     await upsertTagAutocompleteIndex();
-    await upsertItemFuzzySearchIndex();
+    await upsertItemFullTextSearchIndex();
+    await upsertCommentFullTextSearchIndex();
+    // await upsertUserAutocompleteIndex(); // mongodb free tier limits the number of indexes to 3
 };

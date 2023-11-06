@@ -9,32 +9,23 @@ import {
     ItemResponse,
     UserModelType,
     ResponseError,
+    CollectionModelType,
+    CollectionPreview,
 } from '../../types';
-
-export const authorizeCollectionOwnership = (
-    req: Request,
-    collectionId: Types.ObjectId
-) => {
-    const requestingUser = req.user as UserModelType;
-    if (requestingUser.admin) return;
-
-    if (
-        !requestingUser.collections.some((collection) =>
-            collectionId.equals(collection as unknown as string)
-        )
-    )
-        throw new ResponseError('Unauthorized', 401);
-};
+import { largestCollections, latestItems, updatesRequired } from '../../data';
 
 const ordering = ['stringFields', 'dateFields', 'booleanFields', 'numberFields'] as const;
 export const getItemPreview = (
-    item: Omit<ItemModelType, 'comments' | 'parentCollection'>
+    item: Omit<ItemModelType, 'comments' | 'parentCollection'>,
+    itemWithObjectPropsFromSearch = false
 ): ItemPreview => {
     const previewFields: ItemResFormatField[] = [];
     main: for (const fieldType of ordering) {
-        for (const [key, value] of Array.from(
-            (item[fieldType] as Map<string, boolean | number | Date>).entries()
-        )) {
+        for (const [key, value] of itemWithObjectPropsFromSearch
+            ? Object.entries(item[fieldType])
+            : Array.from(
+                  (item[fieldType] as Map<string, boolean | number | Date>).entries()
+              )) {
             previewFields.push({ [key]: value });
             if (previewFields.length === 4) break main;
         }
@@ -90,8 +81,49 @@ export const updateTags = async (tags: string[]) => {
     );
 };
 
+export const getCollectionPreview = (
+    collection: Omit<CollectionModelType, 'items'> & { items: unknown[] }
+): CollectionPreview => ({
+    _id: collection._id,
+    name: collection.name,
+    description: collection.description,
+    theme: collection.theme,
+    image: collection.image,
+    authorName: collection.authorName,
+    itemNumber: collection.items.length,
+});
+
 export const authorizeCommentEdit = (req: Request, authorId: Schema.Types.ObjectId) => {
     const editor = req.user as UserModelType;
     if (!editor.admin || !editor._id.equals(authorId))
         throw new ResponseError('Unauthorized', 401);
+};
+
+export const authorizeCollectionOwnership = (
+    req: Request,
+    collectionId: Types.ObjectId
+) => {
+    const requestingUser = req.user as UserModelType;
+    if (requestingUser.admin) return;
+
+    if (
+        !requestingUser.collections.some((collection) =>
+            collectionId.equals(collection as unknown as string)
+        )
+    )
+        throw new ResponseError('Unauthorized', 401);
+};
+
+export const handleHomeOnDeleteUpdates = (
+    field: 'latestItems' | 'largestCollections',
+    checkId: Schema.Types.ObjectId
+) => {
+    const fieldToUpdate = field === 'latestItems' ? latestItems : largestCollections;
+    const deletionInd = fieldToUpdate.findIndex((fieldItem) =>
+        fieldItem._id.equals(checkId)
+    );
+    if (deletionInd !== -1) {
+        fieldToUpdate.splice(deletionInd, 1);
+        updatesRequired[field] = true;
+    }
 };
