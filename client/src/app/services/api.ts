@@ -16,7 +16,13 @@ import {
     deleteUsers,
 } from './features/users';
 import { RootState } from '../store';
-import { getCollection, newCollection } from './features/collections';
+import {
+    getUserCollections,
+    getCollection,
+    newCollection,
+    updateCollection,
+    deleteCollection,
+} from './features/collections';
 import { isMessageError } from '../../types';
 
 const baseUrl =
@@ -67,8 +73,11 @@ const apiSlice = createApi({
         toggleBlock: toggleBlock(builder),
         toggleAdmins: toggleAdmins(builder),
         deleteUsers: deleteUsers(builder),
+        getUserCollections: getUserCollections(builder),
         getCollection: getCollection(builder),
         newCollection: newCollection(builder),
+        updateCollection: updateCollection(builder),
+        deleteCollection: deleteCollection(builder),
     }),
 });
 
@@ -86,6 +95,9 @@ export const {
     useToggleBlockMutation,
     useToggleAdminsMutation,
     useDeleteUsersMutation,
+    useGetUserCollectionsQuery,
     useGetCollectionQuery,
     useNewCollectionMutation,
+    useUpdateCollectionMutation,
+    useDeleteCollectionMutation,
 } = apiSlice;

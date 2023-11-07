@@ -2,9 +2,10 @@ import api from '../../api';
 import {
     AdminQuery,
     ApiBuilder,
-    // CollectionPreview,
+    CollectionPreview,
     CollectionResponse,
-    // CollectionsPreviewQuery,
+    CollectionsPreviewQuery,
+    DeleteCollectionReq,
     GetCollectionQuery,
     NewCollectionReq,
     NewCollectionRes,
@@ -12,8 +13,33 @@ import {
     UpdateCollectionReq,
 } from '../../../../types';
 
-// export const getUserCollections = (builder: ApiBuilder) =>
-//     builder.query<CollectionPreview[], CollectionsPreviewQuery>();
+const defaultGetUserCollectionsParams = {
+    limit: 10,
+};
+
+export const getUserCollections = (builder: ApiBuilder) =>
+    builder.query<CollectionPreview[], CollectionsPreviewQuery>({
+        query: (request) => ({
+            url: Routes.Auth + Routes.GetUserCollections,
+            params: { ...defaultGetUserCollectionsParams, ...request },
+        }),
+        serializeQueryArgs: ({ endpointName }) => {
+            return endpointName;
+        },
+        merge: (currentCache, newCollections) => {
+            currentCache.push(...newCollections);
+        },
+        forceRefetch: ({ currentArg, previousArg }) => {
+            return (
+                typeof currentArg !== typeof previousArg ||
+                (!!currentArg &&
+                    !!previousArg &&
+                    !Object.values(currentArg).every(
+                        (el, ind) => Object.values(previousArg)[ind] === el
+                    ))
+            );
+        },
+    });
 
 export const getCollection = (builder: ApiBuilder) =>
     builder.query<CollectionResponse, string>({
@@ -56,4 +82,27 @@ export const updateCollection = (builder: ApiBuilder) =>
         },
     });
 
-// export const deleteCollection = (builder: ApiBuilder) => builder.mutation
+export const deleteCollection = (builder: ApiBuilder) =>
+    builder.mutation<string, DeleteCollectionReq & Partial<AdminQuery>>({
+        query: ({ ownerId, ...body }) => ({
+            url: Routes.Auth + Routes.DeleteCollection,
+            params: ownerId ? { ownerId } : undefined,
+            method: 'DELETE',
+            body,
+        }),
+        async onQueryStarted(request, { dispatch, queryFulfilled }) {
+            const deleteResult = dispatch(
+                api.util.updateQueryData(
+                    'getUserCollections',
+                    'getUserCollections' as unknown as CollectionsPreviewQuery,
+                    (draft) =>
+                        draft.filter((collection) => collection._id !== request._id)
+                )
+            );
+            try {
+                await queryFulfilled;
+            } catch {
+                deleteResult.undo();
+            }
+        },
+    });

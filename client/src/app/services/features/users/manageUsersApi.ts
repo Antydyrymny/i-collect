@@ -10,7 +10,7 @@ import {
 } from '../../../../types';
 
 const defaultGetUsersQueryParams = {
-    limit: '10',
+    limit: 10,
 };
 
 export const countUserPages = (builder: ApiBuilder) =>
