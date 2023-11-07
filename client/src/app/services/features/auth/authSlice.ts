@@ -12,7 +12,7 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         storeAuth: (_state, action: PayloadAction<AuthState>) => action.payload,
-        clearAuth: () => initialState,
+        clearAuth: clearAuthHelper,
     },
     extraReducers: (builder) => {
         builder

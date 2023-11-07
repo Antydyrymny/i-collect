@@ -1,10 +1,20 @@
-import { CommentRes, CommentUpdate } from '.';
-import { getUserManagerSocket } from '../app/services/getSocket';
+import { CollectionPreview, CommentRes, CommentUpdate, ItemPreview } from '.';
+import {
+    getHomeSocket,
+    getItemViewerSocket,
+    getUserManagerSocket,
+} from '../app/services/getSocket';
 
 export type UserManagerSocket = ReturnType<typeof getUserManagerSocket>;
+export type ItemViewerSocket = ReturnType<typeof getItemViewerSocket>;
+export type HomeSocket = ReturnType<typeof getHomeSocket>;
 
-export type ClientToServerEvents = AdminToServerEvents & ItemViewerToServerEvents;
-export type ServerToClientEvents = ServerToAdminEvents & ServerToItemViewerEvents;
+export type ClientToServerEvents = AdminToServerEvents &
+    ItemViewerToServerEvents &
+    HomeToServerEvents;
+export type ServerToClientEvents = ServerToAdminEvents &
+    ServerToItemViewerEvents &
+    ServerToHomeEvents;
 
 export type AdminToServerEvents = {
     [DefaultEvents.Connection]: () => void;
@@ -18,14 +28,31 @@ export type ServerToAdminEvents = {
 export type ItemViewerToServerEvents = {
     [DefaultEvents.Connection]: () => void;
     [ItemViewerToServer.SubscribingToItem]: (itemdId: string) => void;
-    [ItemViewerToServer.AutocompleteTag]: (query: string) => void;
-    [DefaultEvents.Disconnecting]: () => void;
+    [ItemViewerToServer.AutocompleteTag]: (
+        query: string,
+        acknowledgeTag: (tagSuggestions: string[]) => void
+    ) => void;
 };
 export type ServerToItemViewerEvents = {
     [ServerToItemViewer.LikesUpdated]: (newLikesNumber: number) => void;
     [ServerToItemViewer.NewComment]: (newComment: CommentRes) => void;
     [ServerToItemViewer.CommentUpdated]: (commentUpdate: CommentUpdate) => void;
     [ServerToItemViewer.CommentDeleted]: (_id: string) => void;
+};
+
+export type HomeToServerEvents = {
+    [DefaultEvents.Connection]: () => void;
+    [HomeToServer.SubscribingToHome]: (
+        acknowledgeHomeData: (homeInitialData: HomeInitialData) => void
+    ) => void;
+    [HomeToServer.SearchingItems]: (
+        query: string,
+        acknowledgeSearch: (foundItems: ItemPreview[]) => void
+    ) => void;
+    [DefaultEvents.Disconnecting]: () => void;
+};
+export type ServerToHomeEvents = {
+    [ServerToHome.HomeUpdated]: (homeUpdate: HomeUpdate) => void;
 };
 
 export enum DefaultEvents {
@@ -50,3 +77,17 @@ export enum ServerToItemViewer {
     CommentUpdated = 'commentUpdated',
     CommentDeleted = 'commentDeleted',
 }
+
+export enum HomeToServer {
+    SubscribingToHome = 'subToHome',
+    SearchingItems = 'searchingItems',
+}
+export enum ServerToHome {
+    HomeUpdated = 'homeUpdated',
+}
+
+export type HomeInitialData = {
+    latestItems: ItemPreview[];
+    largestCollections: CollectionPreview[];
+};
+export type HomeUpdate = Partial<HomeInitialData>;

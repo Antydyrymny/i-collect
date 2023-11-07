@@ -45,14 +45,20 @@ function MainNav() {
                     <Nav className='gap-2'>
                         {!authState._id && (
                             <>
-                                <Button size='sm'>
-                                    <Link to={ClientRoutes.Login}>{t('login')}</Link>
-                                </Button>
-                                <Button size='sm' variant='outline-primary'>
-                                    <Link to={ClientRoutes.Register}>
+                                <Link to={ClientRoutes.Login}>
+                                    <Button className='w-100 h-100' size='sm'>
+                                        {t('login')}
+                                    </Button>
+                                </Link>
+                                <Link to={ClientRoutes.Register}>
+                                    <Button
+                                        className='w-100 h-100'
+                                        size='sm'
+                                        variant='outline-primary'
+                                    >
                                         {t('register')}
-                                    </Link>
-                                </Button>
+                                    </Button>
+                                </Link>
                             </>
                         )}
                         {authState._id && (
@@ -61,17 +67,17 @@ function MainNav() {
                                     {authState.name}
                                 </NavbarText>
                                 {authState.admin && (
-                                    <Button size='sm'>
-                                        <Link to={ClientRoutes.ManageUsers}>
+                                    <Link to={ClientRoutes.ManageUsers}>
+                                        <Button className='w-100 h-100' size='sm'>
                                             {t('users')}
-                                        </Link>
-                                    </Button>
-                                )}
-                                <Button size='sm'>
-                                    <Link to={ClientRoutes.UserPagePath + authState._id}>
-                                        {t('myPage')}
+                                        </Button>
                                     </Link>
-                                </Button>
+                                )}
+                                <Link to={ClientRoutes.UserPagePath + authState._id}>
+                                    <Button className='w-100 h-100' size='sm'>
+                                        {t('myPage')}
+                                    </Button>
+                                </Link>
                                 <Button
                                     variant='outline-primary'
                                     onClick={() => logout()}

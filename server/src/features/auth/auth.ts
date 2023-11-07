@@ -21,8 +21,9 @@ const authenticateJWT = async (
 ) => {
     try {
         const userAuthenticated = await UserModel.findOne({ _id: jwtPayload._id });
-        if (!userAuthenticated || userAuthenticated.status === 'blocked')
-            done(new ResponseError('Unauthorized', 401));
+        if (!userAuthenticated) done(new ResponseError('Unauthorized', 401));
+        else if (userAuthenticated.status === 'blocked')
+            done(new ResponseError('Forbidden', 403));
         else done(null, userAuthenticated);
     } catch {
         done(new ResponseError('Error connecting to the database', 500));

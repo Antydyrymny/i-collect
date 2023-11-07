@@ -5,6 +5,8 @@ import {
     ServerToAdminEvents,
     ItemViewerToServerEvents,
     ServerToItemViewerEvents,
+    HomeToServerEvents,
+    ServerToHomeEvents,
 } from '../../types';
 
 const url =
@@ -20,10 +22,18 @@ export const getUserManagerSocket = () => {
     return userManagerSocket;
 };
 
-let collectionViewerSocket: Socket<ItemViewerToServerEvents, ServerToItemViewerEvents>;
-export const getCollectionViewerSocket = () => {
-    if (!collectionViewerSocket) {
-        collectionViewerSocket = io(url + Routes.ManageUsersSocket); //!------
+let itemViewerSocket: Socket<ItemViewerToServerEvents, ServerToItemViewerEvents>;
+export const getItemViewerSocket = () => {
+    if (!itemViewerSocket) {
+        itemViewerSocket = io(url + Routes.ItemSocket);
     }
-    return collectionViewerSocket;
+    return itemViewerSocket;
+};
+
+let homeSocket: Socket<HomeToServerEvents, ServerToHomeEvents>;
+export const getHomeSocket = () => {
+    if (!homeSocket) {
+        homeSocket = io(url + Routes.HomeSocket);
+    }
+    return homeSocket;
 };

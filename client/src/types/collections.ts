@@ -48,6 +48,10 @@ export type CollectionsPreviewQuery = {
     page: string;
 };
 
+export type GetCollectionQuery = {
+    _id: string;
+};
+
 export type CollectionResponse = Omit<ItemCollection, 'items'> & {
     _id: string;
 };

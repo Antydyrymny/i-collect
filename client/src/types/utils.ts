@@ -2,21 +2,14 @@ import {
     BaseQueryFn,
     FetchArgs,
     FetchBaseQueryError,
-    FetchBaseQueryMeta,
 } from '@reduxjs/toolkit/query/react';
 import { EndpointBuilder } from '@reduxjs/toolkit/dist/query/endpointDefinitions';
 import { colorThemeKey, authStateKey, localeKey } from '../data/localStorageKeys';
 import { AuthState } from '.';
 
 export type ApiBuilder = EndpointBuilder<
-    BaseQueryFn<
-        string | FetchArgs,
-        unknown,
-        FetchBaseQueryError,
-        object,
-        FetchBaseQueryMeta
-    >,
-    'UserPages' | 'Users',
+    BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
+    'UserPages' | 'Users' | 'CurCollection',
     'api'
 >;
 
