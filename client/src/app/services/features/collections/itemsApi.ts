@@ -108,7 +108,7 @@ export const toggleLikeItem = (builder: ApiBuilder) =>
             body: request,
         }),
         async onQueryStarted(request, { dispatch, queryFulfilled }) {
-            const likeToggledResult = dispatch(
+            const resultOnCollectionScreen = dispatch(
                 api.util.updateQueryData(
                     'getCollectionItems',
                     'getCollectionItems' as unknown as GetCollectionItemsQuery,
@@ -126,10 +126,17 @@ export const toggleLikeItem = (builder: ApiBuilder) =>
                         )
                 )
             );
+            const resultOnItemScreen = dispatch(
+                api.util.updateQueryData('getItem', request._id, (draft) => ({
+                    ...draft,
+                    userLikes: request.action === 'like' ? true : false,
+                }))
+            );
             try {
                 await queryFulfilled;
             } catch (error) {
-                likeToggledResult.undo();
+                resultOnCollectionScreen.undo();
+                resultOnItemScreen.undo();
                 toast.error(
                     isStringError(error) ? error.data : 'Error connecting to server'
                 );

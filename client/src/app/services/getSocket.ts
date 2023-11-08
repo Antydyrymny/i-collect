@@ -22,7 +22,7 @@ export const getUserManagerSocket = () => {
     return userManagerSocket;
 };
 
-let itemViewerSocket: Socket<ItemViewerToServerEvents, ServerToItemViewerEvents>;
+let itemViewerSocket: Socket<ServerToItemViewerEvents, ItemViewerToServerEvents>;
 export const getItemViewerSocket = () => {
     if (!itemViewerSocket) {
         itemViewerSocket = io(url + Routes.ItemSocket);
@@ -30,7 +30,7 @@ export const getItemViewerSocket = () => {
     return itemViewerSocket;
 };
 
-let homeSocket: Socket<HomeToServerEvents, ServerToHomeEvents>;
+let homeSocket: Socket<ServerToHomeEvents, HomeToServerEvents>;
 export const getHomeSocket = () => {
     if (!homeSocket) {
         homeSocket = io(url + Routes.HomeSocket);

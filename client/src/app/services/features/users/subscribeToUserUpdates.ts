@@ -1,6 +1,6 @@
-import { AdminToServer, ApiBuilder, ServerToAdmin } from '../../../../types';
 import apiSlice from '../../api';
 import { getUserManagerSocket } from '../../getSocket';
+import { AdminToServer, ApiBuilder, ServerToAdmin } from '../../../../types';
 
 export const subscribeToUsers = (builder: ApiBuilder) =>
     builder.query<void, string>({

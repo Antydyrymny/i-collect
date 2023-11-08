@@ -32,6 +32,8 @@ import {
     newComment,
     editComment,
     deleteComment,
+    subscribeToItemUpdates,
+    autocompleteTag,
 } from './features/collections';
 import { isMessageError } from '../../types';
 
@@ -98,6 +100,8 @@ const apiSlice = createApi({
         newComment: newComment(builder),
         editComment: editComment(builder),
         deleteComment: deleteComment(builder),
+        subscribeToItemUpdates: subscribeToItemUpdates(builder),
+        autocompleteTag: autocompleteTag(builder),
     }),
 });
 
@@ -130,4 +134,6 @@ export const {
     useNewCommentMutation,
     useEditCommentMutation,
     useDeleteCommentMutation,
+    useSubscribeToItemUpdatesQuery,
+    useAutocompleteTagQuery,
 } = apiSlice;
