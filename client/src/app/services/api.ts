@@ -27,6 +27,11 @@ import {
     newItem,
     updateItem,
     deleteItem,
+    toggleLikeItem,
+    getItemComments,
+    newComment,
+    editComment,
+    deleteComment,
 } from './features/collections';
 import { isMessageError } from '../../types';
 
@@ -88,6 +93,11 @@ const apiSlice = createApi({
         newItem: newItem(builder),
         updateItem: updateItem(builder),
         deleteItem: deleteItem(builder),
+        toggleLikeItem: toggleLikeItem(builder),
+        getItemComments: getItemComments(builder),
+        newComment: newComment(builder),
+        editComment: editComment(builder),
+        deleteComment: deleteComment(builder),
     }),
 });
 
@@ -114,5 +124,10 @@ export const {
     useGetItemQuery,
     useNewItemMutation,
     useUpdateItemMutation,
+    useToggleLikeItemMutation,
     useDeleteItemMutation,
+    useGetItemCommentsQuery,
+    useNewCommentMutation,
+    useEditCommentMutation,
+    useDeleteCommentMutation,
 } = apiSlice;

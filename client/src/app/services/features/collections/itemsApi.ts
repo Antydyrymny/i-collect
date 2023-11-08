@@ -1,4 +1,5 @@
 import api from '../../api';
+import { toast } from 'react-toastify';
 import {
     ApiBuilder,
     DeleteItemReq,
@@ -8,10 +9,10 @@ import {
     ItemResponse,
     NewItemReq,
     Routes,
+    ToggleLikeItemReq,
     UpdateItemReq,
     isStringError,
 } from '../../../../types';
-import { toast } from 'react-toastify';
 
 const defaultGetCollectionItemsParams = {
     limit: 10,
@@ -92,6 +93,43 @@ export const updateItem = (builder: ApiBuilder) =>
                 await queryFulfilled;
             } catch (error) {
                 dispatch(api.util.invalidateTags(['CurItem']));
+                toast.error(
+                    isStringError(error) ? error.data : 'Error connecting to server'
+                );
+            }
+        },
+    });
+
+export const toggleLikeItem = (builder: ApiBuilder) =>
+    builder.mutation<string, ToggleLikeItemReq>({
+        query: (request) => ({
+            url: Routes.Auth + Routes.ToggleLikeItem,
+            method: 'PATCH',
+            body: request,
+        }),
+        async onQueryStarted(request, { dispatch, queryFulfilled }) {
+            const likeToggledResult = dispatch(
+                api.util.updateQueryData(
+                    'getCollectionItems',
+                    'getCollectionItems' as unknown as GetCollectionItemsQuery,
+                    (draft) =>
+                        draft.filter((item) =>
+                            item._id !== request._id
+                                ? {
+                                      ...item,
+                                      likesNumber:
+                                          request.action === 'like'
+                                              ? item.likesNumber + 1
+                                              : item.likesNumber - 1,
+                                  }
+                                : item
+                        )
+                )
+            );
+            try {
+                await queryFulfilled;
+            } catch (error) {
+                likeToggledResult.undo();
                 toast.error(
                     isStringError(error) ? error.data : 'Error connecting to server'
                 );
