@@ -17,17 +17,39 @@ import { largestCollections, latestItems, updatesRequired } from '../../data';
 const ordering = ['stringFields', 'dateFields', 'booleanFields', 'numberFields'] as const;
 export const getItemPreview = (
     item: Omit<ItemModelType, 'comments' | 'parentCollection'>,
-    itemWithObjectPropsFromSearch = false
+    itemWithObjectPropsFromSearch = false,
+    includeAllFields = false
 ): ItemPreview => {
     const previewFields: ItemResFormatField[] = [];
-    main: for (const fieldType of ordering) {
-        for (const [key, value] of itemWithObjectPropsFromSearch
-            ? Object.entries(item[fieldType])
-            : Array.from(
-                  (item[fieldType] as Map<string, boolean | number | Date>).entries()
-              )) {
-            previewFields.push({ [key]: value });
-            if (previewFields.length === 4) break main;
+    if (includeAllFields) {
+        [...ordering, 'textFields'].forEach((fieldType) => {
+            const allFieldsOfCurType = itemWithObjectPropsFromSearch
+                ? Object.entries(
+                      item[fieldType] as {
+                          [key: string]: string | boolean | number | Date;
+                      }
+                  )
+                : Array.from(
+                      (
+                          item[fieldType] as Map<string, string | boolean | number | Date>
+                      ).entries()
+                  );
+            allFieldsOfCurType.forEach(([key, value]) =>
+                previewFields.push({ [key]: value })
+            );
+        });
+    } else {
+        main: for (const fieldType of ordering) {
+            for (const [key, value] of itemWithObjectPropsFromSearch
+                ? Object.entries(item[fieldType])
+                : Array.from(
+                      (
+                          item[fieldType] as Map<string, string | boolean | number | Date>
+                      ).entries()
+                  )) {
+                previewFields.push({ [key]: value });
+                if (previewFields.length === 4) break main;
+            }
         }
     }
 
@@ -44,10 +66,11 @@ export const getItemResponse = (
     item: Omit<ItemModelType, 'comments' | 'parentCollection'>,
     parentCollectionId: ObjectId,
     parentCollectionName: string,
-    req: Request
+    req: Request,
+    itemWithObjectPropsFromSearch = false
 ): ItemResponse => {
     const requestingUser = req.user as UserModelType;
-    const previewPart = getItemPreview(item);
+    const previewPart = getItemPreview(item, itemWithObjectPropsFromSearch, true);
     return {
         ...previewPart,
         authorId: item.authorId,

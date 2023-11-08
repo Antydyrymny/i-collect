@@ -22,6 +22,11 @@ import {
     newCollection,
     updateCollection,
     deleteCollection,
+    getCollectionItems,
+    getItem,
+    newItem,
+    updateItem,
+    deleteItem,
 } from './features/collections';
 import { isMessageError } from '../../types';
 
@@ -60,7 +65,7 @@ const baseQueryWithAuthManagement: BaseQueryFn<
 const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithAuthManagement,
-    tagTypes: ['UserPages', 'Users', 'CurCollection'],
+    tagTypes: ['UserPages', 'Users', 'CurCollection', 'CurItem'],
     endpoints: (builder) => ({
         login: login(builder),
         register: register(builder),
@@ -78,6 +83,11 @@ const apiSlice = createApi({
         newCollection: newCollection(builder),
         updateCollection: updateCollection(builder),
         deleteCollection: deleteCollection(builder),
+        getCollectionItems: getCollectionItems(builder),
+        getItem: getItem(builder),
+        newItem: newItem(builder),
+        updateItem: updateItem(builder),
+        deleteItem: deleteItem(builder),
     }),
 });
 
@@ -100,4 +110,9 @@ export const {
     useNewCollectionMutation,
     useUpdateCollectionMutation,
     useDeleteCollectionMutation,
+    useGetCollectionItemsQuery,
+    useGetItemQuery,
+    useNewItemMutation,
+    useUpdateItemMutation,
+    useDeleteItemMutation,
 } = apiSlice;

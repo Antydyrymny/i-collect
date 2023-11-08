@@ -9,7 +9,7 @@ import { AuthState } from '.';
 
 export type ApiBuilder = EndpointBuilder<
     BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
-    'UserPages' | 'Users' | 'CurCollection',
+    'UserPages' | 'Users' | 'CurCollection' | 'CurItem',
     'api'
 >;
 

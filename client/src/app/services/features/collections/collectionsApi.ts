@@ -1,4 +1,5 @@
 import api from '../../api';
+import { toast } from 'react-toastify';
 import {
     AdminQuery,
     ApiBuilder,
@@ -11,6 +12,7 @@ import {
     NewCollectionRes,
     Routes,
     UpdateCollectionReq,
+    isStringError,
 } from '../../../../types';
 
 const defaultGetUserCollectionsParams = {
@@ -76,8 +78,11 @@ export const updateCollection = (builder: ApiBuilder) =>
             );
             try {
                 await queryFulfilled;
-            } catch {
+            } catch (error) {
                 dispatch(api.util.invalidateTags(['CurCollection']));
+                toast.error(
+                    isStringError(error) ? error.data : 'Error connecting to server'
+                );
             }
         },
     });
@@ -101,8 +106,11 @@ export const deleteCollection = (builder: ApiBuilder) =>
             );
             try {
                 await queryFulfilled;
-            } catch {
+            } catch (error) {
                 deleteResult.undo();
+                toast.error(
+                    isStringError(error) ? error.data : 'Error connecting to server'
+                );
             }
         },
     });

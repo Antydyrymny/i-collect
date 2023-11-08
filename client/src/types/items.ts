@@ -16,10 +16,11 @@ export type NewItemReq = ItemReq & {
     name: string;
     parentCollectionId: string;
 };
-export type UpdateItemReq = ItemReq & {
-    _id: string;
-    name?: string;
-};
+export type UpdateItemReq = Omit<ItemReq, 'fields'> &
+    Partial<Pick<ItemReq, 'fields'>> & {
+        _id: string;
+        name?: string;
+    };
 export type DeleteItemReq = {
     _id: string;
 };
