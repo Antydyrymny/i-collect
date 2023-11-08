@@ -34,6 +34,8 @@ import {
     deleteComment,
     subscribeToItemUpdates,
     autocompleteTag,
+    subscribeToHomeEvents,
+    homePageSearch,
 } from './features/collections';
 import { isMessageError } from '../../types';
 
@@ -102,6 +104,8 @@ const apiSlice = createApi({
         deleteComment: deleteComment(builder),
         subscribeToItemUpdates: subscribeToItemUpdates(builder),
         autocompleteTag: autocompleteTag(builder),
+        subscribeToHomeEvents: subscribeToHomeEvents(builder),
+        homePageSearch: homePageSearch(builder),
     }),
 });
 
@@ -136,4 +140,6 @@ export const {
     useDeleteCommentMutation,
     useSubscribeToItemUpdatesQuery,
     useAutocompleteTagQuery,
+    useSubscribeToHomeEventsQuery,
+    useHomePageSearchQuery,
 } = apiSlice;

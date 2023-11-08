@@ -1,11 +1,11 @@
+import apiSlice from '../../api';
+import { getItemViewerSocket } from '../../getSocket';
 import {
     ApiBuilder,
     GetItemCommentsQuery,
     ItemViewerToServer,
     ServerToItemViewer,
 } from '../../../../types';
-import apiSlice from '../../api';
-import { getItemViewerSocket } from '../../getSocket';
 
 export const subscribeToItemUpdates = (builder: ApiBuilder) =>
     builder.query<void, string>({
@@ -93,6 +93,7 @@ export const autocompleteTag = (builder: ApiBuilder) =>
     builder.query<string[], string>({
         queryFn: (query) => {
             const itemViewerSocket = getItemViewerSocket();
+
             return new Promise((resolve) => {
                 itemViewerSocket.emit(
                     ItemViewerToServer.AutocompleteTag,
