@@ -15,3 +15,4 @@ export * from './getCollectionItems';
 export * from './getItem';
 export * from './getItemComments';
 export * from './itemEvents';
+export * from './utils';

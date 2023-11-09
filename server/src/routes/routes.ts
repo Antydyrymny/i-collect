@@ -1,7 +1,14 @@
 import express from 'express';
 import validate from './validate';
 import forwardErrors from './forwardErrors';
-import { login, register, validateLogin, validateRegister } from '../features/auth';
+import {
+    login,
+    refreshToken,
+    register,
+    validateLogin,
+    validateRefreshToken,
+    validateRegister,
+} from '../features/auth';
 import { Routes } from '../types';
 import {
     getCollection,
@@ -33,6 +40,11 @@ router.get(
     Routes.GetItemComments,
     validate(validateGetItemComments),
     forwardErrors(getItemComments)
+);
+router.post(
+    Routes.RefreshToken,
+    validate(validateRefreshToken),
+    forwardErrors(refreshToken)
 );
 
 export { router };

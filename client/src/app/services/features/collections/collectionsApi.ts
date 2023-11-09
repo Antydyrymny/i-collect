@@ -50,6 +50,7 @@ export const getCollection = (builder: ApiBuilder) =>
             params: { _id: request } as GetCollectionQuery,
         }),
         providesTags: ['CurCollection'],
+        keepUnusedDataFor: 0,
     });
 
 export const newCollection = (builder: ApiBuilder) =>

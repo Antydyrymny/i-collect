@@ -1,17 +1,27 @@
 import { createSlice, PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 import type { RootState } from '../../../store';
 import apiSlice from '../../api';
-import { AuthState } from '../../../../types';
+import { AuthState, RefreshResponse } from '../../../../types';
 import { authStateKey } from '../../../../data/localStorageKeys';
 import { setTypedStorageItem } from '../../../../utils/typesLocalStorage';
 
-const initialState: AuthState = { _id: null, admin: null, name: null, token: null };
+const initialState: AuthState = {
+    _id: null,
+    admin: null,
+    name: null,
+    token: null,
+    refreshToken: null,
+};
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
         storeAuth: (_state, action: PayloadAction<AuthState>) => action.payload,
+        updateJWT: (state, action: PayloadAction<RefreshResponse>) => ({
+            ...state,
+            token: action.payload.token,
+        }),
         clearAuth: clearAuthHelper,
     },
     extraReducers: (builder) => {
@@ -35,11 +45,12 @@ const authSlice = createSlice({
                 if (returnedCurrentUser && returnedCurrentUser.status === 'blocked') {
                     return clearAuthHelper();
                 } else if (returnedCurrentUser && !returnedCurrentUser.admin) {
-                    const updatedUser = {
+                    const updatedUser: AuthState = {
                         _id: returnedCurrentUser._id,
                         admin: false,
                         name: returnedCurrentUser.name,
                         token: state.token,
+                        refreshToken: state.refreshToken,
                     };
                     setTypedStorageItem(authStateKey, updatedUser, 'sessionStorage');
                     return updatedUser;
@@ -94,6 +105,6 @@ function clearAuthHelper() {
 
 export default authSlice.reducer;
 
-export const { storeAuth, clearAuth } = authSlice.actions;
+export const { storeAuth, updateJWT, clearAuth } = authSlice.actions;
 
 export const selectCurrentUser = (state: RootState) => state.auth;

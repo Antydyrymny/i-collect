@@ -8,7 +8,7 @@ export const deleteUsers = async (req: Request, res: Response) => {
         _id: { $in: userIds },
     });
 
-    informOfUpdates(req.user);
+    informOfUpdates(req);
 
     res.status(200).json('Users deleted successfully');
 };

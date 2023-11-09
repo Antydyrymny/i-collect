@@ -15,7 +15,7 @@ export const deleteItem = async (req: Request, res: Response) => {
     if (!parentCollection)
         throw new ResponseError(`No parent collection for item ${_id} was found`, 404);
 
-    authorizeCollectionOwnership(req, parentCollection._id);
+    authorizeCollectionOwnership(req, parentCollection.authorId);
 
     parentCollection.items = parentCollection.items.filter(
         (item) => !itemToDelete._id.equals(item)

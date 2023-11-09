@@ -16,6 +16,7 @@ const defaultGetUsersQueryParams = {
 export const countUserPages = (builder: ApiBuilder) =>
     builder.query<number, void>({
         query: () => ({ url: Routes.Admin + Routes.CountUserPages }),
+        keepUnusedDataFor: 0,
     });
 
 export const getUsers = (builder: ApiBuilder) =>
@@ -46,6 +47,7 @@ export const getUserPage = (builder: ApiBuilder) =>
             url: Routes.Admin + Routes.GetUserPage,
             params: adminQuery ?? undefined,
         }),
+        keepUnusedDataFor: 0,
     });
 
 export const toggleBlock = (builder: ApiBuilder) =>

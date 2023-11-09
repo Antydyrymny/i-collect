@@ -10,7 +10,7 @@ export const toggleAdmins = async (req: Request, res: Response) => {
     usersToToggleAdminStatus.forEach((user) => (user.admin = action === 'makeAdmin'));
     await Promise.all(usersToToggleAdminStatus.map((user) => user.save()));
 
-    informOfUpdates(req.user);
+    informOfUpdates(req);
 
     res.status(200).json(
         `Users ${

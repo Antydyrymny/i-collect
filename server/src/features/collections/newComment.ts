@@ -1,23 +1,24 @@
 import { Request, Response } from 'express';
+import { Types } from 'mongoose';
 import { io } from '../../app';
 import { CommentModel, ItemModel } from '../../models';
 import {
+    AuthUser,
     NewCommentReq,
     ResponseError,
     Routes,
     ServerToItemViewer,
-    UserModelType,
 } from '../../types';
 
 export const newComment = async (req: Request, res: Response) => {
     const { toItem, content }: NewCommentReq = req.body;
-    const commentAuthor = req.user as UserModelType;
+    const commentAuthor = req.user as AuthUser;
 
     const existingItem = await ItemModel.findById(toItem);
     if (!existingItem) throw new ResponseError(`Item with id: ${toItem} not found`, 404);
 
     const newComment = await CommentModel.create({
-        authorId: commentAuthor._id,
+        authorId: new Types.ObjectId(commentAuthor._id),
         authorName: commentAuthor.name,
         toItem: existingItem._id,
         content,

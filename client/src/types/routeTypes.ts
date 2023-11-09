@@ -16,6 +16,7 @@ export enum Routes {
     HomeSocket = '/homeSocket',
     Login = '/login',
     Register = '/register',
+    RefreshToken = '/refreshToken',
     Logout = '/logout',
     Relog = '/relog',
     CountUserPages = '/countUserPages',

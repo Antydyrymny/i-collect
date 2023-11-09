@@ -5,7 +5,8 @@ import {
     createApi,
     fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react';
-import { login, register, logout, relog, clearAuth } from './features/auth';
+import { Mutex } from 'async-mutex';
+import { login, register, logout, relog, clearAuth, updateJWT } from './features/auth';
 import {
     subscribeToUsers,
     countUserPages,
@@ -37,13 +38,19 @@ import {
     subscribeToHomeEvents,
     homePageSearch,
 } from './features/collections';
-import { isMessageError } from '../../types';
+import {
+    RefreshResponse,
+    RefreshTokenRequest,
+    Routes,
+    isMessageError,
+} from '../../types';
 
 const baseUrl =
     import.meta.env.VITE_ENV === 'DEV'
         ? import.meta.env.VITE_DEV_URL
         : import.meta.env.VITE_SERVER_URL;
 
+const mutex = new Mutex();
 const baseQuery = fetchBaseQuery({
     baseUrl,
     prepareHeaders: (headers, { getState }) => {
@@ -54,12 +61,14 @@ const baseQuery = fetchBaseQuery({
         return headers;
     },
 });
-const baseQueryWithAuthManagement: BaseQueryFn<
-    string | FetchArgs,
-    unknown,
-    FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-    const result = await baseQuery(args, api, extraOptions);
+
+const reauthQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+    args,
+    api,
+    extraOptions
+) => {
+    await mutex.waitForUnlock();
+    let result = await baseQuery(args, api, extraOptions);
     if (
         result.error &&
         isMessageError(result.error) &&
@@ -67,13 +76,47 @@ const baseQueryWithAuthManagement: BaseQueryFn<
         result.error.data.message === 'Forbidden'
     ) {
         api.dispatch(clearAuth());
+    } else if (
+        result.error &&
+        isMessageError(result.error) &&
+        result.error.status === 401 &&
+        result.error.data.message === 'Unauthorized'
+    ) {
+        if (!mutex.isLocked()) {
+            const release = await mutex.acquire();
+            try {
+                const refreshResult = await baseQuery(
+                    {
+                        url: Routes.RefreshToken,
+                        method: 'POST',
+                        body: ((): RefreshTokenRequest => ({
+                            refreshToken:
+                                (api.getState() as RootState).auth.refreshToken ?? '',
+                        }))(),
+                    },
+                    api,
+                    extraOptions
+                );
+                if (refreshResult.data) {
+                    api.dispatch(updateJWT(refreshResult.data as RefreshResponse));
+                    result = await baseQuery(args, api, extraOptions);
+                } else {
+                    api.dispatch(clearAuth());
+                }
+            } finally {
+                release();
+            }
+        } else {
+            await mutex.waitForUnlock();
+            result = await baseQuery(args, api, extraOptions);
+        }
     }
     return result;
 };
 
 const apiSlice = createApi({
     reducerPath: 'api',
-    baseQuery: baseQueryWithAuthManagement,
+    baseQuery: reauthQuery,
     tagTypes: ['UserPages', 'Users', 'CurCollection', 'CurItem'],
     endpoints: (builder) => ({
         login: login(builder),

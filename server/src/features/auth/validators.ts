@@ -1,5 +1,5 @@
 import { object, string } from 'yup';
-import { LoginRequest, RegisterRequest } from '../../types';
+import { LoginRequest, RefreshTokenRequest, RegisterRequest } from '../../types';
 
 export const validateLogin = object({
     body: object<LoginRequest>().shape({
@@ -17,5 +17,11 @@ export const validateRegister = object({
         password: string()
             .min(8, 'Password must be at least 8 characters long')
             .required('Incorrect email format'),
+    }),
+});
+
+export const validateRefreshToken = object({
+    body: object<RefreshTokenRequest>().shape({
+        refreshToken: string().required('Refresh token is required'),
     }),
 });

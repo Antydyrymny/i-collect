@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { ObjectId, Schema, Types } from 'mongoose';
+import { ObjectId, Schema } from 'mongoose';
 import { TagModel } from '../../models';
 import {
     ItemResFormatField,
@@ -7,10 +7,10 @@ import {
     ItemPreview,
     ItemReqFormatField,
     ItemResponse,
-    UserModelType,
     ResponseError,
     CollectionModelType,
     CollectionPreview,
+    AuthUser,
 } from '../../types';
 import { largestCollections, latestItems, updatesRequired } from '../../data';
 
@@ -69,7 +69,7 @@ export const getItemResponse = (
     req: Request,
     itemWithObjectPropsFromSearch = false
 ): ItemResponse => {
-    const requestingUser = req.user as UserModelType;
+    const requestingUser = req.user as AuthUser;
     const previewPart = getItemPreview(item, itemWithObjectPropsFromSearch, true);
     return {
         ...previewPart,
@@ -79,8 +79,8 @@ export const getItemResponse = (
             name: parentCollectionName,
         },
         userLikes: requestingUser
-            ? item.likesFrom.some((likeAuthorId) =>
-                  requestingUser._id.equals(likeAuthorId)
+            ? item.likesFrom.some(
+                  (likeAuthorId) => requestingUser._id === likeAuthorId.toString()
               )
             : false,
     };
@@ -117,23 +117,19 @@ export const getCollectionPreview = (
 });
 
 export const authorizeCommentEdit = (req: Request, authorId: Schema.Types.ObjectId) => {
-    const editor = req.user as UserModelType;
-    if (!editor.admin || !editor._id.equals(authorId))
+    const editor = req.user as AuthUser;
+    if (!editor.admin || editor._id !== authorId.toString())
         throw new ResponseError('Unauthorized', 401);
 };
 
 export const authorizeCollectionOwnership = (
     req: Request,
-    collectionId: Types.ObjectId
+    collectionAuthor: Schema.Types.ObjectId
 ) => {
-    const requestingUser = req.user as UserModelType;
+    const requestingUser = req.user as AuthUser;
     if (requestingUser.admin) return;
 
-    if (
-        !requestingUser.collections.some((collection) =>
-            collectionId.equals(collection as unknown as string)
-        )
-    )
+    if (requestingUser._id !== collectionAuthor.toString())
         throw new ResponseError('Unauthorized', 401);
 };
 

@@ -15,8 +15,7 @@ export function errorHandler(
     next: NextFunction
 ) {
     const statusCode = err.status || 500;
-    res.status(statusCode);
-    res.json({
+    res.status(statusCode).json({
         message: err.message,
         stack: process.env.NODE_ENV === 'dev' ? err.stack : undefined,
     });

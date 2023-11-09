@@ -1,7 +1,7 @@
 import mongoose, { ConnectOptions } from 'mongoose';
 import { upsertAllSearchIndexes } from '../models';
 import dotenv from 'dotenv';
-import { getLargestCollections, getLatestItems } from '../data';
+import { getBlockedUsers, getLargestCollections, getLatestItems } from '../data';
 
 dotenv.config();
 const connectionString = process.env.MONGODB_CONNECTION_STRING;
@@ -18,6 +18,7 @@ export const connectDB = async () => {
 
     await getLatestItems();
     await getLargestCollections();
+    await getBlockedUsers();
     console.log('Initial data ready');
 };
 

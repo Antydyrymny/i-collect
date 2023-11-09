@@ -4,17 +4,17 @@ import {
     onlineAdminsIdsToSocketIds,
     adminsSkippingUserUpdate,
 } from '../../data';
-import { ResponseError, UserModelType } from '../../types';
+import { AuthUser, ResponseError } from '../../types';
 
-export const informOfUpdates = (reqUser: Express.User) => {
+export const informOfUpdates = (req: Request) => {
     updatesRequired.usersStateForAdmins = true;
 
-    const admin = reqUser as UserModelType;
+    const admin = req.user as AuthUser;
     adminsSkippingUserUpdate.add(onlineAdminsIdsToSocketIds.get(admin._id));
 };
 
 export const authorizeResourceOwnership = (req: Request) => {
-    const requestingUser = req.user as UserModelType;
+    const requestingUser = req.user as AuthUser;
 
     let ownerId = req.query?.ownerId;
 

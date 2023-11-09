@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { UserModel } from '../../models';
 import type { LoginRequest } from '../../types';
-import { signJWT } from './signJWT';
+import { getAuthResponse } from './getAuthResponse';
 import { updatesRequired } from '../../data';
 
 export const login = async (req: Request, res: Response) => {
@@ -13,7 +13,7 @@ export const login = async (req: Request, res: Response) => {
         res.status(401).json('Email or password does not match');
         return;
     } else if (userWithEmail.status === 'blocked') {
-        res.status(403).json('You are blocked! Access forbidden');
+        res.status(403).json('Your account is blocked! Access forbidden');
         return;
     }
 
@@ -21,7 +21,11 @@ export const login = async (req: Request, res: Response) => {
     userWithEmail.lastLogin = new Date();
     await userWithEmail.save();
 
-    const response = signJWT(userWithEmail);
+    const response = getAuthResponse({
+        _id: userWithEmail._id,
+        admin: userWithEmail.admin,
+        name: userWithEmail.name,
+    });
 
     updatesRequired.usersStateForAdmins = true;
 

@@ -2,22 +2,23 @@ import { Request, Response } from 'express';
 import { ItemModel } from '../../models';
 import { io } from '../../app';
 import {
+    AuthUser,
     ResponseError,
     Routes,
     ServerToItemViewer,
     ToggleLikeItemReq,
-    UserModelType,
 } from '../../types';
+import { Schema } from 'mongoose';
 
 export const toggleLikeItem = async (req: Request, res: Response) => {
     const { _id, action }: ToggleLikeItemReq = req.body;
-    const requestingUser = req.user as UserModelType;
+    const requestingUser = req.user as AuthUser;
 
     const existingItem = await ItemModel.findById(_id);
     if (!existingItem) throw new ResponseError(`Item with id: ${_id} not found`, 404);
 
-    const alreadyLiked = existingItem.likesFrom.some((userThatLiked) =>
-        requestingUser._id.equals(userThatLiked)
+    const alreadyLiked = existingItem.likesFrom.some(
+        (userThatLiked) => requestingUser._id === userThatLiked.toString()
     );
 
     if ((action === 'like' && alreadyLiked) || (action === 'dislike' && !alreadyLiked))
@@ -30,9 +31,9 @@ export const toggleLikeItem = async (req: Request, res: Response) => {
 
     existingItem.likesFrom =
         action === 'like'
-            ? existingItem.likesFrom.concat(requestingUser._id)
+            ? existingItem.likesFrom.concat(new Schema.Types.ObjectId(requestingUser._id))
             : existingItem.likesFrom.filter(
-                  (userThatLiked) => !requestingUser._id.equals(userThatLiked)
+                  (userThatLiked) => requestingUser._id !== userThatLiked.toString()
               );
 
     await existingItem.save();

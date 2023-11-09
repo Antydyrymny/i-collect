@@ -24,7 +24,7 @@ export const updateItem = async (req: Request, res: Response<ItemResponse>) => {
     if (!parentCollection)
         throw new ResponseError(`No parent collection for item ${_id} was found`, 404);
 
-    authorizeCollectionOwnership(req, parentCollection._id);
+    authorizeCollectionOwnership(req, parentCollection.authorId);
 
     const itemConformsToCollectionFormat =
         !fields ||

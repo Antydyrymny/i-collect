@@ -2,8 +2,8 @@ import passport from 'passport';
 import passportJwt from 'passport-jwt';
 import dotenv from 'dotenv';
 import { Request, Response, NextFunction } from 'express';
-import { UserModel } from '../../models';
-import { ResponseError, UserModelType } from '../../types';
+import { blackList } from '../../data';
+import { AuthUser, JWTPayload, ResponseError } from '../../types';
 
 dotenv.config();
 
@@ -15,24 +15,19 @@ const jwtOptions = {
     secretOrKey: process.env.JWT_SECRET,
 };
 
-const authenticateJWT = async (
-    jwtPayload: { _id: string },
-    done: passportJwt.VerifiedCallback
-) => {
-    try {
-        const userAuthenticated = await UserModel.findOne({ _id: jwtPayload._id });
-        if (!userAuthenticated) done(new ResponseError('Unauthorized', 401));
-        else if (userAuthenticated.status === 'blocked')
-            done(new ResponseError('Forbidden', 403));
-        else done(null, userAuthenticated);
-    } catch {
-        done(new ResponseError('Error connecting to the database', 500));
+const authenticateJWT = (jwtPayload: JWTPayload, done: passportJwt.VerifiedCallback) => {
+    if (blackList.has(jwtPayload._id)) done(new ResponseError('Forbidden', 403));
+    else {
+        done(null, jwtPayload);
     }
 };
 
 passport.use(new StrategyJwt(jwtOptions, authenticateJWT));
 
-export const authMiddleware = passport.authenticate('jwt', { session: false });
+export const authMiddleware = passport.authenticate('jwt', {
+    session: false,
+    failWithError: true,
+});
 
 export const protectedRoutesMiddleware = (
     req: Request,
@@ -41,7 +36,7 @@ export const protectedRoutesMiddleware = (
 ) => {
     authMiddleware(req, res, (err: ResponseError) => {
         if (err) {
-            next(err);
+            next(new ResponseError('Unauthorized', 401));
         } else next();
     });
 };
@@ -53,9 +48,9 @@ export const adminRoutesMiddleware = (
 ) => {
     authMiddleware(req, res, (err: ResponseError) => {
         if (err) {
-            next(err);
+            next(next(new ResponseError('Unauthorized', 401)));
         }
-        const user = req.user as UserModelType;
+        const user = req.user as AuthUser;
         if (!user || !user.admin) {
             next(new ResponseError('Unauthorized', 401));
         } else next();

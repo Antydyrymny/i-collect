@@ -29,7 +29,7 @@ export const newItem = async (req: Request, res: Response<ItemPreview>) => {
             404
         );
 
-    authorizeCollectionOwnership(req, existingCollection._id);
+    authorizeCollectionOwnership(req, existingCollection.authorId);
 
     const formatTypes = existingCollection.format
         .map((formatEntry) => formatEntry.fieldType)
