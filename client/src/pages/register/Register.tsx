@@ -15,7 +15,7 @@ function Register() {
         password: '',
     });
 
-    useInformOfError(isError, error);
+    useInformOfError({ isError, error });
 
     const allowSubmit = !isLoading && registerState.email && registerState.password;
 

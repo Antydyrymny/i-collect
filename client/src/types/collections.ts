@@ -45,11 +45,16 @@ export type DeleteCollectionReq = {
 
 export type CollectionsPreviewQuery = {
     ownerId?: string;
-    page: string;
+    page: number;
 };
 
 export type GetCollectionQuery = {
     _id: string;
+};
+
+export type GetUserCollectionQuery = {
+    ownerId?: string;
+    query: string;
 };
 
 export type CollectionResponse = Omit<ItemCollection, 'items'> & {

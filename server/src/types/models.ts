@@ -17,6 +17,7 @@ export enum Indexes {
     TagAutoComplete = 'tagAutocomplete',
     ItemFullTextSearch = 'itemFullTextSearch',
     CommentFullTextSearch = 'commentFullTextSearch',
+    CollectionText = 'collectionText',
     UserAutocomplete = 'userAutocomplete',
 }
 

@@ -44,8 +44,10 @@ function ManageUsers() {
         error,
     } = useGetUsersQuery({ page: curPage }, { skip: !countPagesUtils.isSuccess });
 
-    useInformOfError(countPagesUtils.isError, countPagesUtils.error);
-    useInformOfError(isError, error);
+    useInformOfError([
+        { isError, error },
+        { isError: countPagesUtils.isError, error: countPagesUtils.error },
+    ]);
 
     const [selected, setSelected] = useState<string[]>([]);
     const handleSelectOne = useCallback(

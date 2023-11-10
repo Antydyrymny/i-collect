@@ -51,6 +51,11 @@ export type CollectionsPreviewQuery = {
     limit: string;
 };
 
+export type GetUserCollectionQuery = {
+    ownerId?: string;
+    query: string;
+};
+
 export type GetCollectionQuery = {
     _id: string;
 };

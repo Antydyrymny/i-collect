@@ -26,6 +26,8 @@ import {
     deleteComment,
     validateUserCollections,
     userCollections,
+    validateGetUserCollection,
+    getUserCollection,
 } from '../features/collections';
 import { Routes } from '../types';
 
@@ -80,6 +82,11 @@ protectedRouter.delete(
     Routes.DeleteComment,
     validate(validateDeleteComment),
     forwardErrors(deleteComment)
+);
+protectedRouter.get(
+    Routes.GetUserCollection,
+    validate(validateGetUserCollection),
+    forwardErrors(getUserCollection)
 );
 protectedRouter.get(
     Routes.GetUserCollections,

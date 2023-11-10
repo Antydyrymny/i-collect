@@ -37,6 +37,7 @@ import {
     autocompleteTag,
     subscribeToHomeEvents,
     homePageSearch,
+    findUserCollection,
 } from './features/collections';
 import {
     RefreshResponse,
@@ -131,6 +132,7 @@ const apiSlice = createApi({
         toggleAdmins: toggleAdmins(builder),
         deleteUsers: deleteUsers(builder),
         getUserCollections: getUserCollections(builder),
+        findUserCollection: findUserCollection(builder),
         getCollection: getCollection(builder),
         newCollection: newCollection(builder),
         updateCollection: updateCollection(builder),
@@ -167,6 +169,7 @@ export const {
     useToggleAdminsMutation,
     useDeleteUsersMutation,
     useGetUserCollectionsQuery,
+    useFindUserCollectionQuery,
     useGetCollectionQuery,
     useNewCollectionMutation,
     useUpdateCollectionMutation,

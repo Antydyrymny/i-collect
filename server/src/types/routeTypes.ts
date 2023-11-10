@@ -28,6 +28,7 @@ export enum Routes {
     DeleteComment = '/deleteComment',
     GetUserCollections = '/userCollections',
     GetCollection = '/getCollection',
+    GetUserCollection = '/getUserCollection',
     GetCollectionItems = '/collectionItems',
     GetItem = '/getItem',
     GetItemComments = '/itemComments',

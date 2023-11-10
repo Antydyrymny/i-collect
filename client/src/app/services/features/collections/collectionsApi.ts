@@ -8,6 +8,7 @@ import {
     CollectionsPreviewQuery,
     DeleteCollectionReq,
     GetCollectionQuery,
+    GetUserCollectionQuery,
     NewCollectionReq,
     NewCollectionRes,
     Routes,
@@ -41,6 +42,14 @@ export const getUserCollections = (builder: ApiBuilder) =>
                     ))
             );
         },
+    });
+
+export const findUserCollection = (builder: ApiBuilder) =>
+    builder.query<CollectionPreview[], GetUserCollectionQuery>({
+        query: (request) => ({
+            url: Routes.Auth + Routes.GetUserCollection,
+            params: request,
+        }),
     });
 
 export const getCollection = (builder: ApiBuilder) =>

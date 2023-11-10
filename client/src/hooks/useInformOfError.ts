@@ -4,15 +4,28 @@ import { isStringError } from '../types';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 
+type InformOfErrorParam = {
+    isError: boolean;
+    error: FetchBaseQueryError | SerializedError | undefined;
+};
 export const useInformOfError = (
-    isError: boolean,
-    error: FetchBaseQueryError | SerializedError | undefined
+    queryError: InformOfErrorParam | InformOfErrorParam[]
 ) => {
     useEffect(() => {
-        if (isError) {
-            toast.error(isStringError(error) ? error.data : 'Error connecting to server');
-        }
+        const informOfError = (errParam: InformOfErrorParam) => {
+            if (errParam.isError) {
+                toast.error(
+                    isStringError(errParam.error)
+                        ? errParam.error.data
+                        : 'Error connecting to server'
+                );
+            }
+        };
+
+        if (Array.isArray(queryError)) {
+            queryError.forEach((errParam) => informOfError(errParam));
+        } else informOfError(queryError);
 
         return () => toast.dismiss();
-    }, [error, isError]);
+    }, [queryError]);
 };

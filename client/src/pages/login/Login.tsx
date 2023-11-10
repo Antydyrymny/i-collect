@@ -12,7 +12,7 @@ function Login() {
     const [loginState, setLoginState] = useState({ email: '', password: '' });
     const [login, { isLoading, isError, error }] = useLoginMutation();
 
-    useInformOfError(isError, error);
+    useInformOfError({ isError, error });
 
     const allowSubmit = !isLoading && loginState.email && loginState.password;
 

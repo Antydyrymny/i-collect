@@ -3,8 +3,14 @@ export enum ClientRoutes {
     Register = '/register',
     Login = '/login',
     ManageUsers = '/users',
-    UserPage = '/user/:userId',
     UserPagePath = '/user/',
+    UserPage = ClientRoutes.UserPagePath + ':userId',
+    NewCollection = 'newCollection',
+    NewCollectionAbsolute = ClientRoutes.UserPage + ClientRoutes.NewCollection,
+    CollectionPath = '/collection/',
+    Collection = ClientRoutes.CollectionPath + ':collectionId',
+    ItemPath = '/item/',
+    Item = ClientRoutes.ItemPath + ':itemId',
 }
 
 export enum Routes {
@@ -36,6 +42,7 @@ export enum Routes {
     EditComment = '/editComment',
     DeleteComment = '/deleteComment',
     GetUserCollections = '/userCollections',
+    GetUserCollection = '/getUserCollection',
     GetCollection = '/getCollection',
     GetCollectionItems = '/collectionItems',
     GetItem = '/getItem',

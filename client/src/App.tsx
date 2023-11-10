@@ -7,14 +7,20 @@ import { ClientRoutes } from './types';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-const MainLayoutLazy = React.lazy(() => import('./pages/layouts/mainLayout/MainLayout'));
-const HomeLazy = React.lazy(() => import('./pages/home/Home'));
-const UserPageLazy = React.lazy(() => import('./pages/userPage/UserPage'));
-const ManageUsersLazy = React.lazy(() => import('./pages/manageUsers/ManageUsers'));
+const UserPage = React.lazy(() => import('./pages/userPage/UserPage'));
+const NewCollection = React.lazy(
+    () => import('./pages/userPage/newCollection/NewCollection')
+);
+const Collection = React.lazy(() => import('./pages/collection/Collection'));
+const Item = React.lazy(() => import('./pages/item/Item'));
 
-const AuthLayoutLazy = React.lazy(() => import('./pages/layouts/authLayout/AuthLayout'));
-const LoginLazy = React.lazy(() => import('./pages/login/Login'));
-const RegisterLazy = React.lazy(() => import('./pages/register/Register'));
+const MainLayout = React.lazy(() => import('./pages/layouts/mainLayout/MainLayout'));
+const Home = React.lazy(() => import('./pages/home/Home'));
+const ManageUsers = React.lazy(() => import('./pages/manageUsers/ManageUsers'));
+
+const AuthLayout = React.lazy(() => import('./pages/layouts/authLayout/AuthLayout'));
+const Login = React.lazy(() => import('./pages/login/Login'));
+const Register = React.lazy(() => import('./pages/register/Register'));
 
 function App() {
     useAuth();
@@ -29,22 +35,30 @@ function App() {
         >
             <AllContexts>
                 <Routes>
-                    <Route path={ClientRoutes.Home} element={<MainLayoutLazy />}>
-                        <Route index element={<HomeLazy />} />
-                        <Route
-                            path={ClientRoutes.UserPage}
-                            element={<ProtectedRoute Component={UserPageLazy} />}
-                        />
+                    <Route path={ClientRoutes.Home} element={<MainLayout />}>
+                        <Route index element={<Home />} />
+                        <Route path={ClientRoutes.UserPage}>
+                            <Route
+                                index
+                                element={<ProtectedRoute Component={UserPage} />}
+                            />
+                            <Route
+                                path={ClientRoutes.NewCollection}
+                                element={<ProtectedRoute Component={NewCollection} />}
+                            />
+                        </Route>
+                        <Route path={ClientRoutes.Collection} element={<Collection />} />
+                        <Route path={ClientRoutes.Item} element={<Item />} />
                         <Route
                             path={ClientRoutes.ManageUsers}
                             element={
-                                <ProtectedRoute Component={ManageUsersLazy} adminRoute />
+                                <ProtectedRoute Component={ManageUsers} adminRoute />
                             }
                         />
                     </Route>
-                    <Route element={<AuthLayoutLazy />}>
-                        <Route path={ClientRoutes.Login} element={<LoginLazy />} />
-                        <Route path={ClientRoutes.Register} element={<RegisterLazy />} />
+                    <Route element={<AuthLayout />}>
+                        <Route path={ClientRoutes.Login} element={<Login />} />
+                        <Route path={ClientRoutes.Register} element={<Register />} />
                     </Route>
                     <Route
                         path='*'

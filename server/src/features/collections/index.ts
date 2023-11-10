@@ -11,6 +11,7 @@ export * from './editComment';
 export * from './deleteComment';
 export * from './userCollections';
 export * from './getCollection';
+export * from './getUserCollection';
 export * from './getCollectionItems';
 export * from './getItem';
 export * from './getItemComments';

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { Models, CollectionModelType, FormatField } from '../types';
+import { Models, CollectionModelType, FormatField, Indexes } from '../types';
 
 const formatFieldSchema = new mongoose.Schema<FormatField>({
     fieldName: {
@@ -63,6 +63,10 @@ const collectionSchema = new mongoose.Schema<CollectionModelType>({
         },
     ],
 });
+collectionSchema.index(
+    { name: 'text', description: 'text' },
+    { name: Indexes.CollectionText }
+);
 
 export const CollectionModel = mongoose.model<CollectionModelType>(
     Models.Collection,

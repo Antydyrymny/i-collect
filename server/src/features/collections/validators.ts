@@ -14,6 +14,7 @@ import {
     GetCollectionItemsQuery,
     GetItemQuery,
     GetItemCommentsQuery,
+    GetUserCollectionQuery,
 } from '../../types';
 
 const URL =
@@ -204,6 +205,13 @@ export const validateUserCollections = object({
 export const validateGetCollection = object({
     query: object<GetCollectionQuery>().shape({
         _id: string().max(255).required('Collection id is required'),
+    }),
+});
+
+export const validateGetUserCollection = object({
+    query: object<GetUserCollectionQuery>().shape({
+        ownerId: string().max(255),
+        query: string().max(255).required('Collection query is required'),
     }),
 });
 
