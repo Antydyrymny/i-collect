@@ -17,7 +17,7 @@ import {
 } from '../../../../types';
 
 const defaultGetUserCollectionsParams = {
-    limit: 10,
+    limit: 3,
 };
 
 export const getUserCollections = (builder: ApiBuilder) =>
@@ -29,8 +29,9 @@ export const getUserCollections = (builder: ApiBuilder) =>
         serializeQueryArgs: ({ endpointName }) => {
             return endpointName;
         },
-        merge: (currentCache, newCollections) => {
-            currentCache.push(...newCollections);
+        merge: (currentCache, newCollections, { arg }) => {
+            if (arg.page < 2) return newCollections;
+            return [...currentCache, ...newCollections];
         },
         forceRefetch: ({ currentArg, previousArg }) => {
             return (
@@ -50,6 +51,7 @@ export const findUserCollection = (builder: ApiBuilder) =>
             url: Routes.Auth + Routes.GetUserCollection,
             params: request,
         }),
+        keepUnusedDataFor: 0,
     });
 
 export const getCollection = (builder: ApiBuilder) =>

@@ -1,5 +1,5 @@
 import express from 'express';
-import { protectedRoutesMiddleware, logout, relog } from '../features/auth';
+import { protectedRoutesMiddleware, logout, setOnline } from '../features/auth';
 import validate from './validate';
 import forwardErrors from './forwardErrors';
 import { getUserPage } from '../features/manageUsers';
@@ -35,7 +35,7 @@ const protectedRouter = express.Router();
 protectedRouter.use(protectedRoutesMiddleware);
 
 protectedRouter.post(Routes.Logout, forwardErrors(logout));
-protectedRouter.post(Routes.Relog, forwardErrors(relog));
+protectedRouter.post(Routes.SetOnline, forwardErrors(setOnline));
 protectedRouter.get(Routes.GetUserPage, forwardErrors(getUserPage));
 protectedRouter.post(
     Routes.NewCollection,

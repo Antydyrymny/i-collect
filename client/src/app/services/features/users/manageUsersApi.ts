@@ -43,7 +43,7 @@ export const getUsers = (builder: ApiBuilder) =>
 export const getUserPage = (builder: ApiBuilder) =>
     builder.query<ClientUser, string | void>({
         query: (adminQuery) => ({
-            url: Routes.Admin + Routes.GetUserPage,
+            url: Routes.Auth + Routes.GetUserPage,
             params: { ownerId: adminQuery },
         }),
         keepUnusedDataFor: 0,

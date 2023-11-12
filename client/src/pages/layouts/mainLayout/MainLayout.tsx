@@ -4,7 +4,7 @@ import MainNav from './MainNav';
 
 function MainLayout() {
     return (
-        <div className='vh-100'>
+        <div>
             <MainNav />
             <Container>
                 <Outlet />

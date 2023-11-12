@@ -22,22 +22,41 @@
         "btn": "Register"
     },
     "navbar": {
+        "home": "Home",
         "login": "Sign in",
         "register": "Sign up",
         "users": "Manage users",
         "myPage": "My Collections",
         "logout": "Logout"
     },
+    "theme": {
+        "light": "Switch to Dark mode",
+        "dark": "Switch to Light mode"
+    },
     "manageUsers": {
         "block": "Block",
+        "unblock": "Unblock",
         "admin": "Make admin",
         "name": "Name",
         "adminRights": "Admin rights",
+        "removeAdminRights": "Remove admin rights",
+        "delete": "Delete users",
         "adminTrue": "Administrator",
         "adminFalse": "User",
         "lastLogin": "Last login",
         "status": "Status",
         "collections": "Collections",
         "toCollections": "Open"
+    },
+    "userPage": {
+        "totalCollections": "Total collections: ",
+        "findCollection": "Find collection",
+        "clear": "Clear",
+        "search": "Search",
+        "newCollection": "Create new collection",
+        "theme": "Theme: ",
+        "totalItems": "Total items: ",
+        "delete": "Delete collection",
+        "toCollection": "To collection"
     }
 }

@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Container, Spinner } from 'react-bootstrap';
-import ProtectedRoute, { useAuth } from './app/services/features/auth';
+import ProtectedRoute from './app/services/features/auth';
 import AllContexts from './contexts/AllContexts';
 import { ClientRoutes } from './types';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -23,8 +23,6 @@ const Login = React.lazy(() => import('./pages/login/Login'));
 const Register = React.lazy(() => import('./pages/register/Register'));
 
 function App() {
-    useAuth();
-
     return (
         <Suspense
             fallback={

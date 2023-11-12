@@ -1,19 +1,24 @@
 import { useEffect } from 'react';
-import { useRelogMutation } from '../../api';
-import { useAppDispatch } from '../../../storeHooks';
-import { storeAuth } from '.';
-import { getTypedStorageItem } from '../../../../utils/typesLocalStorage';
-import { authStateKey } from '../../../../data/localStorageKeys';
+import { useLogoutMutation, useStatusOnlineMutation } from '../../api';
+import { useSelectUser } from '.';
 
 export function useAuth() {
-    const dispatch = useAppDispatch();
-    const [relog] = useRelogMutation();
+    const authState = useSelectUser();
+    const [relog] = useStatusOnlineMutation();
+    const [logout] = useLogoutMutation();
 
     useEffect(() => {
-        const storedAuth = getTypedStorageItem(authStateKey, 'sessionStorage');
-        if (storedAuth && storedAuth._id) {
-            dispatch(storeAuth(storedAuth));
+        if (authState._id) {
             relog();
         }
-    }, [dispatch, relog]);
+
+        const cleanup = () => {
+            logout('statusOffline');
+        };
+
+        window.addEventListener('beforeunload', cleanup);
+        () => {
+            window.removeEventListener('beforeunload', cleanup);
+        };
+    }, [authState._id, logout, relog]);
 }

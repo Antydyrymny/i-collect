@@ -9,6 +9,7 @@ import { useLocale } from '../../../contexts/locale';
 import { Container, Navbar, Button, Image, Nav, NavbarText } from 'react-bootstrap';
 import logo from '../../../assets/logo.png';
 import logoDark from '../../../assets/logo-dark.png';
+import TooltipOverlay from '../../../components/tooltip/TooltipOverlay';
 
 function MainNav() {
     const t = useLocale('navbar');
@@ -19,17 +20,23 @@ function MainNav() {
     const { theme } = useThemeContext();
 
     return (
-        <Navbar expand='xl' sticky='top' bg='primary-subtle'>
+        <Navbar className='mb-5' expand='xl' sticky='top' bg='primary-subtle'>
             <Container>
                 <Navbar.Brand>
-                    <Link
-                        to={ClientRoutes.Home}
-                        className='d-flex justify-content-center align-items-center gap-2'
+                    <TooltipOverlay
+                        id='home'
+                        tooltipMessage={t('home')}
+                        placement='bottom'
                     >
-                        {theme === 'light' && <Image src={logo} />}
-                        {theme === 'dark' && <Image src={logoDark} />}
-                        I-Collect
-                    </Link>
+                        <Link
+                            to={ClientRoutes.Home}
+                            className='d-flex justify-content-center align-items-center gap-2'
+                        >
+                            {theme === 'light' && <Image src={logo} />}
+                            {theme === 'dark' && <Image src={logoDark} />}
+                            I-Collect
+                        </Link>
+                    </TooltipOverlay>
                 </Navbar.Brand>
                 <Nav className='d-xl-none d-flex flex-row'>
                     <LocalePicker />
@@ -46,14 +53,11 @@ function MainNav() {
                         {!authState._id && (
                             <>
                                 <Link to={ClientRoutes.Login}>
-                                    <Button className='w-100 h-100' size='sm'>
-                                        {t('login')}
-                                    </Button>
+                                    <Button className='w-100 h-100'>{t('login')}</Button>
                                 </Link>
                                 <Link to={ClientRoutes.Register}>
                                     <Button
                                         className='w-100 h-100'
-                                        size='sm'
                                         variant='outline-primary'
                                     >
                                         {t('register')}

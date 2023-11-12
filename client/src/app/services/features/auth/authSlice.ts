@@ -2,8 +2,6 @@ import { createSlice, PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 import type { RootState } from '../../../store';
 import apiSlice from '../../api';
 import { AuthState, RefreshResponse } from '../../../../types';
-import { authStateKey } from '../../../../data/localStorageKeys';
-import { setTypedStorageItem } from '../../../../utils/typesLocalStorage';
 
 const initialState: AuthState = {
     _id: null,
@@ -17,33 +15,32 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        storeAuth: (_state, action: PayloadAction<AuthState>) => action.payload,
         updateJWT: (state, action: PayloadAction<RefreshResponse>) => ({
             ...state,
             token: action.payload.token,
         }),
-        clearAuth: clearAuthHelper,
+        clearAuth: () => initialState,
     },
     extraReducers: (builder) => {
         builder
             .addMatcher(
                 isAnyOf(
                     apiSlice.endpoints.login.matchFulfilled,
-                    apiSlice.endpoints.relog.matchFulfilled,
                     apiSlice.endpoints.register.matchFulfilled
                 ),
                 (_state, action) => {
-                    setTypedStorageItem(authStateKey, action.payload, 'sessionStorage');
                     return action.payload;
                 }
             )
-            .addMatcher(apiSlice.endpoints.logout.matchFulfilled, clearAuthHelper)
+            .addMatcher(apiSlice.endpoints.logout.matchFulfilled, (_state, action) => {
+                if (action.meta.arg.originalArgs !== 'statusOffline') return initialState;
+            })
             .addMatcher(apiSlice.endpoints.getUsers.matchFulfilled, (state, action) => {
                 const returnedCurrentUser = action.payload.find(
                     (user) => user._id === state._id
                 );
                 if (returnedCurrentUser && returnedCurrentUser.status === 'blocked') {
-                    return clearAuthHelper();
+                    return initialState;
                 } else if (returnedCurrentUser && !returnedCurrentUser.admin) {
                     const updatedUser: AuthState = {
                         _id: returnedCurrentUser._id,
@@ -52,7 +49,6 @@ const authSlice = createSlice({
                         token: state.token,
                         refreshToken: state.refreshToken,
                     };
-                    setTypedStorageItem(authStateKey, updatedUser, 'sessionStorage');
                     return updatedUser;
                 }
             })
@@ -69,7 +65,6 @@ const authSlice = createSlice({
                             ...state,
                             admin: false,
                         };
-                        setTypedStorageItem(authStateKey, updatedUser, 'sessionStorage');
                         return updatedUser;
                     }
                 }
@@ -83,7 +78,7 @@ const authSlice = createSlice({
                             (id) => id === state._id
                         )
                     ) {
-                        return clearAuthHelper();
+                        return initialState;
                     }
                 }
             )
@@ -91,20 +86,15 @@ const authSlice = createSlice({
                 apiSlice.endpoints.deleteUsers.matchFulfilled,
                 (state, action) => {
                     if (action.meta.arg.originalArgs.find((id) => id === state._id)) {
-                        return clearAuthHelper();
+                        return initialState;
                     }
                 }
             );
     },
 });
 
-function clearAuthHelper() {
-    window.sessionStorage.removeItem(authStateKey);
-    return initialState;
-}
-
 export default authSlice.reducer;
 
-export const { storeAuth, updateJWT, clearAuth } = authSlice.actions;
+export const { updateJWT, clearAuth } = authSlice.actions;
 
 export const selectCurrentUser = (state: RootState) => state.auth;

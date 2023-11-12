@@ -6,7 +6,14 @@ import {
     fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react';
 import { Mutex } from 'async-mutex';
-import { login, register, logout, relog, clearAuth, updateJWT } from './features/auth';
+import {
+    login,
+    register,
+    logout,
+    clearAuth,
+    updateJWT,
+    statusOnline,
+} from './features/auth';
 import {
     subscribeToUsers,
     countUserPages,
@@ -123,7 +130,7 @@ const apiSlice = createApi({
         login: login(builder),
         register: register(builder),
         logout: logout(builder),
-        relog: relog(builder),
+        statusOnline: statusOnline(builder),
         subscribeToUsers: subscribeToUsers(builder),
         countUserPages: countUserPages(builder),
         getUsers: getUsers(builder),
@@ -160,7 +167,7 @@ export const {
     useLoginMutation,
     useLogoutMutation,
     useRegisterMutation,
-    useRelogMutation,
+    useStatusOnlineMutation,
     useSubscribeToUsersQuery,
     useCountUserPagesQuery,
     useGetUsersQuery,
@@ -169,7 +176,7 @@ export const {
     useToggleAdminsMutation,
     useDeleteUsersMutation,
     useGetUserCollectionsQuery,
-    useFindUserCollectionQuery,
+    useLazyFindUserCollectionQuery,
     useGetCollectionQuery,
     useNewCollectionMutation,
     useUpdateCollectionMutation,

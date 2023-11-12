@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { isStringError } from '../types';
+import { isMessageError, isStringError } from '../types';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 
@@ -17,6 +17,8 @@ export const useInformOfError = (
                 toast.error(
                     isStringError(errParam.error)
                         ? errParam.error.data
+                        : isMessageError(errParam.error)
+                        ? errParam.error.data.message
                         : 'Error connecting to server'
                 );
             }

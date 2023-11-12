@@ -9,7 +9,7 @@ export enum Routes {
     Register = '/register',
     RefreshToken = '/refreshToken',
     Logout = '/logout',
-    Relog = '/relog',
+    SetOnline = '/setOnline',
     CountUserPages = '/countUserPages',
     GetUsers = '/users',
     GetUserPage = '/userPage',

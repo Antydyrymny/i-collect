@@ -4,8 +4,7 @@ import {
     FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
 import { EndpointBuilder } from '@reduxjs/toolkit/dist/query/endpointDefinitions';
-import { colorThemeKey, authStateKey, localeKey } from '../data/localStorageKeys';
-import { AuthState } from '.';
+import { colorThemeKey, localeKey } from '../data/localStorageKeys';
 
 export type ApiBuilder = EndpointBuilder<
     BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,
@@ -17,6 +16,5 @@ export type ColorTheme = 'light' | 'dark';
 export type Locale = 'en' | 'ru';
 export type LocalStorageSchema = {
     [colorThemeKey]: ColorTheme;
-    [authStateKey]: AuthState;
     [localeKey]: Locale;
 };

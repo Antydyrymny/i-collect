@@ -25,6 +25,7 @@ import trash from '../../assets/deleteUser.png';
 import trashDark from '../../assets/deleteUser-dark.png';
 import { Container, Button, Row, Image, Spinner, ButtonToolbar } from 'react-bootstrap';
 import UserTable from './UserTable';
+import TooltipOverlay from '../../components/tooltip/TooltipOverlay';
 
 function ManageUsers() {
     const authUser = useSelectUser();
@@ -130,19 +131,23 @@ function ManageUsers() {
                             )}
                             {t('block')}
                         </Button>
-                        <Button
-                            disabled={!allowChanges}
-                            onClick={() => handleAllocatingRights('block', true)}
-                            variant='outline-primary'
-                            className='me-3 d-flex justify-content-center align-items-center gap-1'
-                        >
-                            {blockUtils.isLoading &&
-                            blockUtils.originalArgs?.action === 'unblock' ? (
-                                <Spinner size='sm' />
-                            ) : (
-                                <Image src={theme === 'light' ? unblock : unblockDark} />
-                            )}
-                        </Button>
+                        <TooltipOverlay id='unblock' tooltipMessage={t('unblock')}>
+                            <Button
+                                disabled={!allowChanges}
+                                onClick={() => handleAllocatingRights('block', true)}
+                                variant='outline-primary'
+                                className='me-3 d-flex justify-content-center align-items-center gap-1'
+                            >
+                                {blockUtils.isLoading &&
+                                blockUtils.originalArgs?.action === 'unblock' ? (
+                                    <Spinner size='sm' />
+                                ) : (
+                                    <Image
+                                        src={theme === 'light' ? unblock : unblockDark}
+                                    />
+                                )}
+                            </Button>
+                        </TooltipOverlay>
                     </ButtonToolbar>
                     <ButtonToolbar className='gap-2'>
                         <Button
@@ -159,33 +164,44 @@ function ManageUsers() {
                             )}
                             {t('admin')}
                         </Button>
-                        <Button
-                            disabled={!allowChanges}
-                            onClick={() => handleAllocatingRights('admin', false)}
-                            variant='outline-primary'
-                            className='me-lg-3 d-flex justify-content-center align-items-center gap-1'
+                        <TooltipOverlay
+                            id='removeAdminRights'
+                            tooltipMessage={t('removeAdminRights')}
                         >
-                            {adminUtils.isLoading &&
-                            adminUtils.originalArgs?.action === 'stripAdmin' ? (
-                                <Spinner size='sm' />
-                            ) : (
-                                <Image
-                                    src={theme === 'light' ? stripAdmin : stripAdminDark}
-                                />
-                            )}
-                        </Button>
-                        <Button
-                            disabled={!allowChanges}
-                            onClick={handleDeleteUsers}
-                            variant='danger'
-                            className='me-lg-3 d-flex justify-content-center align-items-center gap-1'
-                        >
-                            {deleteUtils.isLoading ? (
-                                <Spinner size='sm' />
-                            ) : (
-                                <Image src={theme === 'light' ? trash : trashDark} />
-                            )}
-                        </Button>
+                            <Button
+                                disabled={!allowChanges}
+                                onClick={() => handleAllocatingRights('admin', false)}
+                                variant='outline-primary'
+                                className='me-lg-3 d-flex justify-content-center align-items-center gap-1'
+                            >
+                                {adminUtils.isLoading &&
+                                adminUtils.originalArgs?.action === 'stripAdmin' ? (
+                                    <Spinner size='sm' />
+                                ) : (
+                                    <Image
+                                        src={
+                                            theme === 'light'
+                                                ? stripAdmin
+                                                : stripAdminDark
+                                        }
+                                    />
+                                )}
+                            </Button>
+                        </TooltipOverlay>
+                        <TooltipOverlay id='delete' tooltipMessage={t('delete')}>
+                            <Button
+                                disabled={!allowChanges}
+                                onClick={handleDeleteUsers}
+                                variant='danger'
+                                className='me-lg-3 d-flex justify-content-center align-items-center gap-1'
+                            >
+                                {deleteUtils.isLoading ? (
+                                    <Spinner size='sm' />
+                                ) : (
+                                    <Image src={theme === 'light' ? trash : trashDark} />
+                                )}
+                            </Button>
+                        </TooltipOverlay>
                     </ButtonToolbar>
                     {isFetching && (
                         <div className='d-none d-md-flex align-items-center'>
