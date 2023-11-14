@@ -15,9 +15,14 @@ export default function LocalePicker() {
     };
 
     return (
-        <div className='d-flex justify-content-center align-items-center '>
-            {theme === 'light' && <Image src={globe} />}
-            {theme === 'dark' && <Image src={globeDark} />}
+        <Form.Group
+            controlId='locale'
+            className='d-flex justify-content-center align-items-center '
+        >
+            <Form.Label className='m-0'>
+                {theme === 'light' && <Image src={globe} />}
+                {theme === 'dark' && <Image src={globeDark} />}
+            </Form.Label>
             <Form.Select
                 className={`${styles.select} border-0 outline-0`}
                 value={locale}
@@ -31,6 +36,6 @@ export default function LocalePicker() {
                     Русский
                 </option>
             </Form.Select>
-        </div>
+        </Form.Group>
     );
 }

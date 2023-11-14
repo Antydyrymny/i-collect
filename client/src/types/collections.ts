@@ -1,3 +1,5 @@
+import { AdminQuery } from '.';
+
 export type ItemCollection = {
     name: string;
     description: string;
@@ -26,12 +28,14 @@ export type CollectionTheme =
     | 'Art'
     | 'Other';
 
-export type NewCollectionReq = Omit<ItemCollection, 'items' | 'authorId' | 'authorName'>;
+export type NewCollectionReq = Partial<AdminQuery> &
+    Omit<ItemCollection, 'items' | 'authorId' | 'authorName'>;
+
 export type NewCollectionRes = {
     _id: string;
 };
 
-export type UpdateCollectionReq = {
+export type UpdateCollectionReq = Partial<AdminQuery> & {
     _id: string;
     name?: string;
     description?: string;
@@ -39,7 +43,7 @@ export type UpdateCollectionReq = {
     image?: string;
 };
 
-export type DeleteCollectionReq = {
+export type DeleteCollectionReq = Partial<AdminQuery> & {
     _id: string;
 };
 
@@ -63,4 +67,9 @@ export type CollectionResponse = Omit<ItemCollection, 'items'> & {
 
 export type CollectionPreview = Omit<CollectionResponse, 'format' | 'authorId'> & {
     itemNumber: number;
+};
+
+export type UserCollections = {
+    collections: CollectionPreview[];
+    moreToFetch: boolean;
 };

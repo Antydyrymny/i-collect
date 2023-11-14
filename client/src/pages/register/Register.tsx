@@ -38,7 +38,7 @@ function Register() {
             <Card.Subtitle className='mb-5'>{t('header-msg')}</Card.Subtitle>
             <div className='mb-3'>
                 <Form onSubmit={allowSubmit ? handleSubmit : undefined}>
-                    <Form.Group className='mb-3'>
+                    <Form.Group className='mb-3' controlId='name'>
                         <Form.Label className='text-center'>{t('name-label')}</Form.Label>
                         <Form.Control
                             type='text'
@@ -48,7 +48,7 @@ function Register() {
                             onChange={changeregisterState('name')}
                         />
                     </Form.Group>
-                    <Form.Group className='mb-3'>
+                    <Form.Group className='mb-3' controlId='email'>
                         <Form.Label className='text-center'>
                             {t('email-label')}
                         </Form.Label>
@@ -60,7 +60,7 @@ function Register() {
                             onChange={changeregisterState('email')}
                         />
                     </Form.Group>
-                    <Form.Group className='mb-3'>
+                    <Form.Group className='mb-3' controlId='password'>
                         <Form.Label>{t('password-label')}</Form.Label>
                         <Form.Control
                             type='password'

@@ -1,7 +1,6 @@
 import api from '../../api';
 import { toast } from 'react-toastify';
 import {
-    AdminQuery,
     ApiBuilder,
     CollectionPreview,
     CollectionResponse,
@@ -13,6 +12,7 @@ import {
     NewCollectionRes,
     Routes,
     UpdateCollectionReq,
+    UserCollections,
     isStringError,
 } from '../../../../types';
 
@@ -21,7 +21,7 @@ const defaultGetUserCollectionsParams = {
 };
 
 export const getUserCollections = (builder: ApiBuilder) =>
-    builder.query<CollectionPreview[], CollectionsPreviewQuery>({
+    builder.query<UserCollections, CollectionsPreviewQuery>({
         query: (request) => ({
             url: Routes.Auth + Routes.GetUserCollections,
             params: { ...defaultGetUserCollectionsParams, ...request },
@@ -29,9 +29,22 @@ export const getUserCollections = (builder: ApiBuilder) =>
         serializeQueryArgs: ({ endpointName }) => {
             return endpointName;
         },
+        transformResponse: (response: CollectionPreview[]): UserCollections => {
+            return {
+                collections: response,
+                moreToFetch: response.length === defaultGetUserCollectionsParams.limit,
+            };
+        },
         merge: (currentCache, newCollections, { arg }) => {
-            if (arg.page < 2) return newCollections;
-            return [...currentCache, ...newCollections];
+            if (arg.page < 2)
+                return {
+                    collections: newCollections.collections,
+                    moreToFetch: newCollections.moreToFetch,
+                };
+            return {
+                collections: [...currentCache.collections, ...newCollections.collections],
+                moreToFetch: newCollections.moreToFetch,
+            };
         },
         forceRefetch: ({ currentArg, previousArg }) => {
             return (
@@ -65,7 +78,7 @@ export const getCollection = (builder: ApiBuilder) =>
     });
 
 export const newCollection = (builder: ApiBuilder) =>
-    builder.mutation<NewCollectionRes, NewCollectionReq & Partial<AdminQuery>>({
+    builder.mutation<NewCollectionRes, NewCollectionReq>({
         query: ({ ownerId, ...body }) => ({
             url: Routes.Auth + Routes.NewCollection,
             params: ownerId ? { ownerId } : undefined,
@@ -75,7 +88,7 @@ export const newCollection = (builder: ApiBuilder) =>
     });
 
 export const updateCollection = (builder: ApiBuilder) =>
-    builder.mutation<string, UpdateCollectionReq & Partial<AdminQuery>>({
+    builder.mutation<string, UpdateCollectionReq>({
         query: ({ ownerId, ...body }) => ({
             url: Routes.Auth + Routes.UpdateCollection,
             params: ownerId ? { ownerId } : undefined,
@@ -100,7 +113,7 @@ export const updateCollection = (builder: ApiBuilder) =>
     });
 
 export const deleteCollection = (builder: ApiBuilder) =>
-    builder.mutation<string, DeleteCollectionReq & Partial<AdminQuery>>({
+    builder.mutation<string, DeleteCollectionReq>({
         query: ({ ownerId, ...body }) => ({
             url: Routes.Auth + Routes.DeleteCollection,
             params: ownerId ? { ownerId } : undefined,
@@ -112,8 +125,12 @@ export const deleteCollection = (builder: ApiBuilder) =>
                 api.util.updateQueryData(
                     'getUserCollections',
                     'getUserCollections' as unknown as CollectionsPreviewQuery,
-                    (draft) =>
-                        draft.filter((collection) => collection._id !== request._id)
+                    (draft) => ({
+                        ...draft,
+                        collections: draft.collections.filter(
+                            (collection) => collection._id !== request._id
+                        ),
+                    })
                 )
             );
             try {

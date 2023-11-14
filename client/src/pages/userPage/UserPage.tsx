@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
     useLazyFindUserCollectionQuery,
@@ -49,18 +49,17 @@ function UserPage() {
     };
 
     const [page, setPage] = useState(0);
-    useEffect(() => {
-        return () => {
-            setPage(0);
-        };
-    }, []);
-    const { data: collections, ...collectionsOptions } = useGetUserCollectionsQuery(
+    const { data: collectionsData, ...collectionsOptions } = useGetUserCollectionsQuery(
         { page, ownerId },
         { skip: !ownerData }
     );
-
     const pageBottomRef = useRef<HTMLSpanElement>(null);
-    useIntersectionObserver(pageBottomRef, () => setPage((page) => page + 1));
+    useIntersectionObserver(
+        pageBottomRef,
+        () => setPage((page) => page + 1),
+        collectionsOptions.isFetching,
+        collectionsData?.moreToFetch ?? true
+    );
 
     useInformOfError([
         { isError: ownerOptions.isError, error: ownerOptions.error },
@@ -143,13 +142,13 @@ function UserPage() {
                     </Row>
                     <Row className='my-3'>
                         <Link to={ClientRoutes.NewCollection} className='px-0'>
-                            <Button className='w-100 h-100'>{t('newCollection')}</Button>
+                            <Button>{t('newCollection')}</Button>
                         </Link>
                     </Row>
                     {!(searchQuery && searchResults) && (
                         <Row>
                             {collectionsOptions.isSuccess &&
-                                collections?.map((collection) => (
+                                collectionsData?.collections?.map((collection) => (
                                     <CollectionCardPreview
                                         key={collection._id}
                                         collection={collection}
