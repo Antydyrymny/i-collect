@@ -1,23 +1,28 @@
 import { Request, Response } from 'express';
 import { CollectionModel, UserModel } from '../../models';
 import { getNameVersion } from '../../utils/nameVersioning';
-import { authorizeResourceOwnership } from '../manageUsers';
 import { UpdateCollectionReq, ResponseError } from '../../types';
+import { authorizeCollectionOwnership } from './utils';
 
 export const updateCollection = async (req: Request, res: Response) => {
     const { _id, name: newName }: UpdateCollectionReq = req.body;
-
-    const authorId = authorizeResourceOwnership(req);
 
     const existingCollection = await CollectionModel.findById(_id);
     if (!existingCollection)
         throw new ResponseError(`Collection with id ${_id} not found`, 404);
 
-    const existingAuthor = await UserModel.findById(authorId).populate<{
+    authorizeCollectionOwnership(req, existingCollection.authorId);
+
+    const existingAuthor = await UserModel.findById(
+        existingCollection.authorId
+    ).populate<{
         collections: { _id: string; name: string }[];
     }>('collections', 'name');
     if (!existingAuthor)
-        throw new ResponseError(`Author with id ${authorId} not found`, 404);
+        throw new ResponseError(
+            `Author with id ${existingCollection.authorId} not found`,
+            404
+        );
 
     let validatedName = newName ?? existingCollection.name;
     if (newName && existingAuthor.populated('collections')) {

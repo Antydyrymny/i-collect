@@ -7,6 +7,7 @@ import {
     InputGroup,
 } from 'react-bootstrap';
 import { fieldTypes } from '../../../data';
+import { useLocale } from '../../../contexts/locale';
 import TooltipOverlay from '../../../components/tooltip/TooltipOverlay';
 import { FormatField } from '../../../types';
 
@@ -30,40 +31,44 @@ function OptionalFields({
     deleteOptionalField,
     changeOptionalFields,
 }: OptionalFieldsProps) {
+    const t = useLocale('newCollection');
+    const tDict = useLocale('dictionary');
+
     return (
         <Card className='mt-4'>
             <Card.Body>
-                <h6 className='mt-2 mb-4'>Additional fields</h6>
+                <h6 className='mt-2 mb-4'>{t('additionalFields')}</h6>
                 {optionalFields.map((optionalField, ind) => (
                     <InputGroup key={ind} className='mb-4'>
-                        <FloatingLabel label={'Field name'}>
+                        <FloatingLabel label={t('optionalFieldName')}>
                             <Form.Control
                                 type='text'
                                 value={optionalField.fieldName}
                                 onChange={changeOptionalFields(ind, 'name')}
-                                placeholder={'Name'}
+                                placeholder={t('optionalFieldName')}
                                 required
                                 className='shadow-none'
+                                maxLength={255}
                             />
                         </FloatingLabel>
-                        <FloatingLabel label={'Field Type'}>
+                        <FloatingLabel label={t('optionalFieldType')}>
                             <Form.Select
                                 value={optionalField.fieldType}
                                 onChange={changeOptionalFields(ind, 'type')}
-                                placeholder={'Type'}
+                                placeholder={t('optionalFieldType')}
                                 required
                                 className='shadow-none'
                             >
                                 {fieldTypes.map((type) => (
                                     <option key={type} value={type}>
-                                        {type}
+                                        {tDict(type)}
                                     </option>
                                 ))}
                             </Form.Select>
                         </FloatingLabel>
                         <TooltipOverlay
                             id='clear'
-                            tooltipMessage={'Delete'}
+                            tooltipMessage={t('delete')}
                             placement='bottom'
                         >
                             <InputGroup.Text className='d-none d-sm-flex'>
@@ -73,7 +78,7 @@ function OptionalFields({
                     </InputGroup>
                 ))}
                 <Button onClick={addOptionalField} className='mb-2'>
-                    + Add field
+                    {t('addField')}
                 </Button>
             </Card.Body>
         </Card>

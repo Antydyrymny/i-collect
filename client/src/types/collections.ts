@@ -16,6 +16,18 @@ export type FormatField = {
     fieldType: FieldType;
 };
 export type FieldType = 'boolean' | 'number' | 'string' | 'text' | 'date';
+export type FieldValueMap = {
+    [K in FieldType]: K extends 'boolean'
+        ? boolean
+        : K extends 'number'
+        ? number
+        : K extends 'string' | 'text'
+        ? string
+        : K extends 'date'
+        ? Date
+        : never;
+};
+
 export type CollectionTheme =
     | 'Books'
     | 'Signs'
@@ -35,7 +47,7 @@ export type NewCollectionRes = {
     _id: string;
 };
 
-export type UpdateCollectionReq = Partial<AdminQuery> & {
+export type UpdateCollectionReq = {
     _id: string;
     name?: string;
     description?: string;
@@ -43,7 +55,7 @@ export type UpdateCollectionReq = Partial<AdminQuery> & {
     image?: string;
 };
 
-export type DeleteCollectionReq = Partial<AdminQuery> & {
+export type DeleteCollectionReq = {
     _id: string;
 };
 

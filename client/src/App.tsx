@@ -11,7 +11,7 @@ const UserPage = React.lazy(() => import('./pages/userPage/UserPage'));
 const NewCollection = React.lazy(
     () => import('./pages/userPage/newCollection/NewCollection')
 );
-const Collection = React.lazy(() => import('./pages/collection/Collection'));
+const CollectionPage = React.lazy(() => import('./pages/collection/CollectionPage'));
 const Item = React.lazy(() => import('./pages/item/Item'));
 
 const MainLayout = React.lazy(() => import('./pages/layouts/mainLayout/MainLayout'));
@@ -45,7 +45,10 @@ function App() {
                                 element={<ProtectedRoute Component={NewCollection} />}
                             />
                         </Route>
-                        <Route path={ClientRoutes.Collection} element={<Collection />} />
+                        <Route
+                            path={ClientRoutes.Collection}
+                            element={<CollectionPage />}
+                        />
                         <Route path={ClientRoutes.Item} element={<Item />} />
                         <Route
                             path={ClientRoutes.ManageUsers}

@@ -56,6 +56,7 @@ export const getUserCollections = (builder: ApiBuilder) =>
                     ))
             );
         },
+        keepUnusedDataFor: 0,
     });
 
 export const findUserCollection = (builder: ApiBuilder) =>
@@ -69,9 +70,9 @@ export const findUserCollection = (builder: ApiBuilder) =>
 
 export const getCollection = (builder: ApiBuilder) =>
     builder.query<CollectionResponse, string>({
-        query: (request) => ({
+        query: (collectionId) => ({
             url: Routes.GetCollection,
-            params: { _id: request } as GetCollectionQuery,
+            params: { _id: collectionId } as GetCollectionQuery,
         }),
         providesTags: ['CurCollection'],
         keepUnusedDataFor: 0,
@@ -89,11 +90,10 @@ export const newCollection = (builder: ApiBuilder) =>
 
 export const updateCollection = (builder: ApiBuilder) =>
     builder.mutation<string, UpdateCollectionReq>({
-        query: ({ ownerId, ...body }) => ({
+        query: (request) => ({
             url: Routes.Auth + Routes.UpdateCollection,
-            params: ownerId ? { ownerId } : undefined,
             method: 'PATCH',
-            body,
+            body: request,
         }),
         async onQueryStarted({ _id, ...request }, { dispatch, queryFulfilled }) {
             dispatch(
@@ -113,14 +113,13 @@ export const updateCollection = (builder: ApiBuilder) =>
     });
 
 export const deleteCollection = (builder: ApiBuilder) =>
-    builder.mutation<string, DeleteCollectionReq>({
-        query: ({ ownerId, ...body }) => ({
+    builder.mutation<string, string>({
+        query: (collectionId) => ({
             url: Routes.Auth + Routes.DeleteCollection,
-            params: ownerId ? { ownerId } : undefined,
             method: 'DELETE',
-            body,
+            body: { _id: collectionId } as DeleteCollectionReq,
         }),
-        async onQueryStarted(request, { dispatch, queryFulfilled }) {
+        async onQueryStarted(collectionId, { dispatch, queryFulfilled }) {
             const deleteResult = dispatch(
                 api.util.updateQueryData(
                     'getUserCollections',
@@ -128,7 +127,7 @@ export const deleteCollection = (builder: ApiBuilder) =>
                     (draft) => ({
                         ...draft,
                         collections: draft.collections.filter(
-                            (collection) => collection._id !== request._id
+                            (collection) => collection._id !== collectionId
                         ),
                     })
                 )

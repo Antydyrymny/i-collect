@@ -1,6 +1,7 @@
 import { CollectionTheme, FieldType } from '../types';
 
 export const collectionThemes: CollectionTheme[] = [
+    'Other',
     'Books',
     'Signs',
     'Films',
@@ -10,7 +11,6 @@ export const collectionThemes: CollectionTheme[] = [
     'Cards',
     'Cars',
     'Art',
-    'Other',
 ];
 
 export const fieldTypes: FieldType[] = ['string', 'text', 'boolean', 'number', 'date'];

@@ -1,9 +1,10 @@
 import { useLocaleContext } from '.';
 import { Form, Image } from 'react-bootstrap';
-import { Locale } from '../../types';
+import { nanoid } from '@reduxjs/toolkit';
 import { useThemeContext } from '../theme';
 import globe from '../../assets/globe.png';
 import globeDark from '../../assets/globe-dark.png';
+import { Locale } from '../../types';
 import styles from './localePickerStyles.module.scss';
 
 export default function LocalePicker() {
@@ -16,7 +17,7 @@ export default function LocalePicker() {
 
     return (
         <Form.Group
-            controlId='locale'
+            controlId={'locale' + nanoid()}
             className='d-flex justify-content-center align-items-center '
         >
             <Form.Label className='m-0'>

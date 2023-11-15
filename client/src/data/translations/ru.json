@@ -58,5 +58,41 @@
         "totalItems": "Всего элементов: ",
         "delete": "Удалить коллекцию",
         "toCollection": "К коллекции"
+    },
+    "newCollection": {
+        "title": "Создать новую коллекцию",
+        "submit": "Сохранить коллекцию",
+        "back": "Отмена",
+        "mainFields": "Основные поля",
+        "nameLabel": "Название",
+        "namePlaceholder": "Введите название коллекции",
+        "descriptionLabel": "Описание",
+        "descriptionPlaceholder": "Введите описание коллекции",
+        "themeLabel": "Тема",
+        "imageLabel": "Изображение",
+        "uploadImage": "Загрузить изображение",
+        "clearImage": "Очистить изображение",
+        "additionalFields": "Дополнительные поля",
+        "optionalFieldName": "Название поля",
+        "optionalFieldType": "Тип поля",
+        "delete": "Удалить",
+        "addField": "+ Добавить поле"
+    },
+    "dictionary": {
+        "Books": "Книги",
+        "Signs": "Знаки",
+        "Films": "Фильмы",
+        "Stamps": "Марки",
+        "Coins": "Монеты",
+        "Comics": "Комиксы",
+        "Cards": "Карты",
+        "Cars": "Машины",
+        "Art": "Искусство",
+        "Other": "Другое",
+        "string": "строка",
+        "text": "текст",
+        "boolean": "бинарный",
+        "number": "число",
+        "date": "дата"
     }
 }

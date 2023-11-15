@@ -58,5 +58,41 @@
         "totalItems": "Total items: ",
         "delete": "Delete collection",
         "toCollection": "To collection"
+    },
+    "newCollection": {
+        "title": "Create new collection",
+        "submit": "Save collection",
+        "back": "Cancel",
+        "mainFields": "Main fields",
+        "nameLabel": "Name",
+        "namePlaceholder": "Enter collection's name",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Enter collection's description",
+        "themeLabel": "Theme",
+        "imageLabel": "Image",
+        "uploadImage": "Upload image",
+        "clearImage": "Clear image",
+        "additionalFields": "Additional fields",
+        "optionalFieldName": "Field name",
+        "optionalFieldType": "Field type",
+        "delete": "Delete",
+        "addField": "+ Add field"
+    },
+    "dictionary": {
+        "Books": "Books",
+        "Signs": "Signs",
+        "Films": "Films",
+        "Stamps": "Stamps",
+        "Coins": "Coins",
+        "Comics": "Comics",
+        "Cards": "Cards",
+        "Cars": "Cars",
+        "Art": "Art",
+        "Other": "Other",
+        "string": "string",
+        "text": "text",
+        "boolean": "boolean",
+        "number": "number",
+        "date": "date"
     }
 }

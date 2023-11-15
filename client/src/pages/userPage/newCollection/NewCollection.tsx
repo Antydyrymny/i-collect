@@ -1,17 +1,19 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useNewCollectionMutation } from '../../../app/services/api';
 import { useSelectUser } from '../../../app/services/features/auth';
-import { Button, Card, Container, Form, Spinner } from 'react-bootstrap';
+import { useLocale } from '../../../contexts/locale';
+import { useCollectionMainFields } from '../../../hooks';
+import { Button, Card, Form, Spinner } from 'react-bootstrap';
+import RequiredFields from './RequiredFields';
+import OptionalFields from './OptionalFields';
+import { toast } from 'react-toastify';
 import {
     ClientRoutes,
     FormatField,
     NewCollectionReq,
     isStringError,
 } from '../../../types';
-import RequiredFields from './RequiredFields';
-import OptionalFields from './OptionalFields';
-import { toast } from 'react-toastify';
 
 function NewCollection() {
     const user = useSelectUser();
@@ -20,46 +22,30 @@ function NewCollection() {
 
     const [createCollection, collectionOptions] = useNewCollectionMutation();
 
-    const [requiredFields, setRequiredFields] = useState<
+    const defaultState = useMemo<
         Pick<NewCollectionReq, 'name' | 'description' | 'theme'>
-    >({
-        name: '',
-        description: '',
-        theme: 'Other',
-    });
-    const changeRequiredState = useCallback(
-        <T extends 'name' | 'description' | 'theme'>(param: T) =>
-            (
-                e: T extends 'theme'
-                    ? React.ChangeEvent<HTMLSelectElement>
-                    : React.ChangeEvent<HTMLInputElement>
-            ) =>
-                setRequiredFields((prevState) => ({
-                    ...prevState,
-                    [param]: e.target.value,
-                })),
+    >(
+        () => ({
+            name: '',
+            description: '',
+            theme: 'Other',
+        }),
         []
     );
-    const [imageData, setImageData] = useState<{
-        file: File | null;
-        imgPreview: string | null;
-    }>({
-        file: null,
-        imgPreview: null,
-    });
-    const handleImageChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const reader = new FileReader();
-            const file = e.target.files[0];
-            reader.onloadend = () => {
-                setImageData({ file, imgPreview: reader.result as string });
-            };
-            reader.readAsDataURL(file);
-        }
-    }, []);
-    const clearImage = useCallback(() => {
-        setImageData({ file: null, imgPreview: null });
-    }, []);
+    const defaultImgState = useMemo(
+        () => ({
+            file: null,
+            imgPreview: undefined,
+        }),
+        []
+    );
+    const {
+        mainFields,
+        handleMainStateChange,
+        imageData,
+        handleImageChange,
+        clearImage,
+    } = useCollectionMainFields(defaultState, defaultImgState);
 
     const [optionalFields, setOptionalFields] = useState<FormatField[]>([]);
     const addOptionalField = useCallback(() => {
@@ -96,74 +82,61 @@ function NewCollection() {
     );
 
     const navigate = useNavigate();
-    const handleSubmit = useCallback(
-        async (e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            if (collectionOptions.isLoading) return;
-            try {
-                const collectionRes = await createCollection({
-                    ownerId,
-                    name: requiredFields.name,
-                    description: requiredFields.description,
-                    theme: requiredFields.theme,
-                    format: optionalFields,
-                }).unwrap();
-                navigate(ClientRoutes.CollectionPath + collectionRes._id);
-            } catch (error) {
-                toast.error(
-                    isStringError(error) ? error.data : 'Error connecting to server'
-                );
-            }
-        },
-        [
-            navigate,
-            ownerId,
-            createCollection,
-            collectionOptions.isLoading,
-            optionalFields,
-            requiredFields.description,
-            requiredFields.name,
-            requiredFields.theme,
-        ]
-    );
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (collectionOptions.isLoading) return;
+        try {
+            const collectionRes = await createCollection({
+                ownerId,
+                name: mainFields.name,
+                description: mainFields.description,
+                theme: mainFields.theme,
+                format: optionalFields,
+            }).unwrap();
+            navigate(ClientRoutes.CollectionPath + collectionRes._id);
+        } catch (error) {
+            toast.error(isStringError(error) ? error.data : 'Error connecting to server');
+        }
+    };
+
+    const t = useLocale('newCollection');
 
     return (
-        <Container className='pb-5 '>
-            <Card style={{ borderRadius: '0.5rem' }}>
-                <Card.Body
-                    style={{ borderRadius: '0.5rem' }}
-                    className='p-3 bg-body-tertiary'
-                >
-                    <h3 className='mt-2 mb-4'>Create new collection</h3>
-                    <Form onSubmit={handleSubmit}>
-                        <RequiredFields
-                            requiredFields={requiredFields}
-                            changeRequiredState={changeRequiredState}
-                            imgPreview={imageData.imgPreview}
-                            handleImageChange={handleImageChange}
-                            clearImage={clearImage}
-                        />
-                        <OptionalFields
-                            optionalFields={optionalFields}
-                            addOptionalField={addOptionalField}
-                            deleteOptionalField={deleteOptionalField}
-                            changeOptionalFields={changeOptionalFields}
-                        />
-                        <div className='d-flex gap-3 mt-4 mb-2 justify-content-end'>
-                            <Button type='submit' disabled={collectionOptions.isLoading}>
-                                {collectionOptions.isLoading && (
-                                    <Spinner size='sm' className='me-2' />
-                                )}
-                                Save collection
-                            </Button>
-                            <Link to={ClientRoutes.UserPagePath + userId}>
-                                <Button variant='outline-primary'>Cancel</Button>
-                            </Link>
-                        </div>
-                    </Form>
-                </Card.Body>
-            </Card>
-        </Container>
+        <Card style={{ borderRadius: '0.5rem' }}>
+            <Card.Body
+                className='p-3 bg-body-tertiary'
+                style={{ borderRadius: '0.5rem' }}
+            >
+                <h2 className='mt-2 mb-4'>{t('title')}</h2>
+                <Form onSubmit={handleSubmit}>
+                    <RequiredFields
+                        requiredFields={mainFields}
+                        changeRequiredState={handleMainStateChange}
+                        imgPreview={imageData.imgPreview}
+                        imgName={imageData.file?.name}
+                        handleImageChange={handleImageChange}
+                        clearImage={clearImage}
+                    />
+                    <OptionalFields
+                        optionalFields={optionalFields}
+                        addOptionalField={addOptionalField}
+                        deleteOptionalField={deleteOptionalField}
+                        changeOptionalFields={changeOptionalFields}
+                    />
+                    <div className='d-flex gap-2 mt-4 mb-2 justify-content-end'>
+                        <Button type='submit' disabled={collectionOptions.isLoading}>
+                            {collectionOptions.isLoading && (
+                                <Spinner size='sm' className='me-2' />
+                            )}
+                            {t('submit')}
+                        </Button>
+                        <Link to={ClientRoutes.UserPagePath + userId}>
+                            <Button variant='outline-primary'>{t('back')}</Button>
+                        </Link>
+                    </div>
+                </Form>
+            </Card.Body>
+        </Card>
     );
 }
 

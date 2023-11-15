@@ -27,8 +27,6 @@ import TooltipOverlay from '../../components/tooltip/TooltipOverlay';
 import { ClientRoutes } from '../../types';
 
 function UserPage() {
-    const t = useLocale('userPage');
-
     const user = useSelectUser();
     const { userId } = useParams();
     const ownerId = user.admin ? userId : undefined;
@@ -66,6 +64,8 @@ function UserPage() {
         { isError: searchOptions.isError, error: searchOptions.error },
         { isError: collectionsOptions.isError, error: collectionsOptions.error },
     ]);
+
+    const t = useLocale('userPage');
 
     return (
         <Container className='pb-5'>
@@ -136,7 +136,6 @@ function UserPage() {
                                 <CollectionCardPreview
                                     key={foundCollection._id}
                                     collection={foundCollection}
-                                    ownerId={ownerId}
                                 />
                             ))}
                     </Row>
@@ -152,7 +151,6 @@ function UserPage() {
                                     <CollectionCardPreview
                                         key={collection._id}
                                         collection={collection}
-                                        ownerId={ownerId}
                                     />
                                 ))}
                             {collectionsOptions.isFetching && (

@@ -21,11 +21,10 @@ import admin from '../../assets/admin.png';
 import adminDark from '../../assets/admin-dark.png';
 import stripAdmin from '../../assets/stripAdmin.png';
 import stripAdminDark from '../../assets/stripAdmin-dark.png';
-import trash from '../../assets/deleteUser.png';
-import trashDark from '../../assets/deleteUser-dark.png';
 import { Container, Button, Row, Image, Spinner, ButtonToolbar } from 'react-bootstrap';
 import UserTable from './UserTable';
 import TooltipOverlay from '../../components/tooltip/TooltipOverlay';
+import { DeleteButton } from '../../components';
 
 function ManageUsers() {
     const authUser = useSelectUser();
@@ -188,20 +187,12 @@ function ManageUsers() {
                                 )}
                             </Button>
                         </TooltipOverlay>
-                        <TooltipOverlay id='delete' tooltipMessage={t('delete')}>
-                            <Button
-                                disabled={!allowChanges}
-                                onClick={handleDeleteUsers}
-                                variant='danger'
-                                className='me-lg-3 d-flex justify-content-center align-items-center gap-1'
-                            >
-                                {deleteUtils.isLoading ? (
-                                    <Spinner size='sm' />
-                                ) : (
-                                    <Image src={theme === 'light' ? trash : trashDark} />
-                                )}
-                            </Button>
-                        </TooltipOverlay>
+                        <DeleteButton
+                            handleDelete={handleDeleteUsers}
+                            disabled={!allowChanges}
+                            isLoading={deleteUtils.isLoading}
+                            tooltipMsg={t('delete')}
+                        />
                     </ButtonToolbar>
                     {isFetching && (
                         <div className='d-none d-md-flex align-items-center'>
