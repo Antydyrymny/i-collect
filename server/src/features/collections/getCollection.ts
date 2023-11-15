@@ -19,5 +19,6 @@ export const getCollection = async (req: Request, res: Response<CollectionRespon
         authorId: existingCollection.authorId,
         authorName: existingCollection.authorName,
         format: existingCollection.format,
+        itemNumber: existingCollection.items.length,
     });
 };

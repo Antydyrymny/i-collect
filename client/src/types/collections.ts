@@ -75,11 +75,9 @@ export type GetUserCollectionQuery = {
 
 export type CollectionResponse = Omit<ItemCollection, 'items'> & {
     _id: string;
-};
-
-export type CollectionPreview = Omit<CollectionResponse, 'format' | 'authorId'> & {
     itemNumber: number;
 };
+export type CollectionPreview = Omit<CollectionResponse, 'format' | 'authorId'>;
 
 export type UserCollections = {
     collections: CollectionPreview[];

@@ -50,7 +50,7 @@ const UserRow = memo(function UserRow({ user, selected, handleSelectOne }: UserR
                     )}
                 </div>
             </td>
-            <td className='d-flex justify-content-center'>
+            <td className='text-center'>
                 <Link to={ClientRoutes.UserPagePath + user._id}>
                     <Button>{t('toCollections')}</Button>
                 </Link>

@@ -71,6 +71,7 @@
         "themeLabel": "Тема",
         "imageLabel": "Изображение",
         "uploadImage": "Загрузить изображение",
+        "noImage": "Нет изображения",
         "clearImage": "Очистить изображение",
         "additionalFields": "Дополнительные поля",
         "optionalFieldName": "Название поля",

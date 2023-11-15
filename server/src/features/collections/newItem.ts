@@ -8,7 +8,7 @@ import {
     setItemFields,
     updateTags,
 } from './utils';
-import { ItemPreview, NewItemReq, ResponseError } from '../../types';
+import { NewItemReq, NewItemRes, ResponseError } from '../../types';
 import {
     largestCollections,
     largestCollectionsLimit,
@@ -17,7 +17,7 @@ import {
     updatesRequired,
 } from '../../data';
 
-export const newItem = async (req: Request, res: Response<ItemPreview>) => {
+export const newItem = async (req: Request, res: Response<NewItemRes>) => {
     const { name, parentCollectionId, tags = [], fields = [] }: NewItemReq = req.body;
 
     const existingCollection = await CollectionModel.findById(
@@ -69,11 +69,10 @@ export const newItem = async (req: Request, res: Response<ItemPreview>) => {
     existingCollection.items.push(newItem._id);
     await existingCollection.save();
 
-    const itemPreview = getItemPreview(newItem);
-    res.status(200).json(itemPreview);
+    res.status(200).json({ _id: newItem._id });
 
     if (latestItems.length > latestItemsLimit) latestItems.pop();
-    latestItems.unshift(itemPreview);
+    latestItems.unshift(getItemPreview(newItem));
     updatesRequired.latestItems = true;
     if (existingCollection.items.length > largestCollections.at(-1)?.itemNumber) {
         if (largestCollections.length > largestCollectionsLimit) largestCollections.pop();

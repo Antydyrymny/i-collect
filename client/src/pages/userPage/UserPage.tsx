@@ -5,8 +5,8 @@ import {
     useGetUserCollectionsQuery,
     useGetUserPageQuery,
 } from '../../app/services/api';
-import useIntersectionObserver from '../../hooks/useIntersectionOberver';
 import { useInformOfError } from '../../hooks';
+import useInfiniteScrollLoading from '../../hooks/useInfiniteScrollLoading';
 import { useLocale } from '../../contexts/locale';
 import { useSelectUser } from '../../app/services/features/auth';
 import {
@@ -52,7 +52,7 @@ function UserPage() {
         { skip: !ownerData }
     );
     const pageBottomRef = useRef<HTMLSpanElement>(null);
-    useIntersectionObserver(
+    useInfiniteScrollLoading(
         pageBottomRef,
         () => setPage((page) => page + 1),
         collectionsOptions.isFetching,
@@ -136,6 +136,7 @@ function UserPage() {
                                 <CollectionCardPreview
                                     key={foundCollection._id}
                                     collection={foundCollection}
+                                    userId={ownerId}
                                 />
                             ))}
                     </Row>
@@ -151,6 +152,7 @@ function UserPage() {
                                     <CollectionCardPreview
                                         key={collection._id}
                                         collection={collection}
+                                        userId={ownerId}
                                     />
                                 ))}
                             {collectionsOptions.isFetching && (

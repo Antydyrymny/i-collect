@@ -56,7 +56,9 @@ function EditInputField<T extends FieldType | 'select'>({
         mainComponent = asHeading ? (
             <h2>{val as string | number}</h2>
         ) : (
-            <p className='mb-0'>{val as string | number}</p>
+            <p className='mb-0' style={{ paddingTop: '0.4375rem' }}>
+                {val as string | number}
+            </p>
         );
     } else {
         switch (type) {
@@ -127,7 +129,7 @@ function EditInputField<T extends FieldType | 'select'>({
         <Form.Group
             as={inlineLabel ? Row : undefined}
             controlId={editing ? label : undefined}
-            className={`${editing ? '' : 'd-flex align-items-center'} ${
+            className={`${editing ? '' : 'd-flex align-items-start'} ${
                 asHeading ? 'mb-2' : 'mb-3'
             }`}
             style={{ maxHeight: asHeading ? '2.57625rem' : undefined }}

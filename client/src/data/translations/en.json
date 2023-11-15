@@ -71,6 +71,7 @@
         "themeLabel": "Theme",
         "imageLabel": "Image",
         "uploadImage": "Upload image",
+        "noImage": "No image",
         "clearImage": "Clear image",
         "additionalFields": "Additional fields",
         "optionalFieldName": "Field name",

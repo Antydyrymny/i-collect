@@ -1,5 +1,5 @@
 export * from './useInformOfError';
-export * from './useIntersectionOberver';
+export * from './useInfiniteScrollLoading';
 export * from './useLocalStorageState';
 export * from './usePagination';
 export * from './useRedirect';

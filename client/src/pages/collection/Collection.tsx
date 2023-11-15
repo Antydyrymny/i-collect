@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Button, Card, Form, Image, Spinner } from 'react-bootstrap';
+import { Button, Card, Col, Form, Image, Row, Spinner } from 'react-bootstrap';
 import { useThemeContext } from '../../contexts/theme';
 import edit from '../../assets/edit.png';
 import editDark from '../../assets/edit-dark.png';
@@ -19,8 +19,7 @@ import {
 import { useCollectionMainFields, useInformOfError } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
-const fieldsToUpdate = ['name', 'description', 'theme', 'image'] as const;
+import { getUpdatedFields } from '../../utils/getUpdatedFields';
 
 type CollectionProps = {
     collection: CollectionResponse;
@@ -74,27 +73,21 @@ function Collection({ collection, allowEdit }: CollectionProps) {
     const handleSubmitUpdate = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (updateOptions.isLoading || deleteOptions.isLoading) return;
-        const updateReq: UpdateCollectionReq = {
-            _id: collection._id,
-        };
-        let changesPresent = false;
-        fieldsToUpdate.forEach((field) => {
-            if (field === 'image' && imageData.file) {
-                // updateReq.image = imageData.file;
-                // changesPresent = true;
-            } else if (field !== 'image' && editState[field] !== collection[field]) {
-                updateReq[field] = editState[field];
-                changesPresent = true;
-            }
-        });
 
-        if (changesPresent) updateCollection(updateReq);
+        const mainFieldsUpdate = getUpdatedFields(collection, editState);
+        const imgUpdate = imageData.file ? { image: imageData.file } : false;
+
+        let finalUpdate: UpdateCollectionReq = { _id: collection._id };
+        if (mainFieldsUpdate) finalUpdate = { ...finalUpdate, ...mainFieldsUpdate };
+        // if (imgUpdate) finalUpdate = { ...finalUpdate, ...imgUpdate };
+
+        if (mainFieldsUpdate || imgUpdate) updateCollection(finalUpdate);
         setEditing(false);
     };
     const handleDelete = async () => {
         if (deleteOptions.isLoading) return;
         try {
-            await deleteCollection(collection._id);
+            await deleteCollection({ collectionToDeleteId: collection._id });
             navigate(ClientRoutes.Home);
         } catch (error) {
             toast.error(isStringError(error) ? error.data : 'Error connecting to server');
@@ -110,7 +103,7 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                 style={{ borderRadius: '0.5rem' }}
             >
                 <Form onSubmit={handleSubmitUpdate}>
-                    <header className='d-flex justify-content-between align-items-start mt-2 mb-4'>
+                    <header className='d-flex justify-content-between align-items-start mt-2 mb-4 gap-2'>
                         <div className='w-50'>
                             <EditInputField
                                 type={'string'}
@@ -150,8 +143,8 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                     <Card>
                         <Card.Body>
                             <h6 className='mt-2 mb-4'>Info</h6>
-                            <div className='d-lg-flex gap-5 mb-2'>
-                                <div className='w-100'>
+                            <Row className='d-lg-flex gap-5 mb-2'>
+                                <Col lg={6}>
                                     <EditInputField
                                         type={'select'}
                                         originalValue={collection.theme}
@@ -169,17 +162,49 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                                         onEdit={handleEditMainFields('description')}
                                         label='Description'
                                     />
-                                </div>
+                                </Col>
                                 {(collection.image || allowEdit) && (
-                                    <CollectionImg
-                                        imgPreview={imageData.imgPreview}
-                                        imgName={imageData.file?.name}
-                                        handleImageChange={handleEditImage}
-                                        clearImage={clearImage}
-                                        hideImgLabel
-                                    />
+                                    <Col>
+                                        <CollectionImg
+                                            imgPreview={imageData.imgPreview}
+                                            imgName={imageData.file?.name}
+                                            handleImageChange={handleEditImage}
+                                            clearImage={clearImage}
+                                            hideImgLabel
+                                            allowEdit={editing}
+                                        />
+                                    </Col>
                                 )}
-                            </div>
+                            </Row>
+                        </Card.Body>
+                    </Card>
+                    <Card className='mt-4'>
+                        <Card.Body>
+                            <h6 className='mt-2 mb-4'>Additional fields</h6>
+                            {collection.format.map((field, ind) => (
+                                <div
+                                    key={ind}
+                                    className='d-block d-lg-flex gap-5 mb-3'
+                                    style={{ paddingTop: '0.4375rem' }}
+                                >
+                                    <Row className='w-lg-50 w-100'>
+                                        <Col xs={6} sm={3}>
+                                            Field name:
+                                        </Col>
+                                        <Col xs={6} sm={9}>
+                                            {field.fieldName}
+                                        </Col>
+                                    </Row>
+                                    <Row className='w-lg-50 w-100'>
+                                        <Col xs={6} sm={3}>
+                                            Field type:
+                                        </Col>
+                                        <Col xs={6} sm={9}>
+                                            {field.fieldType}
+                                        </Col>
+                                    </Row>
+                                </div>
+                            ))}
                         </Card.Body>
                     </Card>
                     {allowEdit && (

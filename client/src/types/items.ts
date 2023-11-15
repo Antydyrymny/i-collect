@@ -16,6 +16,9 @@ export type NewItemReq = ItemReq & {
     name: string;
     parentCollectionId: string;
 };
+export type NewItemRes = {
+    _id: string;
+};
 export type UpdateItemReq = Omit<ItemReq, 'fields'> &
     Partial<Pick<ItemReq, 'fields'>> & {
         _id: string;
@@ -30,8 +33,7 @@ export type ToggleLikeItemReq = {
 };
 export type GetCollectionItemsQuery = {
     collectionId: string;
-    page: string;
-    limit: string;
+    page: number;
 };
 export type GetItemQuery = {
     _id: string;
@@ -58,3 +60,4 @@ export type ItemPreview = {
     likesNumber: number;
     fields: ItemResFormatField[];
 };
+export type CollectionItems = { items: ItemPreview[]; moreToFetch: boolean };

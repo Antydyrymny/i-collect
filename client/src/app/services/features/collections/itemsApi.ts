@@ -2,12 +2,14 @@ import api from '../../api';
 import { toast } from 'react-toastify';
 import {
     ApiBuilder,
+    CollectionItems,
     DeleteItemReq,
     GetCollectionItemsQuery,
     GetItemQuery,
     ItemPreview,
     ItemResponse,
     NewItemReq,
+    NewItemRes,
     Routes,
     ToggleLikeItemReq,
     UpdateItemReq,
@@ -19,16 +21,23 @@ const defaultGetCollectionItemsParams = {
 };
 
 export const getCollectionItems = (builder: ApiBuilder) =>
-    builder.query<ItemPreview[], GetCollectionItemsQuery>({
+    builder.query<CollectionItems, GetCollectionItemsQuery>({
         query: (request) => ({
             url: Routes.GetCollectionItems,
             params: { ...defaultGetCollectionItemsParams, ...request },
         }),
-        serializeQueryArgs: ({ endpointName }) => {
-            return endpointName;
-        },
-        merge: (currentCache, newItems) => {
-            currentCache.push(...newItems);
+        serializeQueryArgs: ({ endpointName }) => endpointName,
+        transformResponse: (response: ItemPreview[]): CollectionItems => ({
+            items: response,
+            moreToFetch: response.length === defaultGetCollectionItemsParams.limit,
+        }),
+        merge: (currentCache, newItems, { arg }) => {
+            if (arg.page < 2)
+                return { items: newItems.items, moreToFetch: newItems.moreToFetch };
+            return {
+                items: [...currentCache.items, ...newItems.items],
+                moreToFetch: newItems.moreToFetch,
+            };
         },
         forceRefetch: ({ currentArg, previousArg }) => {
             return (
@@ -40,6 +49,7 @@ export const getCollectionItems = (builder: ApiBuilder) =>
                     ))
             );
         },
+        keepUnusedDataFor: 0,
     });
 
 export const getItem = (builder: ApiBuilder) =>
@@ -53,28 +63,12 @@ export const getItem = (builder: ApiBuilder) =>
     });
 
 export const newItem = (builder: ApiBuilder) =>
-    builder.mutation<ItemPreview, NewItemReq>({
+    builder.mutation<NewItemRes, NewItemReq>({
         query: (request) => ({
             url: Routes.Auth + Routes.NewItem,
             method: 'POST',
             body: request,
         }),
-        async onQueryStarted(_request, { dispatch, queryFulfilled }) {
-            try {
-                const { data: newItemPreview } = await queryFulfilled;
-                dispatch(
-                    api.util.updateQueryData(
-                        'getCollectionItems',
-                        'getCollectionItems' as unknown as GetCollectionItemsQuery,
-                        (draft) => [...draft, newItemPreview]
-                    )
-                );
-            } catch (error) {
-                toast.error(
-                    isStringError(error) ? error.data : 'Error connecting to server'
-                );
-            }
-        },
     });
 
 export const updateItem = (builder: ApiBuilder) =>
@@ -127,24 +121,40 @@ export const toggleLikeItem = (builder: ApiBuilder) =>
     });
 
 export const deleteItem = (builder: ApiBuilder) =>
-    builder.mutation<string, string>({
-        query: (itemToDeleteId) => ({
+    builder.mutation<string, { itemToDeleteId: string; collectionId?: string }>({
+        query: ({ itemToDeleteId }) => ({
             url: Routes.Auth + Routes.DeleteItem,
             method: 'DELETE',
             body: { _id: itemToDeleteId } as DeleteItemReq,
         }),
-        async onQueryStarted(itemToDeleteId, { dispatch, queryFulfilled }) {
+        async onQueryStarted(
+            { itemToDeleteId, collectionId },
+            { dispatch, queryFulfilled }
+        ) {
             const deleteResult = dispatch(
                 api.util.updateQueryData(
                     'getCollectionItems',
                     'getCollectionItems' as unknown as GetCollectionItemsQuery,
-                    (draft) => draft.filter((item) => item._id !== itemToDeleteId)
+                    (draft) => ({
+                        ...draft,
+                        items: draft.items.filter((item) => item._id !== itemToDeleteId),
+                    })
                 )
             );
+            let updateCollectionPage = null;
+            if (collectionId) {
+                updateCollectionPage = dispatch(
+                    api.util.updateQueryData('getCollection', collectionId, (draft) => ({
+                        ...draft,
+                        itemNumber: draft.itemNumber - 1,
+                    }))
+                );
+            }
             try {
                 await queryFulfilled;
             } catch (error) {
                 deleteResult.undo();
+                if (updateCollectionPage) updateCollectionPage.undo();
                 toast.error(
                     isStringError(error) ? error.data : 'Error connecting to server'
                 );

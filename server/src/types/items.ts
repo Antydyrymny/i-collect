@@ -32,6 +32,10 @@ export type NewItemReq = ItemReq & {
     name: string;
     parentCollectionId: string;
 };
+export type NewItemRes = {
+    _id: string;
+};
+
 export type UpdateItemReq = Omit<ItemReq, 'fields'> &
     Partial<Pick<ItemReq, 'fields'>> & {
         _id: string;

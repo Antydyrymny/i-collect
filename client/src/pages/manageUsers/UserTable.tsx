@@ -38,10 +38,10 @@ function UserTable({
 
     return (
         <Table
+            responsive
             className={`${styles.table} table-bordered mb-4 mt-2 ${
                 !allowChanges ? 'opacity-75' : null
             }`}
-            responsive
         >
             <thead>
                 <tr>

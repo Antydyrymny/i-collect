@@ -61,9 +61,7 @@ export type GetCollectionQuery = {
 };
 
 export type CollectionResponse = Omit<ItemCollection, 'items'> & {
-    _id: Schema.Types.ObjectId;
-};
-
-export type CollectionPreview = Omit<CollectionResponse, 'format' | 'authorId'> & {
+    _id: string;
     itemNumber: number;
 };
+export type CollectionPreview = Omit<CollectionResponse, 'format' | 'authorId'>;

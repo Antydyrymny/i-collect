@@ -12,6 +12,7 @@ type CollectionImgProps = {
     handleImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     clearImage: () => void;
     hideImgLabel?: boolean;
+    allowEdit?: boolean;
 };
 
 function CollectionImg({
@@ -20,6 +21,7 @@ function CollectionImg({
     handleImageChange,
     clearImage,
     hideImgLabel = false,
+    allowEdit = true,
 }: CollectionImgProps) {
     const imageInputRef = useRef<HTMLInputElement>(null);
     const startUpload = () => {
@@ -37,7 +39,10 @@ function CollectionImg({
     const t = useLocale('newCollection');
 
     return (
-        <Form.Group className='w-100' controlId='image'>
+        <Form.Group
+            className={`${allowEdit ? '' : 'd-none d-lg-block'} w-100`}
+            controlId='image'
+        >
             {!hideImgLabel && (
                 <Form.Label className='d-none d-lg-block w-50 ms-lg-4 text-center'>
                     {t('imageLabel')}
@@ -54,49 +59,51 @@ function CollectionImg({
             <Container
                 className={`${
                     hideImgLabel ? '' : 'mt-3'
-                } d-none d-lg-flex flex-column gap-2 w-50 position-relative
-                        h-75 px-0 justify-content-center align-items-center border rounded-3`}
-                style={{ minHeight: '12rem' }}
+                } d-none d-lg-flex flex-column gap-2  position-relative
+                px-0 justify-content-center align-items-center border rounded-3`}
+                style={{ width: '320px', height: '180px' }}
             >
-                {!imgPreview && (
-                    <TooltipOverlay
-                        id='upload'
-                        tooltipMessage={t('uploadImage')}
-                        placement='top'
-                    >
-                        <Button
-                            onClick={startUpload}
-                            variant='outline-primary'
-                            className='rounded-circle d-flex justify-content-center align-items-center'
-                            style={{ width: '3rem', height: '3rem' }}
+                {!imgPreview && allowEdit && (
+                    <>
+                        <TooltipOverlay
+                            id='upload'
+                            tooltipMessage={t('uploadImage')}
+                            placement='top'
                         >
-                            <Image
-                                src={theme === 'light' ? upload : uploadDark}
-                                alt={t('uploadImage')}
-                            />
-                        </Button>
-                    </TooltipOverlay>
+                            <Button
+                                onClick={startUpload}
+                                variant='outline-primary'
+                                className='rounded-circle d-flex justify-content-center align-items-center'
+                                style={{ width: '3rem', height: '3rem' }}
+                            >
+                                <Image
+                                    src={theme === 'light' ? upload : uploadDark}
+                                    alt={t('uploadImage')}
+                                />
+                            </Button>
+                        </TooltipOverlay>
+                        <div>{t('uploadImage')}</div>
+                    </>
                 )}
+                {!imgPreview && !allowEdit && <div>{t('noImage')}</div>}
                 {imgPreview && (
-                    <TooltipOverlay
-                        id='clear'
-                        tooltipMessage={t('clearImage')}
-                        placement='top'
-                    >
-                        <CloseButton
-                            onClick={handleClearImage}
-                            className='position-absolute top-0 end-0 mt-2 me-2'
+                    <>
+                        <TooltipOverlay
+                            id='clear'
+                            tooltipMessage={t('clearImage')}
+                            placement='top'
+                        >
+                            <CloseButton
+                                onClick={handleClearImage}
+                                className='position-absolute top-0 end-0 mt-2 me-2'
+                            />
+                        </TooltipOverlay>
+                        <Image
+                            src={imgPreview}
+                            alt={imgName}
+                            className='h-100 w-100 rounded-3 object-fit-contain'
                         />
-                    </TooltipOverlay>
-                )}
-                {imgPreview ? (
-                    <Image
-                        src={imgPreview}
-                        alt={imgName}
-                        className='h-100 w-100 rounded-3'
-                    />
-                ) : (
-                    <div>{t('uploadImage')}</div>
+                    </>
                 )}
             </Container>
         </Form.Group>

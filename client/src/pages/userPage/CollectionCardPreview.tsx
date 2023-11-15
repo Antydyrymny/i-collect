@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLocale } from '../../contexts/locale';
 import { Button, Card } from 'react-bootstrap';
@@ -7,13 +8,18 @@ import { DeleteButton } from '../../components';
 
 type CollectionPreviewProps = {
     collection: CollectionPreview;
+    userId: string | undefined;
 };
-function CollectionCardPreview({ collection }: CollectionPreviewProps) {
+const CollectionCardPreview = memo(function CollectionCardPreview({
+    collection,
+    userId,
+}: CollectionPreviewProps) {
     const t = useLocale('userPage');
 
     const [deleteCollection, deleteOptions] = useDeleteCollectionMutation();
     const handleDelete = () => {
-        deleteCollection(collection._id);
+        if (deleteOptions.isLoading) return;
+        deleteCollection({ collectionToDeleteId: collection._id, userId });
     };
 
     return (
@@ -48,6 +54,6 @@ function CollectionCardPreview({ collection }: CollectionPreviewProps) {
             </Card.Body>
         </Card>
     );
-}
+});
 
 export default CollectionCardPreview;

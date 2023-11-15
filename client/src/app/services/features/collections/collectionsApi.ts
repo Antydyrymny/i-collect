@@ -17,7 +17,7 @@ import {
 } from '../../../../types';
 
 const defaultGetUserCollectionsParams = {
-    limit: 3,
+    limit: 4,
 };
 
 export const getUserCollections = (builder: ApiBuilder) =>
@@ -26,15 +26,11 @@ export const getUserCollections = (builder: ApiBuilder) =>
             url: Routes.Auth + Routes.GetUserCollections,
             params: { ...defaultGetUserCollectionsParams, ...request },
         }),
-        serializeQueryArgs: ({ endpointName }) => {
-            return endpointName;
-        },
-        transformResponse: (response: CollectionPreview[]): UserCollections => {
-            return {
-                collections: response,
-                moreToFetch: response.length === defaultGetUserCollectionsParams.limit,
-            };
-        },
+        serializeQueryArgs: ({ endpointName }) => endpointName,
+        transformResponse: (response: CollectionPreview[]): UserCollections => ({
+            collections: response,
+            moreToFetch: response.length === defaultGetUserCollectionsParams.limit,
+        }),
         merge: (currentCache, newCollections, { arg }) => {
             if (arg.page < 2)
                 return {
@@ -113,13 +109,16 @@ export const updateCollection = (builder: ApiBuilder) =>
     });
 
 export const deleteCollection = (builder: ApiBuilder) =>
-    builder.mutation<string, string>({
-        query: (collectionId) => ({
+    builder.mutation<string, { collectionToDeleteId: string; userId?: string }>({
+        query: ({ collectionToDeleteId }) => ({
             url: Routes.Auth + Routes.DeleteCollection,
             method: 'DELETE',
-            body: { _id: collectionId } as DeleteCollectionReq,
+            body: { _id: collectionToDeleteId } as DeleteCollectionReq,
         }),
-        async onQueryStarted(collectionId, { dispatch, queryFulfilled }) {
+        async onQueryStarted(
+            { collectionToDeleteId, userId },
+            { dispatch, queryFulfilled }
+        ) {
             const deleteResult = dispatch(
                 api.util.updateQueryData(
                     'getUserCollections',
@@ -127,15 +126,24 @@ export const deleteCollection = (builder: ApiBuilder) =>
                     (draft) => ({
                         ...draft,
                         collections: draft.collections.filter(
-                            (collection) => collection._id !== collectionId
+                            (collection) => collection._id !== collectionToDeleteId
                         ),
                     })
                 )
+            );
+            const updateUserPage = dispatch(
+                api.util.updateQueryData('getUserPage', userId, (draft) => ({
+                    ...draft,
+                    collections: draft.collections.filter(
+                        (collection) => collection !== collectionToDeleteId
+                    ),
+                }))
             );
             try {
                 await queryFulfilled;
             } catch (error) {
                 deleteResult.undo();
+                updateUserPage.undo();
                 toast.error(
                     isStringError(error) ? error.data : 'Error connecting to server'
                 );

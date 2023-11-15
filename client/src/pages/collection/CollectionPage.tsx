@@ -36,7 +36,14 @@ function CollectionPage() {
             {collectionOptions.isSuccess && (
                 <Collection collection={collection!} allowEdit={allowEdit} />
             )}
-            <Items />
+            {collectionOptions.isSuccess && (
+                <Items
+                    collectionId={collection!._id}
+                    allowEdit={allowEdit}
+                    itemsNumber={collection!.itemNumber}
+                    collectionFieldsNumber={collection!.format.length}
+                />
+            )}
         </>
     );
 }
