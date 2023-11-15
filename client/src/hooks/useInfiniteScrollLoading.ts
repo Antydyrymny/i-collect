@@ -8,7 +8,7 @@ import { useEffect, useRef, RefObject } from 'react';
  * @param moreToFetch disconnect Intersection observer when no more to fetch
  * @param options IntersectionObserver options
  */
-export default function useInfiniteScrollLoading(
+export function useInfiniteScrollLoading(
     ref: RefObject<HTMLElement>,
     callback: () => void,
     isLoading: boolean,

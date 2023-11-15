@@ -20,6 +20,7 @@ import { useCollectionMainFields, useInformOfError } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getUpdatedFields } from '../../utils/getUpdatedFields';
+import { useLocale } from '../../contexts/locale';
 
 type CollectionProps = {
     collection: CollectionResponse;
@@ -59,7 +60,7 @@ function Collection({ collection, allowEdit }: CollectionProps) {
     };
     const cancelEdit = () => {
         setEditing(false);
-        resetMainState;
+        resetMainState();
     };
 
     const [updateCollection, updateOptions] = useUpdateCollectionMutation();
@@ -95,6 +96,8 @@ function Collection({ collection, allowEdit }: CollectionProps) {
     };
 
     const { theme } = useThemeContext();
+    const t = useLocale('collectionPage');
+    const tDict = useLocale('dictionary');
 
     return (
         <Card style={{ borderRadius: '0.5rem' }}>
@@ -119,7 +122,8 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                                     top: editing ? '0.5rem' : undefined,
                                 }}
                             >
-                                by {collection.authorName}
+                                {t('by')}
+                                {collection.authorName}
                             </h6>
                         </div>
                         {allowEdit && (
@@ -129,30 +133,32 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                                         src={theme === 'light' ? edit : editDark}
                                         className='me-2'
                                     />
-                                    {editing ? 'Cancel edit' : 'Edit collection'}
+                                    {editing ? t('stopEdit') : t('edit')}
                                 </Button>
                                 <DeleteButton
                                     handleDelete={handleDelete}
                                     disabled={deleteOptions.isLoading}
                                     isLoading={deleteOptions.isLoading}
-                                    tooltipMsg='Delete collection'
+                                    tooltipMsg={t('deleteCollection')}
                                 />
                             </div>
                         )}
                     </header>
                     <Card>
                         <Card.Body>
-                            <h6 className='mt-2 mb-4'>Info</h6>
+                            <h6 className='mt-2 mb-4'>{t('info')}</h6>
                             <Row className='d-lg-flex gap-5 mb-2'>
                                 <Col lg={6}>
                                     <EditInputField
                                         type={'select'}
-                                        originalValue={collection.theme}
-                                        editedValue={editState.theme}
+                                        originalValue={tDict(collection.theme)}
+                                        editedValue={tDict(editState.theme)}
                                         editing={editing}
                                         onEdit={handleEditMainFields('theme')}
-                                        options={collectionThemes}
-                                        label='Theme'
+                                        options={collectionThemes.map((theme) =>
+                                            tDict(theme)
+                                        )}
+                                        label={t('themeLabel')}
                                     />
                                     <EditInputField
                                         type={'text'}
@@ -160,7 +166,7 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                                         editedValue={editState.description}
                                         editing={editing}
                                         onEdit={handleEditMainFields('description')}
-                                        label='Description'
+                                        label={t('descriptionLabel')}
                                     />
                                 </Col>
                                 {(collection.image || allowEdit) && (
@@ -180,7 +186,7 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                     </Card>
                     <Card className='mt-4'>
                         <Card.Body>
-                            <h6 className='mt-2 mb-4'>Additional fields</h6>
+                            <h6 className='mt-2 mb-4'>{t('additionalFields')}</h6>
                             {collection.format.map((field, ind) => (
                                 <div
                                     key={ind}
@@ -189,7 +195,7 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                                 >
                                     <Row className='w-lg-50 w-100'>
                                         <Col xs={6} sm={3}>
-                                            Field name:
+                                            {t('fieldName')}
                                         </Col>
                                         <Col xs={6} sm={9}>
                                             {field.fieldName}
@@ -197,7 +203,7 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                                     </Row>
                                     <Row className='w-lg-50 w-100'>
                                         <Col xs={6} sm={3}>
-                                            Field type:
+                                            {t('fieldType')}
                                         </Col>
                                         <Col xs={6} sm={9}>
                                             {field.fieldType}
@@ -216,7 +222,7 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                                 {updateOptions.isLoading && (
                                     <Spinner size='sm' className='me-2' />
                                 )}
-                                Save changes
+                                {t('save')}
                             </Button>
                         </div>
                     )}

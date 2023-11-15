@@ -1,30 +1,18 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
     useLazyFindUserCollectionQuery,
     useGetUserCollectionsQuery,
     useGetUserPageQuery,
 } from '../../app/services/api';
-import { useInformOfError } from '../../hooks';
-import useInfiniteScrollLoading from '../../hooks/useInfiniteScrollLoading';
+import { useInfiniteScrollLoading, useInformOfError, useSearchUtils } from '../../hooks';
 import { useLocale } from '../../contexts/locale';
 import { useSelectUser } from '../../app/services/features/auth';
-import {
-    Button,
-    CloseButton,
-    Col,
-    Container,
-    FloatingLabel,
-    Form,
-    InputGroup,
-    Row,
-    Spinner,
-    Stack,
-} from 'react-bootstrap';
+import { Button, Col, Container, Row, Spinner, Stack } from 'react-bootstrap';
 import CollectionCardPreview from './CollectionCardPreview';
 import styles from './userPageStyles.module.scss';
-import TooltipOverlay from '../../components/tooltip/TooltipOverlay';
 import { ClientRoutes } from '../../types';
+import { SearchBar } from '../../components';
 
 function UserPage() {
     const user = useSelectUser();
@@ -33,18 +21,17 @@ function UserPage() {
 
     const { data: ownerData, ...ownerOptions } = useGetUserPageQuery(ownerId);
 
-    const [searchQuery, setSearchQuery] = useState('');
+    const { searchQuery, handleSearchChange, clearSearch } = useSearchUtils();
     const [search, { data: searchResults, ...searchOptions }] =
         useLazyFindUserCollectionQuery();
-
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
-    };
-    const submitSearch = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (!searchQuery) return;
-        search({ query: searchQuery, ownerId });
-    };
+    const submitSearch = useCallback(
+        (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            if (!searchQuery) return;
+            search({ query: searchQuery, ownerId });
+        },
+        [ownerId, search, searchQuery]
+    );
 
     const [page, setPage] = useState(0);
     const { data: collectionsData, ...collectionsOptions } = useGetUserCollectionsQuery(
@@ -55,7 +42,9 @@ function UserPage() {
     useInfiniteScrollLoading(
         pageBottomRef,
         () => setPage((page) => page + 1),
-        collectionsOptions.isFetching,
+        collectionsOptions.isFetching ||
+            searchOptions.isLoading ||
+            !!(searchQuery && searchResults),
         collectionsData?.moreToFetch ?? true
     );
 
@@ -86,43 +75,27 @@ function UserPage() {
                             </p>
                         </Col>
                         <Col xs={12} md={6} lg={8} className='ps-0 pe-0'>
-                            <Form onSubmit={submitSearch}>
-                                <InputGroup>
-                                    <FloatingLabel
-                                        controlId='collectionSearch'
-                                        label={t('findCollection')}
-                                    >
-                                        <Form.Control
-                                            value={searchQuery}
-                                            onChange={handleSearchChange}
-                                            type='text'
-                                            required
-                                            placeholder={t('findCollection')}
-                                            className='shadow-none'
-                                        />
-                                    </FloatingLabel>
-                                    <TooltipOverlay
-                                        id='clear'
-                                        tooltipMessage={t('clear')}
-                                        placement='bottom'
-                                    >
-                                        <InputGroup.Text className='d-none d-sm-flex'>
-                                            <CloseButton
-                                                onClick={() => setSearchQuery('')}
-                                            />
-                                        </InputGroup.Text>
-                                    </TooltipOverlay>
-                                    <Button type='submit' variant='outline-primary'>
-                                        {t('search')}
-                                    </Button>
-                                </InputGroup>
-                            </Form>
+                            <SearchBar
+                                searchQuery={searchQuery}
+                                handleSearchChange={handleSearchChange}
+                                clearSearch={clearSearch}
+                                submitSearch={submitSearch}
+                                label={t('findCollection')}
+                                placeholder={t('findCollection')}
+                            />
                         </Col>
                     </>
                 )}
             </Row>
             {ownerOptions.isSuccess && (
                 <>
+                    <Row className='my-3'>
+                        <Col className='px-0'>
+                            <Link to={ClientRoutes.NewCollection}>
+                                <Button>{t('newCollection')}</Button>
+                            </Link>
+                        </Col>
+                    </Row>
                     <Row className='mb-4'>
                         {searchOptions.isFetching && (
                             <Stack className='my-5 d-flex justify-content-center align-items-center'>
@@ -140,11 +113,7 @@ function UserPage() {
                                 />
                             ))}
                     </Row>
-                    <Row className='my-3'>
-                        <Link to={ClientRoutes.NewCollection} className='px-0'>
-                            <Button>{t('newCollection')}</Button>
-                        </Link>
-                    </Row>
+
                     {!(searchQuery && searchResults) && (
                         <Row>
                             {collectionsOptions.isSuccess &&

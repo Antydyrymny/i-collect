@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 type TooltipProps = {
@@ -7,7 +8,7 @@ type TooltipProps = {
     placement?: 'top' | 'bottom' | 'left' | 'right';
 };
 
-function TooltipOverlay({
+const TooltipOverlay = memo(function TooltipOverlay({
     children,
     id,
     tooltipMessage,
@@ -28,6 +29,6 @@ function TooltipOverlay({
             {children}
         </OverlayTrigger>
     );
-}
+});
 
 export default TooltipOverlay;

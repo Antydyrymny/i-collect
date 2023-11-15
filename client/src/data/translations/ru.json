@@ -1,4 +1,5 @@
 {
+    "general": { "clear": "Очистить", "search": "Поиск", "delete": "Удалить" },
     "login": {
         "header": "Войти",
         "header-msg": "Пожалуйста, введите ваш адрес электронной почты и пароль!",
@@ -95,5 +96,30 @@
         "boolean": "бинарный",
         "number": "число",
         "date": "дата"
+    },
+    "collectionPage": {
+        "by": "от ",
+        "edit": "Редактировать коллекцию",
+        "stopEdit": "Отменить редактирование",
+        "deleteCollection": "Удалить коллекцию",
+        "info": "Информация",
+        "themeLabel": "Тема:",
+        "descriptionLabel": "Описание:",
+        "additionalFields": "Дополнительные поля",
+        "fieldName": "Имя поля:",
+        "fieldType": "Тип поля:",
+        "save": "Сохранить изменения",
+        "totalItems": "Всего элементов: ",
+        "searchLabel": "Найти элемент",
+        "searchPlaceholder": "Найти элемент",
+        "newItem": "Создать новый элемент",
+        "name": "Имя",
+        "tags": "Теги",
+        "delete": "Удалить",
+        "link": "Ссылка",
+        "true": "Истина",
+        "false": "Ложь",
+        "deleteItem": "Удалить элемент",
+        "toItem": "К элементу"
     }
 }

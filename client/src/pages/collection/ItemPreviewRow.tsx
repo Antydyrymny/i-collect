@@ -6,6 +6,7 @@ import { useDeleteItemMutation } from '../../app/services/api';
 import { useInformOfError } from '../../hooks';
 import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useLocale } from '../../contexts/locale';
 
 type ItemPreviewProps = {
     item: ItemPreview;
@@ -29,6 +30,8 @@ function ItemPreviewRow({ item, allowEdit, collectionId }: ItemPreviewProps) {
 
     useInformOfError({ isError: deleteOptions.isError, error: deleteOptions.error });
 
+    const t = useLocale('collectionPage');
+
     return (
         <tr>
             <td>{item.name}</td>
@@ -46,7 +49,7 @@ function ItemPreviewRow({ item, allowEdit, collectionId }: ItemPreviewProps) {
                 let displayVal;
                 switch (typeof val) {
                     case 'boolean':
-                        displayVal = val ? 'True' : 'False';
+                        displayVal = val ? t('true') : t('false');
                         break;
                     case 'object': {
                         const parsedDate = isValidDate(val);
@@ -72,13 +75,13 @@ function ItemPreviewRow({ item, allowEdit, collectionId }: ItemPreviewProps) {
                         handleDelete={handleDelete}
                         disabled={deleteOptions.isLoading}
                         isLoading={deleteOptions.isLoading}
-                        tooltipMsg='Delete item'
+                        tooltipMsg={t('deleteItem')}
                     />
                 </td>
             )}
             <td className='text-center'>
                 <Link to={ClientRoutes.ItemPath + item._id}>
-                    <Button>{'To Item'}</Button>
+                    <Button>{t('toItem')}</Button>
                 </Link>
             </td>
         </tr>

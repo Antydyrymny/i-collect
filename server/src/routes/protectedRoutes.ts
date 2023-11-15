@@ -27,7 +27,7 @@ import {
     validateUserCollections,
     userCollections,
     validateGetUserCollection,
-    getUserCollection,
+    findUserCollection,
 } from '../features/collections';
 import { Routes } from '../types';
 
@@ -84,9 +84,9 @@ protectedRouter.delete(
     forwardErrors(deleteComment)
 );
 protectedRouter.get(
-    Routes.GetUserCollection,
+    Routes.FindUserCollections,
     validate(validateGetUserCollection),
-    forwardErrors(getUserCollection)
+    forwardErrors(findUserCollection)
 );
 protectedRouter.get(
     Routes.GetUserCollections,

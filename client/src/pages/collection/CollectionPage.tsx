@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Spinner, Stack } from 'react-bootstrap';
 import { useGetCollectionQuery } from '../../app/services/api';
 import { useParams } from 'react-router-dom';
@@ -15,13 +16,15 @@ function CollectionPage() {
             skip: !collectionId,
         }
     );
+    useInformOfError({
+        isError: collectionOptions.isError,
+        error: collectionOptions.error,
+    });
 
     const user = useSelectUser();
     const allowEdit = user.admin || user._id === collection?.authorId;
 
-    useInformOfError([
-        { isError: collectionOptions.isError, error: collectionOptions.error },
-    ]);
+    const formatFields = useMemo(() => collection?.format, [collection?.format]);
 
     return (
         <>
@@ -42,6 +45,7 @@ function CollectionPage() {
                     allowEdit={allowEdit}
                     itemsNumber={collection!.itemNumber}
                     collectionFieldsNumber={collection!.format.length}
+                    formatFields={formatFields!}
                 />
             )}
         </>

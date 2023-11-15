@@ -1,18 +1,24 @@
-import { memo, useRef, useState } from 'react';
-import { useGetCollectionItemsQuery } from '../../app/services/api';
-import useInfiniteScrollLoading from '../../hooks/useInfiniteScrollLoading';
-import { Button, Spinner, Stack, Table } from 'react-bootstrap';
-import styles from './collectionPageStyles.module.scss';
-import ItemPreviewRow from './ItemPreviewRow';
-import { useInformOfError } from '../../hooks';
+import { memo, useCallback, useRef, useState } from 'react';
+import {
+    useGetCollectionItemsQuery,
+    useLazyFindCollectionItemsQuery,
+} from '../../app/services/api';
+import { Button, Col, Row, Spinner, Stack, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { ClientRoutes } from '../../types';
+import { SearchBar } from '../../components';
+import ItemPreviewRow from './ItemPreviewRow';
+import { useInfiniteScrollLoading, useInformOfError, useSearchUtils } from '../../hooks';
+import { getItemPreviewHeadings } from './getItemPreviewHeadings';
+import { ClientRoutes, FormatField } from '../../types';
+import styles from './collectionPageStyles.module.scss';
+import { useLocale } from '../../contexts/locale';
 
 type ItemsProps = {
     collectionId: string;
     allowEdit: boolean;
     itemsNumber: number;
     collectionFieldsNumber: number;
+    formatFields: FormatField[];
 };
 
 const Items = memo(function Items({
@@ -20,7 +26,20 @@ const Items = memo(function Items({
     allowEdit,
     itemsNumber,
     collectionFieldsNumber,
+    formatFields,
 }: ItemsProps) {
+    const { searchQuery, handleSearchChange, clearSearch } = useSearchUtils();
+    const [search, { data: searchResults, ...searchOptions }] =
+        useLazyFindCollectionItemsQuery();
+    const submitSearch = useCallback(
+        (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            if (!searchQuery) return;
+            search({ query: searchQuery, collectionId });
+        },
+        [collectionId, search, searchQuery]
+    );
+
     const [page, setPage] = useState(0);
     const { data: itemsData, ...itemsOptions } = useGetCollectionItemsQuery({
         collectionId,
@@ -30,56 +49,90 @@ const Items = memo(function Items({
     useInfiniteScrollLoading(
         pageBottomRef,
         () => setPage((page) => page + 1),
-        itemsOptions.isFetching,
+        itemsOptions.isFetching ||
+            searchOptions.isLoading ||
+            !!(searchQuery && searchResults),
         itemsData?.moreToFetch ?? true
     );
 
-    useInformOfError({ isError: itemsOptions.isError, error: itemsOptions.error });
+    useInformOfError([
+        { isError: itemsOptions.isError, error: itemsOptions.error },
+        { isError: searchOptions.isError, error: searchOptions.error },
+    ]);
+
+    const additionalHeadings = getItemPreviewHeadings(formatFields);
+
+    const t = useLocale('collectionPage');
 
     return (
         <>
-            <h5 className='mt-5 mb-3'>Total items: {itemsNumber}</h5>
+            <Row className='mt-5'>
+                <Col>
+                    <h5>
+                        {t('totalItems')}
+                        {itemsNumber}
+                    </h5>
+                </Col>
+                <Col>
+                    <SearchBar
+                        searchQuery={searchQuery}
+                        handleSearchChange={handleSearchChange}
+                        clearSearch={clearSearch}
+                        submitSearch={submitSearch}
+                        label={t('searchLabel')}
+                        placeholder={t('searchPlaceholder')}
+                    />
+                </Col>
+            </Row>
             {allowEdit && (
-                <Link to={ClientRoutes.NewCollection} className='px-0'>
-                    <Button>{'Create new item'}</Button>
+                <Link to={ClientRoutes.NewItem} className='px-0'>
+                    <Button>{t('newItem')}</Button>
                 </Link>
             )}
-            <Table responsive className={`${styles.table} mb-5 mt-4`}>
-                {itemsOptions.isSuccess && !!itemsData?.items?.length && (
-                    <>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Tags</th>
-                                {itemsData?.items[0].fields.map((fieldName, ind) => (
-                                    <th key={ind}>
-                                        {Object.keys(fieldName)[0] +
-                                            (ind ===
-                                                itemsData.items[0].fields.length - 1 &&
-                                            collectionFieldsNumber > ind + 1
-                                                ? '...'
-                                                : '')}
-                                    </th>
-                                ))}
-                                {allowEdit && <th>Delete</th>}
-                                <th className='text-center'>Link</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {itemsData.items.map((item) => (
-                                <ItemPreviewRow
-                                    key={item._id}
-                                    item={item}
-                                    allowEdit={allowEdit}
-                                    collectionId={collectionId}
-                                />
-                            ))}
-                        </tbody>
-                    </>
-                )}
+            <Table responsive className={`${styles.table} mt-5 mb-5`}>
+                <thead>
+                    <tr>
+                        <th>{t('name')}</th>
+                        <th>{t('tags')}</th>
+                        {additionalHeadings.map((heading, ind) => (
+                            <th key={ind}>
+                                {heading +
+                                    (ind === additionalHeadings.length - 1 &&
+                                    collectionFieldsNumber > ind + 1
+                                        ? '...'
+                                        : '')}
+                            </th>
+                        ))}
+                        {allowEdit && <th>{t('delete')}</th>}
+                        <th className='text-center'>{t('link')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {searchQuery &&
+                        searchOptions.isSuccess &&
+                        searchOptions.originalArgs?.query === searchQuery &&
+                        searchResults?.map((foundItem) => (
+                            <ItemPreviewRow
+                                key={foundItem._id}
+                                item={foundItem}
+                                allowEdit={allowEdit}
+                                collectionId={collectionId}
+                            />
+                        ))}
+                    {!(searchQuery && searchResults) &&
+                        itemsOptions.isSuccess &&
+                        itemsData?.items.map((item) => (
+                            <ItemPreviewRow
+                                key={item._id}
+                                item={item}
+                                allowEdit={allowEdit}
+                                collectionId={collectionId}
+                            />
+                        ))}
+                </tbody>
             </Table>
-            {itemsOptions.isFetching && (
-                <Stack className='mt-5 d-flex justify-content-center align-items-center'>
+            {(itemsOptions.isFetching || searchOptions.isFetching) && (
+                <Stack className='mb-5 d-flex justify-content-center align-items-center'>
                     <Spinner />
                 </Stack>
             )}

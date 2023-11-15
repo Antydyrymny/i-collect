@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { TooltipOverlay } from '..';
 import { Button, Spinner, Image } from 'react-bootstrap';
 import trash from '../../assets/deleteUser.png';
@@ -11,7 +12,7 @@ type DeleteButtonOptions = {
     tooltipMsg: string;
     outline?: boolean;
 };
-function DeleteButton({
+const DeleteButton = memo(function DeleteButton({
     handleDelete,
     disabled,
     isLoading,
@@ -36,6 +37,6 @@ function DeleteButton({
             </Button>
         </TooltipOverlay>
     );
-}
+});
 
 export default DeleteButton;

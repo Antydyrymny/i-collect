@@ -1,6 +1,8 @@
+import dotenv from 'dotenv';
 import { Request } from 'express';
 import { ObjectId, Schema } from 'mongoose';
-import { TagModel } from '../../models';
+import { CommentModel, ItemModel, TagModel } from '../../models';
+import { largestCollections, latestItems, updatesRequired } from '../../data';
 import {
     ItemResFormatField,
     ItemModelType,
@@ -11,10 +13,14 @@ import {
     CollectionModelType,
     CollectionPreview,
     AuthUser,
+    Indexes,
 } from '../../types';
-import { largestCollections, latestItems, updatesRequired } from '../../data';
 
-const ordering = ['stringFields', 'dateFields', 'booleanFields', 'numberFields'] as const;
+dotenv.config();
+
+const maxPreviewFields = +process.env.MAX_ITEM_PREVIEW_FIELDS;
+const ordering = ['stringFields', 'dateFields'] as const;
+
 export const getItemPreview = (
     item: Omit<ItemModelType, 'comments' | 'parentCollection'>,
     itemWithObjectPropsFromSearch = false,
@@ -48,7 +54,7 @@ export const getItemPreview = (
                       ).entries()
                   )) {
                 previewFields.push({ [key]: value });
-                if (previewFields.length === 4) break main;
+                if (previewFields.length === maxPreviewFields) break main;
             }
         }
     }
@@ -144,5 +150,99 @@ export const handleHomeOnDeleteUpdates = (
     if (deletionInd !== -1) {
         fieldToUpdate.splice(deletionInd, 1);
         updatesRequired[field] = true;
+    }
+};
+
+export const itemSearch = async (
+    query: string,
+    fromCollectionItems?: Schema.Types.ObjectId[],
+    limit = 10
+) => {
+    if (!query || typeof query !== 'string') {
+        return [];
+    }
+
+    const addSortScoreAndSort = [
+        {
+            $addFields: {
+                score: { $meta: 'searchScore' },
+            },
+        },
+        {
+            $sort: { score: -1 },
+        },
+    ];
+
+    const itemPipeline = [];
+    itemPipeline.push({
+        $search: {
+            index: Indexes.ItemFullTextSearch,
+            text: {
+                query: query,
+                path: [
+                    'name',
+                    'tags',
+                    { wildcard: 'stringFields.*' },
+                    { wildcard: 'textFields.*' },
+                ],
+                fuzzy: { maxEdits: 1 },
+            },
+        },
+    });
+    if (fromCollectionItems) {
+        itemPipeline.push({
+            $match: {
+                _id: { $in: fromCollectionItems },
+            },
+        });
+    }
+    itemPipeline.push(...addSortScoreAndSort);
+
+    const commentPipeLine = [];
+    commentPipeLine.push({
+        $search: {
+            index: Indexes.CommentFullTextSearch,
+            text: {
+                query: query,
+                path: 'content',
+                fuzzy: { maxEdits: 1 },
+            },
+        },
+    });
+    if (fromCollectionItems) {
+        commentPipeLine.push({
+            $match: {
+                toItem: { $in: fromCollectionItems },
+            },
+        });
+    }
+    commentPipeLine.push(...addSortScoreAndSort);
+
+    try {
+        const [items, comments] = await Promise.all([
+            ItemModel.aggregate(itemPipeline).limit(limit),
+            CommentModel.aggregate(commentPipeLine).limit(limit),
+        ]);
+
+        const commentsToInclude = comments.filter((comment) =>
+            items.every((item) => !item._id.equals(comment._id))
+        );
+        const commentsItems = await Promise.all(
+            commentsToInclude.map((comment) => ItemModel.findById(comment.toItem))
+        );
+
+        return [...items, ...commentsToInclude]
+            .sort((a, b) => b.score - a.score)
+            .slice(0, limit)
+            .map((searchRes) =>
+                searchRes.toItem
+                    ? getItemPreview(
+                          commentsItems.find((item) => item._id.equals(searchRes.toItem))
+                      )
+                    : getItemPreview(searchRes, true)
+            );
+    } catch (error) {
+        console.log(`Item search failed with error: ${error.message}`);
+        return [];
     }
 };

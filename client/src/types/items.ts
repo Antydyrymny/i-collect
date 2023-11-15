@@ -35,6 +35,10 @@ export type GetCollectionItemsQuery = {
     collectionId: string;
     page: number;
 };
+export type FindCollectionItemQuery = {
+    collectionId: string;
+    query: string;
+};
 export type GetItemQuery = {
     _id: string;
 };

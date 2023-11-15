@@ -45,6 +45,7 @@ import {
     subscribeToHomeEvents,
     homePageSearch,
     findUserCollection,
+    findCollectionItems,
 } from './features/collections';
 import {
     RefreshResponse,
@@ -145,6 +146,7 @@ const apiSlice = createApi({
         updateCollection: updateCollection(builder),
         deleteCollection: deleteCollection(builder),
         getCollectionItems: getCollectionItems(builder),
+        findCollectionItems: findCollectionItems(builder),
         getItem: getItem(builder),
         newItem: newItem(builder),
         updateItem: updateItem(builder),
@@ -182,6 +184,7 @@ export const {
     useUpdateCollectionMutation,
     useDeleteCollectionMutation,
     useGetCollectionItemsQuery,
+    useLazyFindCollectionItemsQuery,
     useGetItemQuery,
     useNewItemMutation,
     useUpdateItemMutation,

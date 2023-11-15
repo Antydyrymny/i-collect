@@ -8,9 +8,7 @@ type InformOfErrorParam = {
     isError: boolean;
     error: FetchBaseQueryError | SerializedError | undefined;
 };
-export const useInformOfError = (
-    queryError: InformOfErrorParam | InformOfErrorParam[]
-) => {
+export function useInformOfError(queryError: InformOfErrorParam | InformOfErrorParam[]) {
     useEffect(() => {
         const informOfError = (errParam: InformOfErrorParam) => {
             if (errParam.isError) {
@@ -30,4 +28,4 @@ export const useInformOfError = (
 
         return () => toast.dismiss();
     }, [queryError]);
-};
+}

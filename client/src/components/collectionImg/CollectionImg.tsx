@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 import { Button, CloseButton, Container, Form, Image } from 'react-bootstrap';
 import { TooltipOverlay } from '..';
 import { useLocale } from '../../contexts/locale';
@@ -15,7 +15,7 @@ type CollectionImgProps = {
     allowEdit?: boolean;
 };
 
-function CollectionImg({
+const CollectionImg = memo(function CollectionImg({
     imgPreview,
     imgName,
     handleImageChange,
@@ -108,6 +108,6 @@ function CollectionImg({
             </Container>
         </Form.Group>
     );
-}
+});
 
 export default CollectionImg;

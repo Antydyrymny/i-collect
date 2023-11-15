@@ -12,3 +12,6 @@ export { EditInputField };
 
 import DeleteButton from './deleteButton/DeleteButton';
 export { DeleteButton };
+
+import SearchBar from './searchBar/SearchBar';
+export { SearchBar };

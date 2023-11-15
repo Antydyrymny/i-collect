@@ -24,10 +24,10 @@ export const useCollectionMainFields = (
                 })),
         []
     );
-    const resetMainState = useCallback(
-        () => setMainFields(defaultMainState),
-        [defaultMainState]
-    );
+    const resetMainState = useCallback(() => {
+        setMainFields(defaultMainState);
+        setImageData(defaultImgState);
+    }, [defaultImgState, defaultMainState]);
 
     const handleImageChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -41,7 +41,7 @@ export const useCollectionMainFields = (
     }, []);
 
     const clearImage = useCallback(() => {
-        setImageData({ file: null, imgPreview: null });
+        setImageData({ file: null, imgPreview: undefined });
     }, []);
 
     return {

@@ -3,4 +3,5 @@ export * from './useInfiniteScrollLoading';
 export * from './useLocalStorageState';
 export * from './usePagination';
 export * from './useRedirect';
-export * from './useCollectionRequiredFields';
+export * from './useCollectionMainFields';
+export * from './useSearchUtils';

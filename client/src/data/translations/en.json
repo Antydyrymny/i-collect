@@ -1,4 +1,5 @@
 {
+    "general": { "clear": "Clear", "search": "Search", "delete": "Delete" },
     "login": {
         "header": "Sign in",
         "header-msg": "Please, enter your email and password!",
@@ -95,5 +96,30 @@
         "boolean": "boolean",
         "number": "number",
         "date": "date"
+    },
+    "collectionPage": {
+        "by": "by ",
+        "edit": "Edit collection",
+        "stopEdit": "Cancel edit",
+        "deleteCollection": "Delete collection",
+        "info": "Info",
+        "themeLabel": "Theme:",
+        "descriptionLabel": "Description:",
+        "additionalFields": "Additional fields",
+        "fieldName": "Field name:",
+        "fieldType": "Field type:",
+        "save": "Save changes",
+        "totalItems": "Total items: ",
+        "searchLabel": "Find item",
+        "searchPlaceholder": "Find item",
+        "newItem": "Create new item",
+        "name": "Name",
+        "tags": "Tags",
+        "delete": "Delete",
+        "link": "Link",
+        "true": "True",
+        "false": "False",
+        "deleteItem": "Delete item",
+        "toItem": "To item"
     }
 }

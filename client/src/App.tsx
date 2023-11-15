@@ -9,10 +9,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const UserPage = React.lazy(() => import('./pages/userPage/UserPage'));
 const NewCollection = React.lazy(
-    () => import('./pages/userPage/newCollection/NewCollection')
+    () => import('./pages/collection/newCollection/NewCollection')
 );
 const CollectionPage = React.lazy(() => import('./pages/collection/CollectionPage'));
-const Item = React.lazy(() => import('./pages/item/Item'));
+const NewItem = React.lazy(() => import('./pages/item/newItem/NewItem'));
+const ItemPage = React.lazy(() => import('./pages/item/ItemPage'));
 
 const MainLayout = React.lazy(() => import('./pages/layouts/mainLayout/MainLayout'));
 const Home = React.lazy(() => import('./pages/home/Home'));
@@ -45,11 +46,14 @@ function App() {
                                 element={<ProtectedRoute Component={NewCollection} />}
                             />
                         </Route>
-                        <Route
-                            path={ClientRoutes.Collection}
-                            element={<CollectionPage />}
-                        />
-                        <Route path={ClientRoutes.Item} element={<Item />} />
+                        <Route path={ClientRoutes.CollectionPage}>
+                            <Route index element={<CollectionPage />} />
+                            <Route
+                                path={ClientRoutes.NewItem}
+                                element={<ProtectedRoute Component={NewItem} />}
+                            />
+                        </Route>
+                        <Route path={ClientRoutes.ItemPage} element={<ItemPage />} />
                         <Route
                             path={ClientRoutes.ManageUsers}
                             element={

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { FieldType, FieldValueMap } from '../../types';
 import dayjs from 'dayjs';
@@ -10,7 +11,7 @@ type EditInputFieldProps<T extends FieldType | 'select'> = {
     editedValue: ExtendedFieldValueMap[T];
     editing: boolean;
     onEdit: (
-        e: T extends 'string' | 'text' | 'boolean' | 'number' | 'date'
+        e: T extends FieldType
             ? React.ChangeEvent<HTMLInputElement>
             : React.ChangeEvent<HTMLSelectElement>
     ) => void;
@@ -20,6 +21,7 @@ type EditInputFieldProps<T extends FieldType | 'select'> = {
     asHeading?: boolean;
 } & (T extends 'select' ? { options: string[] } : { options?: never });
 
+// eslint-disable-next-line react-refresh/only-export-components
 function EditInputField<T extends FieldType | 'select'>({
     type,
     originalValue,
@@ -144,4 +146,4 @@ function EditInputField<T extends FieldType | 'select'>({
     );
 }
 
-export default EditInputField;
+export default React.memo(EditInputField) as typeof EditInputField;

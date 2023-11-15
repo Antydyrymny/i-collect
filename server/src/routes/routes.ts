@@ -11,10 +11,12 @@ import {
 } from '../features/auth';
 import { Routes } from '../types';
 import {
+    findCollectionItems,
     getCollection,
     getCollectionItems,
     getItem,
     getItemComments,
+    validateFindCollectionItems,
     validateGetCollection,
     validateGetCollectionItems,
     validateGetItem,
@@ -34,6 +36,11 @@ router.get(
     Routes.GetCollectionItems,
     validate(validateGetCollectionItems),
     forwardErrors(getCollectionItems)
+);
+router.get(
+    Routes.FindCollectionItems,
+    validate(validateFindCollectionItems),
+    forwardErrors(findCollectionItems)
 );
 router.get(Routes.GetItem, validate(validateGetItem), forwardErrors(getItem));
 router.get(

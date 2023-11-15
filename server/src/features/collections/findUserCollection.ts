@@ -4,7 +4,7 @@ import { getCollectionPreview } from './utils';
 import { authorizeResourceOwnership } from '../manageUsers';
 import { CollectionPreview, GetUserCollectionQuery, ResponseError } from '../../types';
 
-export const getUserCollection = async (
+export const findUserCollection = async (
     req: Request,
     res: Response<CollectionPreview[]>
 ) => {
@@ -16,7 +16,7 @@ export const getUserCollection = async (
     if (!existingUser) throw new ResponseError(`User with id: ${ownerId} not found`, 404);
 
     const results = await CollectionModel.find({
-        _id: { $in: existingUser.collections.map((id) => id.toString()) },
+        _id: { $in: existingUser.collections },
         $text: {
             $search: query,
             $caseSensitive: false,

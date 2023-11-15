@@ -4,6 +4,7 @@ import {
     ApiBuilder,
     CollectionItems,
     DeleteItemReq,
+    FindCollectionItemQuery,
     GetCollectionItemsQuery,
     GetItemQuery,
     ItemPreview,
@@ -49,6 +50,15 @@ export const getCollectionItems = (builder: ApiBuilder) =>
                     ))
             );
         },
+        keepUnusedDataFor: 0,
+    });
+
+export const findCollectionItems = (builder: ApiBuilder) =>
+    builder.query<ItemPreview[], FindCollectionItemQuery>({
+        query: (request) => ({
+            url: Routes.FindCollectionItems,
+            params: request,
+        }),
         keepUnusedDataFor: 0,
     });
 
