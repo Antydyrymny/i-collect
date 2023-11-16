@@ -48,7 +48,7 @@ const CollectionCardPreview = memo(function CollectionCardPreview({
                 </Card.Text>
                 <Card.Text className='d-flex justify-content-end'>
                     <Link to={ClientRoutes.CollectionPath + collection._id}>
-                        <Button size='sm'>{t('toCollection')}</Button>
+                        <Button variant='outline-primary'>{t('toCollection')}</Button>
                     </Link>
                 </Card.Text>
             </Card.Body>

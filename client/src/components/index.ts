@@ -7,11 +7,14 @@ export { TooltipOverlay };
 import CollectionImg from './collectionImg/CollectionImg';
 export { CollectionImg };
 
-import EditInputField from './editInputField/EditInputField';
-export { EditInputField };
+import GenericInputField from './inputFields/genericInputField/GenericInputField';
+export { GenericInputField };
+
+import SearchBar from './inputFields/searchBar/SearchBar';
+export { SearchBar };
 
 import DeleteButton from './deleteButton/DeleteButton';
 export { DeleteButton };
 
-import SearchBar from './searchBar/SearchBar';
-export { SearchBar };
+import CardWrapper from './cardWrapper/CardWrapper';
+export { CardWrapper };

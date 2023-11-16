@@ -72,10 +72,9 @@ export const getItemResponse = (
     item: Omit<ItemModelType, 'comments' | 'parentCollection'>,
     parentCollectionId: ObjectId,
     parentCollectionName: string,
-    req: Request,
+    userId?: string,
     itemWithObjectPropsFromSearch = false
 ): ItemResponse => {
-    const requestingUser = req.user as AuthUser;
     const previewPart = getItemPreview(item, itemWithObjectPropsFromSearch, true);
     return {
         ...previewPart,
@@ -84,10 +83,8 @@ export const getItemResponse = (
             _id: parentCollectionId,
             name: parentCollectionName,
         },
-        userLikes: requestingUser
-            ? item.likesFrom.some(
-                  (likeAuthorId) => requestingUser._id === likeAuthorId.toString()
-              )
+        userLikes: userId
+            ? item.likesFrom.some((likeAuthorId) => userId === likeAuthorId.toString())
             : false,
     };
 };

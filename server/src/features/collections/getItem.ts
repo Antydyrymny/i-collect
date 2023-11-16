@@ -6,7 +6,7 @@ import { GetItemQuery, ItemResponse, ResponseError } from '../../types';
 
 export const getItem = async (req: Request, res: Response<ItemResponse>) => {
     const queryParams = req.query as GetItemQuery;
-    const { _id } = queryParams;
+    const { _id, userId } = queryParams;
 
     const existingItem = await ItemModel.findById(_id).populate<{
         parentCollection: { name: string; _id: Schema.Types.ObjectId };
@@ -18,7 +18,7 @@ export const getItem = async (req: Request, res: Response<ItemResponse>) => {
             existingItem,
             existingItem.parentCollection._id,
             existingItem.parentCollection.name,
-            req
+            userId
         )
     );
 };

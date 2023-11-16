@@ -1,5 +1,9 @@
 {
-    "general": { "clear": "Очистить", "search": "Поиск", "delete": "Удалить" },
+    "general": {
+        "clear": "Очистить",
+        "search": "Поиск",
+        "delete": "Удалить"
+    },
     "login": {
         "header": "Войти",
         "header-msg": "Пожалуйста, введите ваш адрес электронной почты и пароль!",
@@ -103,8 +107,10 @@
         "stopEdit": "Отменить редактирование",
         "deleteCollection": "Удалить коллекцию",
         "info": "Информация",
+        "namePlaceholder": "Введите название коллекции",
         "themeLabel": "Тема:",
         "descriptionLabel": "Описание:",
+        "descriptionPlaceholder": "Введите описание коллекции",
         "additionalFields": "Дополнительные поля",
         "fieldName": "Имя поля:",
         "fieldType": "Тип поля:",
@@ -121,5 +127,19 @@
         "false": "Ложь",
         "deleteItem": "Удалить элемент",
         "toItem": "К элементу"
+    },
+    "newItem": {
+        "newItem": "Создать новый элемент",
+        "ofCollection": "коллекции: ",
+        "info": "Информация об элементе",
+        "nameLabel": "Имя",
+        "namePlaceholder": "Введите имя элемента",
+        "genericPlaceholder": "Введите ",
+        "tagSearchLabel": "Добавить теги",
+        "tagPlaceholder": "Введите название тега",
+        "tagSubmit": "Добавить тег",
+        "delete": "Удалить тег",
+        "save": "Сохранить элемент",
+        "cancel": "Отмена"
     }
 }

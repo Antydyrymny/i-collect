@@ -4,7 +4,8 @@ import { useNewCollectionMutation } from '../../../app/services/api';
 import { useSelectUser } from '../../../app/services/features/auth';
 import { useLocale } from '../../../contexts/locale';
 import { useCollectionMainFields } from '../../../hooks';
-import { Button, Card, Form, Spinner } from 'react-bootstrap';
+import { Button, Form, Spinner } from 'react-bootstrap';
+import { CardWrapper } from '../../../components';
 import RequiredFields from './RequiredFields';
 import OptionalFields from './OptionalFields';
 import { toast } from 'react-toastify';
@@ -19,8 +20,6 @@ function NewCollection() {
     const user = useSelectUser();
     const { userId } = useParams();
     const ownerId = user.admin ? userId : undefined;
-
-    const [createCollection, collectionOptions] = useNewCollectionMutation();
 
     const defaultState = useMemo<
         Pick<NewCollectionReq, 'name' | 'description' | 'theme'>
@@ -81,6 +80,7 @@ function NewCollection() {
         []
     );
 
+    const [createCollection, collectionOptions] = useNewCollectionMutation();
     const navigate = useNavigate();
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -102,41 +102,36 @@ function NewCollection() {
     const t = useLocale('newCollection');
 
     return (
-        <Card style={{ borderRadius: '0.5rem' }}>
-            <Card.Body
-                className='p-3 bg-body-tertiary'
-                style={{ borderRadius: '0.5rem' }}
-            >
-                <h2 className='mt-2 mb-4'>{t('title')}</h2>
-                <Form onSubmit={handleSubmit}>
-                    <RequiredFields
-                        requiredFields={mainFields}
-                        changeRequiredState={handleMainStateChange}
-                        imgPreview={imageData.imgPreview}
-                        imgName={imageData.file?.name}
-                        handleImageChange={handleImageChange}
-                        clearImage={clearImage}
-                    />
-                    <OptionalFields
-                        optionalFields={optionalFields}
-                        addOptionalField={addOptionalField}
-                        deleteOptionalField={deleteOptionalField}
-                        changeOptionalFields={changeOptionalFields}
-                    />
-                    <div className='d-flex gap-2 mt-4 mb-2 justify-content-end'>
-                        <Button type='submit' disabled={collectionOptions.isLoading}>
-                            {collectionOptions.isLoading && (
-                                <Spinner size='sm' className='me-2' />
-                            )}
-                            {t('submit')}
-                        </Button>
-                        <Link to={ClientRoutes.UserPagePath + userId}>
-                            <Button variant='outline-primary'>{t('back')}</Button>
-                        </Link>
-                    </div>
-                </Form>
-            </Card.Body>
-        </Card>
+        <CardWrapper>
+            <h2 className='mt-2 mb-4'>{t('title')}</h2>
+            <Form onSubmit={handleSubmit}>
+                <RequiredFields
+                    requiredFields={mainFields}
+                    changeRequiredState={handleMainStateChange}
+                    imgPreview={imageData.imgPreview}
+                    imgName={imageData.file?.name}
+                    handleImageChange={handleImageChange}
+                    clearImage={clearImage}
+                />
+                <OptionalFields
+                    optionalFields={optionalFields}
+                    addOptionalField={addOptionalField}
+                    deleteOptionalField={deleteOptionalField}
+                    changeOptionalFields={changeOptionalFields}
+                />
+                <div className='d-flex gap-2 mt-4 mb-2 justify-content-end'>
+                    <Button type='submit' disabled={collectionOptions.isLoading}>
+                        {collectionOptions.isLoading && (
+                            <Spinner size='sm' className='me-2' />
+                        )}
+                        {t('submit')}
+                    </Button>
+                    <Link to={ClientRoutes.UserPagePath + userId}>
+                        <Button variant='outline-primary'>{t('back')}</Button>
+                    </Link>
+                </div>
+            </Form>
+        </CardWrapper>
     );
 }
 

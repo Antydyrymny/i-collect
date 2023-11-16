@@ -17,6 +17,7 @@ export function Toast({ children }: { children: React.ReactNode }) {
                 draggable
                 pauseOnHover
                 theme={theme}
+                limit={1}
             />
             {children}
         </>

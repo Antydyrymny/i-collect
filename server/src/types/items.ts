@@ -60,6 +60,7 @@ export type FindCollectionItemQuery = {
 };
 export type GetItemQuery = {
     _id: string;
+    userId?: string;
 };
 
 export type ItemResponse = {

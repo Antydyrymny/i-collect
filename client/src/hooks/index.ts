@@ -5,3 +5,4 @@ export * from './usePagination';
 export * from './useRedirect';
 export * from './useCollectionMainFields';
 export * from './useSearchUtils';
+export * from './useTagsHandlers';

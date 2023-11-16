@@ -3,6 +3,7 @@ import { getItemViewerSocket } from '../../getSocket';
 import {
     ApiBuilder,
     GetItemCommentsQuery,
+    GetItemQuery,
     ItemViewerToServer,
     ServerToItemViewer,
 } from '../../../../types';
@@ -24,10 +25,14 @@ export const subscribeToItemUpdates = (builder: ApiBuilder) =>
 
                 itemViewerSocket.on(ServerToItemViewer.LikesUpdated, (newLikesNumber) => {
                     dispatch(
-                        apiSlice.util.updateQueryData('getItem', itemId, (draft) => ({
-                            ...draft,
-                            likesNumber: newLikesNumber,
-                        }))
+                        apiSlice.util.updateQueryData(
+                            'getItem',
+                            itemId as unknown as GetItemQuery,
+                            (draft) => ({
+                                ...draft,
+                                likesNumber: newLikesNumber,
+                            })
+                        )
                     );
                 });
 

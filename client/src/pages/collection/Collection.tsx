@@ -11,7 +11,12 @@ import {
     UpdateCollectionReq,
     isStringError,
 } from '../../types';
-import { CollectionImg, DeleteButton, EditInputField } from '../../components';
+import {
+    CardWrapper,
+    CollectionImg,
+    DeleteButton,
+    GenericInputField,
+} from '../../components';
 import {
     useDeleteCollectionMutation,
     useUpdateCollectionMutation,
@@ -100,135 +105,132 @@ function Collection({ collection, allowEdit }: CollectionProps) {
     const tDict = useLocale('dictionary');
 
     return (
-        <Card style={{ borderRadius: '0.5rem' }}>
-            <Card.Body
-                className='p-3 bg-body-tertiary'
-                style={{ borderRadius: '0.5rem' }}
-            >
-                <Form onSubmit={handleSubmitUpdate}>
-                    <header className='d-flex justify-content-between align-items-start mt-2 mb-4 gap-2'>
-                        <div className='w-50'>
-                            <EditInputField
-                                type={'string'}
-                                originalValue={collection.name}
-                                editedValue={editState.name}
-                                editing={editing}
-                                onEdit={handleEditMainFields('name')}
-                                asHeading
-                            />
-                            <h6
-                                style={{
-                                    position: 'relative',
-                                    top: editing ? '0.5rem' : undefined,
-                                }}
-                            >
-                                {t('by')}
-                                {collection.authorName}
-                            </h6>
-                        </div>
-                        {allowEdit && (
-                            <div className='d-flex gap-2'>
-                                <Button onClick={editing ? cancelEdit : startEditing}>
-                                    <Image
-                                        src={theme === 'light' ? edit : editDark}
-                                        className='me-2'
-                                    />
-                                    {editing ? t('stopEdit') : t('edit')}
-                                </Button>
-                                <DeleteButton
-                                    handleDelete={handleDelete}
-                                    disabled={deleteOptions.isLoading}
-                                    isLoading={deleteOptions.isLoading}
-                                    tooltipMsg={t('deleteCollection')}
-                                />
-                            </div>
-                        )}
-                    </header>
-                    <Card>
-                        <Card.Body>
-                            <h6 className='mt-2 mb-4'>{t('info')}</h6>
-                            <Row className='d-lg-flex gap-5 mb-2'>
-                                <Col lg={6}>
-                                    <EditInputField
-                                        type={'select'}
-                                        originalValue={tDict(collection.theme)}
-                                        editedValue={tDict(editState.theme)}
-                                        editing={editing}
-                                        onEdit={handleEditMainFields('theme')}
-                                        options={collectionThemes.map((theme) =>
-                                            tDict(theme)
-                                        )}
-                                        label={t('themeLabel')}
-                                    />
-                                    <EditInputField
-                                        type={'text'}
-                                        originalValue={collection.description}
-                                        editedValue={editState.description}
-                                        editing={editing}
-                                        onEdit={handleEditMainFields('description')}
-                                        label={t('descriptionLabel')}
-                                    />
-                                </Col>
-                                {(collection.image || allowEdit) && (
-                                    <Col>
-                                        <CollectionImg
-                                            imgPreview={imageData.imgPreview}
-                                            imgName={imageData.file?.name}
-                                            handleImageChange={handleEditImage}
-                                            clearImage={clearImage}
-                                            hideImgLabel
-                                            allowEdit={editing}
-                                        />
-                                    </Col>
-                                )}
-                            </Row>
-                        </Card.Body>
-                    </Card>
-                    <Card className='mt-4'>
-                        <Card.Body>
-                            <h6 className='mt-2 mb-4'>{t('additionalFields')}</h6>
-                            {collection.format.map((field, ind) => (
-                                <div
-                                    key={ind}
-                                    className='d-block d-lg-flex gap-5 mb-3'
-                                    style={{ paddingTop: '0.4375rem' }}
-                                >
-                                    <Row className='w-lg-50 w-100'>
-                                        <Col xs={6} sm={3}>
-                                            {t('fieldName')}
-                                        </Col>
-                                        <Col xs={6} sm={9}>
-                                            {field.fieldName}
-                                        </Col>
-                                    </Row>
-                                    <Row className='w-lg-50 w-100'>
-                                        <Col xs={6} sm={3}>
-                                            {t('fieldType')}
-                                        </Col>
-                                        <Col xs={6} sm={9}>
-                                            {field.fieldType}
-                                        </Col>
-                                    </Row>
-                                </div>
-                            ))}
-                        </Card.Body>
-                    </Card>
+        <CardWrapper>
+            <Form onSubmit={handleSubmitUpdate}>
+                <header className='d-flex justify-content-between align-items-start mt-2 mb-4 gap-2'>
+                    <div className='w-50'>
+                        <GenericInputField
+                            type={'string'}
+                            value={editState.name}
+                            onChange={handleEditMainFields('name')}
+                            editing={editing}
+                            placeholder={t('namePlaceholder')}
+                            asHeading
+                        />
+                        <h6
+                            style={{
+                                position: 'relative',
+                                top: editing ? '0.5rem' : undefined,
+                            }}
+                        >
+                            {t('by')}
+                            {collection.authorName}
+                        </h6>
+                    </div>
                     {allowEdit && (
-                        <div className='d-flex mt-4 mb-2 justify-content-end'>
+                        <div className='d-flex gap-2'>
                             <Button
-                                type='submit'
-                                disabled={!editing || updateOptions.isLoading}
+                                onClick={editing ? cancelEdit : startEditing}
+                                className='text-nowrap'
                             >
-                                {updateOptions.isLoading && (
-                                    <Spinner size='sm' className='me-2' />
-                                )}
-                                {t('save')}
+                                <Image
+                                    src={theme === 'light' ? edit : editDark}
+                                    className='me-2'
+                                />
+                                {editing ? t('stopEdit') : t('edit')}
                             </Button>
+                            <DeleteButton
+                                handleDelete={handleDelete}
+                                disabled={deleteOptions.isLoading}
+                                isLoading={deleteOptions.isLoading}
+                                tooltipMsg={t('deleteCollection')}
+                            />
                         </div>
                     )}
-                </Form>
-            </Card.Body>
-        </Card>
+                </header>
+                <Card>
+                    <Card.Body>
+                        <h6 className='mt-2 mb-4'>{t('info')}</h6>
+                        <Row className='d-lg-flex gap-5 mb-2'>
+                            <Col lg={6}>
+                                <GenericInputField
+                                    type={'select'}
+                                    value={tDict(editState.theme)}
+                                    onChange={handleEditMainFields('theme')}
+                                    editing={editing}
+                                    options={collectionThemes.map((theme) =>
+                                        tDict(theme)
+                                    )}
+                                    label={t('themeLabel')}
+                                />
+                                <GenericInputField
+                                    type={'text'}
+                                    value={editState.description}
+                                    onChange={handleEditMainFields('description')}
+                                    editing={editing}
+                                    label={t('descriptionLabel')}
+                                    placeholder={t('descriptionPlaceholder')}
+                                />
+                            </Col>
+                            {(collection.image || allowEdit) && (
+                                <Col>
+                                    <CollectionImg
+                                        imgPreview={imageData.imgPreview}
+                                        imgName={imageData.file?.name}
+                                        handleImageChange={handleEditImage}
+                                        clearImage={clearImage}
+                                        hideImgLabel
+                                        allowEdit={editing}
+                                    />
+                                </Col>
+                            )}
+                        </Row>
+                    </Card.Body>
+                </Card>
+                <Card className='mt-4'>
+                    <Card.Body>
+                        <h6 className='mt-2 mb-4'>{t('additionalFields')}</h6>
+                        {collection.format.map((field, ind) => (
+                            <div
+                                key={ind}
+                                className='d-block d-lg-flex gap-5 mb-3'
+                                style={{ paddingTop: '0.4375rem' }}
+                            >
+                                <Row className='w-lg-50 w-100'>
+                                    <Col xs={6} sm={3}>
+                                        {t('fieldName')}
+                                    </Col>
+                                    <Col xs={6} sm={9}>
+                                        {field.fieldName}
+                                    </Col>
+                                </Row>
+                                <Row className='w-lg-50 w-100'>
+                                    <Col xs={6} sm={3}>
+                                        {t('fieldType')}
+                                    </Col>
+                                    <Col xs={6} sm={9}>
+                                        {field.fieldType}
+                                    </Col>
+                                </Row>
+                            </div>
+                        ))}
+                    </Card.Body>
+                </Card>
+                {allowEdit && (
+                    <div className='d-flex mt-4 mb-2 justify-content-end'>
+                        <Button
+                            type='submit'
+                            disabled={!editing || updateOptions.isLoading}
+                        >
+                            {updateOptions.isLoading && (
+                                <Spinner size='sm' className='me-2' />
+                            )}
+                            {t('save')}
+                        </Button>
+                    </div>
+                )}
+            </Form>
+        </CardWrapper>
     );
 }
 

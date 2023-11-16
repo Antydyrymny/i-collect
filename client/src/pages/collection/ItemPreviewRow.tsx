@@ -1,4 +1,4 @@
-import { Badge, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { ClientRoutes, ItemPreview } from '../../types';
 import dayjs from 'dayjs';
 import { DeleteButton } from '../../components';
@@ -37,9 +37,12 @@ function ItemPreviewRow({ item, allowEdit, collectionId }: ItemPreviewProps) {
             <td>{item.name}</td>
             <td>
                 {item.tags.slice(0, 3).map((tag, ind) => (
-                    <Badge pill key={ind} bg='primary me-2'>
+                    <span
+                        key={ind}
+                        className='badge border border-primary text-primary rounded-5 me-1'
+                    >
                         {tag}
-                    </Badge>
+                    </span>
                 ))}
                 {!item.tags.length && '-'}
                 {item.tags.length > 3 ? '...' : ''}
@@ -76,12 +79,16 @@ function ItemPreviewRow({ item, allowEdit, collectionId }: ItemPreviewProps) {
                         disabled={deleteOptions.isLoading}
                         isLoading={deleteOptions.isLoading}
                         tooltipMsg={t('deleteItem')}
+                        outline
+                        sm
                     />
                 </td>
             )}
             <td className='text-center'>
-                <Link to={ClientRoutes.ItemPath + item._id}>
-                    <Button>{t('toItem')}</Button>
+                <Link to={ClientRoutes.ItemPath + item._id} className='text-nowrap'>
+                    <Button size='sm' variant='outline-primary'>
+                        {t('toItem')}
+                    </Button>
                 </Link>
             </td>
         </tr>

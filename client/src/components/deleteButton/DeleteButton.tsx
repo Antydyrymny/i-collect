@@ -11,6 +11,7 @@ type DeleteButtonOptions = {
     isLoading: boolean;
     tooltipMsg: string;
     outline?: boolean;
+    sm?: boolean;
 };
 const DeleteButton = memo(function DeleteButton({
     handleDelete,
@@ -18,6 +19,7 @@ const DeleteButton = memo(function DeleteButton({
     isLoading,
     tooltipMsg,
     outline = false,
+    sm = false,
 }: DeleteButtonOptions) {
     const { theme } = useThemeContext();
 
@@ -28,11 +30,16 @@ const DeleteButton = memo(function DeleteButton({
                 onClick={handleDelete}
                 variant={outline ? 'outline-danger' : 'danger'}
                 className='d-flex justify-content-center align-items-center'
+                style={{ paddingBlock: sm ? '0.15625rem' : undefined }}
+                size={sm ? 'sm' : undefined}
             >
                 {isLoading ? (
                     <Spinner size='sm' />
                 ) : (
-                    <Image src={theme === 'light' ? trash : trashDark} />
+                    <Image
+                        src={theme === 'light' ? trash : trashDark}
+                        style={{ scale: sm ? '0.8' : undefined }}
+                    />
                 )}
             </Button>
         </TooltipOverlay>

@@ -1,39 +1,39 @@
 import React from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
-import { FieldType, FieldValueMap } from '../../types';
+import { FieldType, FieldValueMap } from '../../../types';
 import dayjs from 'dayjs';
 
 type ExtendedFieldValueMap = FieldValueMap & { select: string };
 
-type EditInputFieldProps<T extends FieldType | 'select'> = {
+type GenericInputFieldProps<T extends FieldType | 'select'> = {
     type: T;
-    originalValue: ExtendedFieldValueMap[T];
-    editedValue: ExtendedFieldValueMap[T];
-    editing: boolean;
-    onEdit: (
+    value: ExtendedFieldValueMap[T];
+    onChange: (
         e: T extends FieldType
             ? React.ChangeEvent<HTMLInputElement>
             : React.ChangeEvent<HTMLSelectElement>
     ) => void;
+    editing?: boolean;
     label?: string;
+    placeholder?: string;
     inlineLabel?: boolean;
     inlineProportions?: [number, number];
     asHeading?: boolean;
 } & (T extends 'select' ? { options: string[] } : { options?: never });
 
 // eslint-disable-next-line react-refresh/only-export-components
-function EditInputField<T extends FieldType | 'select'>({
+function GenericInputField<T extends FieldType | 'select'>({
     type,
-    originalValue,
-    editedValue,
-    editing,
-    onEdit,
+    value,
+    onChange,
+    editing = true,
     label,
+    placeholder,
     inlineLabel = true,
     inlineProportions = [3, 9],
     asHeading = false,
     options,
-}: EditInputFieldProps<T>) {
+}: GenericInputFieldProps<T>) {
     let mainComponent;
 
     if (!editing) {
@@ -43,15 +43,15 @@ function EditInputField<T extends FieldType | 'select'>({
             case 'text':
             case 'number':
             case 'select': {
-                val = editedValue;
+                val = value;
                 break;
             }
             case 'boolean': {
-                val = editedValue ? 'True' : 'False';
+                val = value ? 'True' : 'False';
                 break;
             }
             case 'date': {
-                val = dayjs(editedValue as Date).format('HH:mm:ss, D MMM, YYYY');
+                val = dayjs(value as Date).format('HH:mm:ss, D MMM, YYYY');
                 break;
             }
         }
@@ -69,13 +69,7 @@ function EditInputField<T extends FieldType | 'select'>({
             case 'number':
             case 'date': {
                 const val =
-                    type === 'date'
-                        ? dayjs(editedValue as Date).format('YYYY-MM-DD')
-                        : editedValue;
-                const placeholder =
-                    type === 'date'
-                        ? dayjs(originalValue as Date).format('YYYY-MM-DD')
-                        : originalValue.toString();
+                    type === 'date' ? dayjs(value as Date).format('YYYY-MM-DD') : value;
                 mainComponent = (
                     <Form.Control
                         type={type !== 'text' ? type : undefined}
@@ -84,7 +78,7 @@ function EditInputField<T extends FieldType | 'select'>({
                         maxLength={type === 'string' ? 255 : undefined}
                         value={val as string | number}
                         onChange={
-                            onEdit as (e: React.ChangeEvent<HTMLInputElement>) => void
+                            onChange as (e: React.ChangeEvent<HTMLInputElement>) => void
                         }
                         placeholder={placeholder}
                         required
@@ -96,10 +90,11 @@ function EditInputField<T extends FieldType | 'select'>({
             case 'boolean': {
                 mainComponent = (
                     <Form.Check
-                        checked={editedValue as boolean}
+                        checked={value as boolean}
                         onChange={
-                            onEdit as (e: React.ChangeEvent<HTMLInputElement>) => void
+                            onChange as (e: React.ChangeEvent<HTMLInputElement>) => void
                         }
+                        type='switch'
                     />
                 );
                 break;
@@ -107,9 +102,9 @@ function EditInputField<T extends FieldType | 'select'>({
             case 'select': {
                 mainComponent = (
                     <Form.Select
-                        value={editedValue as string}
+                        value={value as string}
                         onChange={
-                            onEdit as (e: React.ChangeEvent<HTMLSelectElement>) => void
+                            onChange as (e: React.ChangeEvent<HTMLSelectElement>) => void
                         }
                         required
                         size={asHeading ? 'lg' : undefined}
@@ -137,13 +132,16 @@ function EditInputField<T extends FieldType | 'select'>({
             style={{ maxHeight: asHeading ? '2.57625rem' : undefined }}
         >
             {!!label && (
-                <Form.Label column={inlineLabel || undefined} sm={labelCol}>
+                <Form.Label
+                    column={inlineLabel || undefined}
+                    sm={inlineLabel ? labelCol : undefined}
+                >
                     {label}
                 </Form.Label>
             )}
-            <Col sm={inputCol}>{mainComponent}</Col>
+            <Col sm={inlineLabel ? inputCol : undefined}>{mainComponent}</Col>
         </Form.Group>
     );
 }
 
-export default React.memo(EditInputField) as typeof EditInputField;
+export default React.memo(GenericInputField) as typeof GenericInputField;

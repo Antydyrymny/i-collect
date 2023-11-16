@@ -57,7 +57,7 @@ function UserPage() {
     const t = useLocale('userPage');
 
     return (
-        <Container className='pb-5'>
+        <Container>
             <Row>
                 {ownerOptions.isFetching && (
                     <Stack

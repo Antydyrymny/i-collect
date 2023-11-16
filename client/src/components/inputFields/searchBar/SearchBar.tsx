@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Button, CloseButton, FloatingLabel, Form, InputGroup } from 'react-bootstrap';
-import { TooltipOverlay } from '..';
-import { useLocale } from '../../contexts/locale';
+import { TooltipOverlay } from '../..';
+import { useLocale } from '../../../contexts/locale';
 
 type SearchbarProps = {
     searchQuery: string;
@@ -10,6 +10,8 @@ type SearchbarProps = {
     submitSearch: (e: React.FormEvent<HTMLFormElement>) => void;
     label: string;
     placeholder: string;
+    searchButtonText?: string;
+    hideFloatingLabel?: boolean;
 };
 
 const SearchBar = memo(function SearchBar({
@@ -19,29 +21,43 @@ const SearchBar = memo(function SearchBar({
     submitSearch,
     label,
     placeholder,
+    searchButtonText,
+    hideFloatingLabel = false,
 }: SearchbarProps) {
     const t = useLocale('general');
 
     return (
         <Form onSubmit={submitSearch}>
+            {hideFloatingLabel && <Form.Label>{label}</Form.Label>}
             <InputGroup>
-                <FloatingLabel controlId='collectionSearch' label={label}>
+                {!hideFloatingLabel && (
+                    <FloatingLabel controlId='collectionSearch' label={label}>
+                        <Form.Control
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            type='text'
+                            required
+                            placeholder={placeholder}
+                            className='shadow-none'
+                        />
+                    </FloatingLabel>
+                )}
+                {hideFloatingLabel && (
                     <Form.Control
                         value={searchQuery}
                         onChange={handleSearchChange}
                         type='text'
                         required
                         placeholder={placeholder}
-                        className='shadow-none'
                     />
-                </FloatingLabel>
+                )}
                 <TooltipOverlay id='clear' tooltipMessage={t('clear')} placement='bottom'>
                     <InputGroup.Text className='d-none d-sm-flex'>
                         <CloseButton onClick={clearSearch} />
                     </InputGroup.Text>
                 </TooltipOverlay>
                 <Button type='submit' variant='outline-primary'>
-                    {t('search')}
+                    {searchButtonText ?? t('search')}
                 </Button>
             </InputGroup>
         </Form>

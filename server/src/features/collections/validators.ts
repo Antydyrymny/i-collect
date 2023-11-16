@@ -227,6 +227,7 @@ export const validateGetCollectionItems = object({
 export const validateGetItem = object({
     query: object<GetItemQuery>().shape({
         _id: string().max(255).required('Item id is required'),
+        userId: string().max(255),
     }),
 });
 

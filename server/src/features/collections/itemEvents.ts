@@ -16,7 +16,6 @@ export function subscribeToItemUpdates() {
                     autocomplete: {
                         query: query,
                         path: 'name',
-                        fuzzy: {},
                     },
                 },
             });

@@ -7,7 +7,7 @@ import {
     setItemFields,
     updateTags,
 } from './utils';
-import { UpdateItemReq, ItemResponse, ResponseError } from '../../types';
+import { UpdateItemReq, ItemResponse, ResponseError, AuthUser } from '../../types';
 
 export const updateItem = async (req: Request, res: Response<ItemResponse>) => {
     const { _id, name: newName, tags = [], fields }: UpdateItemReq = req.body;
@@ -54,6 +54,11 @@ export const updateItem = async (req: Request, res: Response<ItemResponse>) => {
     await existingItem.save();
 
     res.status(200).json(
-        getItemResponse(existingItem, parentCollection._id, parentCollection.name, req)
+        getItemResponse(
+            existingItem,
+            parentCollection._id,
+            parentCollection.name,
+            (req.user as AuthUser)._id
+        )
     );
 };

@@ -1,5 +1,9 @@
 {
-    "general": { "clear": "Clear", "search": "Search", "delete": "Delete" },
+    "general": {
+        "clear": "Clear",
+        "search": "Search",
+        "delete": "Delete"
+    },
     "login": {
         "header": "Sign in",
         "header-msg": "Please, enter your email and password!",
@@ -103,8 +107,10 @@
         "stopEdit": "Cancel edit",
         "deleteCollection": "Delete collection",
         "info": "Info",
+        "namePlaceholder": "Enter collection's name",
         "themeLabel": "Theme:",
         "descriptionLabel": "Description:",
+        "descriptionPlaceholder": "Enter collection's description",
         "additionalFields": "Additional fields",
         "fieldName": "Field name:",
         "fieldType": "Field type:",
@@ -121,5 +127,19 @@
         "false": "False",
         "deleteItem": "Delete item",
         "toItem": "To item"
+    },
+    "newItem": {
+        "newItem": "Create new item",
+        "ofCollection": "of collection: ",
+        "info": "Item info",
+        "nameLabel": "Name",
+        "namePlaceholder": "Enter item's name",
+        "genericPlaceholder": "Enter ",
+        "tagSearchLabel": "Add tags",
+        "tagPlaceholder": "Enter tag name",
+        "tagSubmit": "Add tag",
+        "delete": "Remove tag",
+        "save": "Save item",
+        "cancel": "Cancel"
     }
 }

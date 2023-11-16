@@ -112,7 +112,7 @@ function ManageUsers() {
     }, [selected, deleteUsers]);
 
     return (
-        <Container className='mt-5'>
+        <Container>
             <Row className='mb-3 '>
                 <ButtonToolbar className='gap-2'>
                     <ButtonToolbar className='gap-2'>

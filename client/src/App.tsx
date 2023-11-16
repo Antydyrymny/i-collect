@@ -11,6 +11,9 @@ const UserPage = React.lazy(() => import('./pages/userPage/UserPage'));
 const NewCollection = React.lazy(
     () => import('./pages/collection/newCollection/NewCollection')
 );
+const CollectionLayout = React.lazy(
+    () => import('./pages/layouts/collectionLayout/CollectionLayout')
+);
 const CollectionPage = React.lazy(() => import('./pages/collection/CollectionPage'));
 const NewItem = React.lazy(() => import('./pages/item/newItem/NewItem'));
 const ItemPage = React.lazy(() => import('./pages/item/ItemPage'));
@@ -46,7 +49,10 @@ function App() {
                                 element={<ProtectedRoute Component={NewCollection} />}
                             />
                         </Route>
-                        <Route path={ClientRoutes.CollectionPage}>
+                        <Route
+                            path={ClientRoutes.CollectionPage}
+                            element={<CollectionLayout />}
+                        >
                             <Route index element={<CollectionPage />} />
                             <Route
                                 path={ClientRoutes.NewItem}

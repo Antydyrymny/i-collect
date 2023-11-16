@@ -63,11 +63,12 @@ export const findCollectionItems = (builder: ApiBuilder) =>
     });
 
 export const getItem = (builder: ApiBuilder) =>
-    builder.query<ItemResponse, string>({
-        query: (itemId) => ({
+    builder.query<ItemResponse, GetItemQuery>({
+        query: (request) => ({
             url: Routes.GetItem,
-            params: { _id: itemId } as GetItemQuery,
+            params: request,
         }),
+        serializeQueryArgs: ({ queryArgs }) => queryArgs._id,
         providesTags: ['CurItem'],
         keepUnusedDataFor: 0,
     });
@@ -90,9 +91,13 @@ export const updateItem = (builder: ApiBuilder) =>
         }),
         async onQueryStarted({ _id, ...request }, { dispatch, queryFulfilled }) {
             dispatch(
-                api.util.updateQueryData('getItem', _id, (draft) => {
-                    Object.assign(draft, request);
-                })
+                api.util.updateQueryData(
+                    'getItem',
+                    _id as unknown as GetItemQuery,
+                    (draft) => {
+                        Object.assign(draft, request);
+                    }
+                )
             );
             try {
                 await queryFulfilled;
@@ -114,10 +119,14 @@ export const toggleLikeItem = (builder: ApiBuilder) =>
         }),
         async onQueryStarted(request, { dispatch, queryFulfilled }) {
             const resultOnItemScreen = dispatch(
-                api.util.updateQueryData('getItem', request._id, (draft) => ({
-                    ...draft,
-                    userLikes: request.action === 'like' ? true : false,
-                }))
+                api.util.updateQueryData(
+                    'getItem',
+                    request._id as unknown as GetItemQuery,
+                    (draft) => ({
+                        ...draft,
+                        userLikes: request.action === 'like' ? true : false,
+                    })
+                )
             );
             try {
                 await queryFulfilled;
