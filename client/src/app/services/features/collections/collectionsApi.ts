@@ -131,19 +131,21 @@ export const deleteCollection = (builder: ApiBuilder) =>
                     })
                 )
             );
-            const updateUserPage = dispatch(
-                api.util.updateQueryData('getUserPage', userId, (draft) => ({
-                    ...draft,
-                    collections: draft.collections.filter(
-                        (collection) => collection !== collectionToDeleteId
-                    ),
-                }))
-            );
+            let updateUserPage = null;
+            if (userId)
+                updateUserPage = dispatch(
+                    api.util.updateQueryData('getUserPage', userId, (draft) => ({
+                        ...draft,
+                        collections: draft.collections.filter(
+                            (collection) => collection !== collectionToDeleteId
+                        ),
+                    }))
+                );
             try {
                 await queryFulfilled;
             } catch (error) {
                 deleteResult.undo();
-                updateUserPage.undo();
+                if (updateUserPage) updateUserPage.undo();
                 toast.error(
                     isStringError(error) ? error.data : 'Error connecting to server'
                 );

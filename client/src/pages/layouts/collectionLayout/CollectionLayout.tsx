@@ -1,7 +1,7 @@
 import { Outlet, useParams } from 'react-router-dom';
 import { useGetCollectionQuery } from '../../../app/services/api';
 import { useInformOfError } from '../../../hooks';
-import { Spinner, Stack } from 'react-bootstrap';
+import { MainSpinner } from '../../../components';
 
 function CollectionLayout() {
     const { collectionId } = useParams();
@@ -20,14 +20,7 @@ function CollectionLayout() {
 
     return (
         <>
-            {collectionOptions.isFetching && (
-                <Stack
-                    className='d-flex justify-content-center align-items-center'
-                    style={{ minHeight: 'calc(100vh - 8.5rem)' }}
-                >
-                    <Spinner />
-                </Stack>
-            )}
+            {collectionOptions.isFetching && <MainSpinner />}
             {collectionOptions.isSuccess && <Outlet context={collection} />}
         </>
     );

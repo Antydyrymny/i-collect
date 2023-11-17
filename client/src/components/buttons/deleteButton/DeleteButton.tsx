@@ -1,9 +1,9 @@
 import { memo } from 'react';
-import { TooltipOverlay } from '..';
+import { TooltipOverlay } from '../..';
 import { Button, Spinner, Image } from 'react-bootstrap';
-import trash from '../../assets/deleteUser.png';
-import trashDark from '../../assets/deleteUser-dark.png';
-import { useThemeContext } from '../../contexts/theme';
+import trash from '../../../assets/deleteUser.png';
+import trashDark from '../../../assets/deleteUser-dark.png';
+import { useThemeContext } from '../../../contexts/theme';
 
 type DeleteButtonOptions = {
     handleDelete: () => void;

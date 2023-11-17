@@ -4,12 +4,12 @@ import MainNav from './MainNav';
 
 function MainLayout() {
     return (
-        <div>
+        <>
             <MainNav />
             <Container className='mt-5 pb-5'>
                 <Outlet />
             </Container>
-        </div>
+        </>
     );
 }
 

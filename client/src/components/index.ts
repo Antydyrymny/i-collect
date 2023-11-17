@@ -9,12 +9,16 @@ export { CollectionImg };
 
 import GenericInputField from './inputFields/genericInputField/GenericInputField';
 export { GenericInputField };
-
 import SearchBar from './inputFields/searchBar/SearchBar';
 export { SearchBar };
 
-import DeleteButton from './deleteButton/DeleteButton';
+import DeleteButton from './buttons/deleteButton/DeleteButton';
 export { DeleteButton };
+import EditButton from './buttons/editButton/EditButton';
+export { EditButton };
 
 import CardWrapper from './cardWrapper/CardWrapper';
 export { CardWrapper };
+
+import MainSpinner from './spinner/MainSpinner';
+export { MainSpinner };

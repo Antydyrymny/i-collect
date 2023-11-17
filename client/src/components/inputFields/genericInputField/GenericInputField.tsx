@@ -56,7 +56,7 @@ function GenericInputField<T extends FieldType | 'select'>({
             }
         }
         mainComponent = asHeading ? (
-            <h2>{val as string | number}</h2>
+            <h2 className='mb-2'>{val as string | number}</h2>
         ) : (
             <p className='mb-0' style={{ paddingTop: '0.4375rem' }}>
                 {val as string | number}
@@ -126,20 +126,30 @@ function GenericInputField<T extends FieldType | 'select'>({
         <Form.Group
             as={inlineLabel ? Row : undefined}
             controlId={editing ? label : undefined}
-            className={`${editing ? '' : 'd-flex align-items-start'} ${
-                asHeading ? 'mb-2' : 'mb-3'
-            }`}
+            className={`${asHeading ? 'mb-0' : 'mb-3'}`}
             style={{ maxHeight: asHeading ? '2.57625rem' : undefined }}
         >
             {!!label && (
                 <Form.Label
                     column={inlineLabel || undefined}
                     sm={inlineLabel ? labelCol : undefined}
+                    className={inlineLabel ? 'text-secondary-emphasis' : ''}
                 >
                     {label}
                 </Form.Label>
             )}
-            <Col sm={inlineLabel ? inputCol : undefined}>{mainComponent}</Col>
+            <Col
+                className={
+                    type === 'boolean' && editing
+                        ? 'd-flex align-items-center'
+                        : type === 'text' && !editing
+                        ? 'mb-2'
+                        : ''
+                }
+                sm={inlineLabel ? inputCol : undefined}
+            >
+                {mainComponent}
+            </Col>
         </Form.Group>
     );
 }

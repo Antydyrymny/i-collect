@@ -9,7 +9,10 @@ export const getUpdatedFields = <T extends object>(
     const getKeys = Object.keys as <T extends object>(obj: T) => Array<keyof T>;
 
     getKeys(editState).forEach(<T extends keyof EditState>(key: T) => {
-        if (editState[key] && originalObj[key] !== editState[key]) {
+        if (
+            editState[key] !== undefined &&
+            JSON.stringify(originalObj[key]) !== JSON.stringify(editState[key])
+        ) {
             isUpdated = true;
             update[key] = editState[key];
         }

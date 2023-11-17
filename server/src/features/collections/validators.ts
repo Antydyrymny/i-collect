@@ -1,7 +1,7 @@
 import { object, array, string, mixed } from 'yup';
 import {
     DeleteCollectionReq,
-    ItemReqFormatField,
+    ItemFormatField,
     NewCollectionReq,
     ItemReq,
     UpdateCollectionReq,
@@ -112,7 +112,7 @@ const validateItem = object({
             ),
         fields: array()
             .of(
-                object<ItemReqFormatField>()
+                object<ItemFormatField>()
                     .shape({
                         fieldName: string()
                             .max(255, 'Field name is too long')

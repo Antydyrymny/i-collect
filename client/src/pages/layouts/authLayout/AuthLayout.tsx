@@ -10,9 +10,11 @@ function AuthLayout() {
 
     return (
         <Container className='vh-100 d-flex flex-column justify-content-center align-items-center'>
-            <Navbar expand='lg' className={`${styles.nav} position-fixed top-0`}>
-                <LocalePicker />
-            </Navbar>
+            <Container className='d-flex justify-content-end'>
+                <Navbar expand='lg' className={` position-fixed top-0`}>
+                    <LocalePicker />
+                </Navbar>
+            </Container>
             <Container>
                 <Row className='d-flex justify-content-center align-items-center'>
                     <Col md={8} lg={6} xs={12}>

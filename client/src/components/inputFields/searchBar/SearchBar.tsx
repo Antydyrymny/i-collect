@@ -1,7 +1,8 @@
-import { memo } from 'react';
+import React, { memo } from 'react';
 import { Button, CloseButton, FloatingLabel, Form, InputGroup } from 'react-bootstrap';
 import { TooltipOverlay } from '../..';
 import { useLocale } from '../../../contexts/locale';
+import { nanoid } from '@reduxjs/toolkit';
 
 type SearchbarProps = {
     searchQuery: string;
@@ -12,6 +13,7 @@ type SearchbarProps = {
     placeholder: string;
     searchButtonText?: string;
     hideFloatingLabel?: boolean;
+    asHeading?: boolean;
 };
 
 const SearchBar = memo(function SearchBar({
@@ -23,15 +25,20 @@ const SearchBar = memo(function SearchBar({
     placeholder,
     searchButtonText,
     hideFloatingLabel = false,
+    asHeading = false,
 }: SearchbarProps) {
     const t = useLocale('general');
+    const id = 'search_' + nanoid();
 
+    const LabelWrapper = asHeading ? 'h6' : React.Fragment;
     return (
         <Form onSubmit={submitSearch}>
-            {hideFloatingLabel && <Form.Label>{label}</Form.Label>}
+            <LabelWrapper className={asHeading ? 'mt-4 mb-3' : ''}>
+                {hideFloatingLabel && <Form.Label htmlFor={id}>{label}</Form.Label>}
+            </LabelWrapper>
             <InputGroup>
                 {!hideFloatingLabel && (
-                    <FloatingLabel controlId='collectionSearch' label={label}>
+                    <FloatingLabel controlId={id} label={label}>
                         <Form.Control
                             value={searchQuery}
                             onChange={handleSearchChange}
@@ -44,6 +51,7 @@ const SearchBar = memo(function SearchBar({
                 )}
                 {hideFloatingLabel && (
                     <Form.Control
+                        id={id}
                         value={searchQuery}
                         onChange={handleSearchChange}
                         type='text'

@@ -1,8 +1,5 @@
-import { useMemo, useState } from 'react';
-import { Button, Card, Col, Form, Image, Row, Spinner } from 'react-bootstrap';
-import { useThemeContext } from '../../contexts/theme';
-import edit from '../../assets/edit.png';
-import editDark from '../../assets/edit-dark.png';
+import { useMemo } from 'react';
+import { Button, Card, Col, Form, Row, Spinner } from 'react-bootstrap';
 import { collectionThemes } from '../../data';
 import {
     ClientRoutes,
@@ -15,13 +12,14 @@ import {
     CardWrapper,
     CollectionImg,
     DeleteButton,
+    EditButton,
     GenericInputField,
 } from '../../components';
 import {
     useDeleteCollectionMutation,
     useUpdateCollectionMutation,
 } from '../../app/services/api';
-import { useCollectionMainFields, useInformOfError } from '../../hooks';
+import { useCollectionHandlers, useEditing, useInformOfError } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getUpdatedFields } from '../../utils/getUpdatedFields';
@@ -32,9 +30,7 @@ type CollectionProps = {
     allowEdit: boolean;
 };
 
-function Collection({ collection, allowEdit }: CollectionProps) {
-    const [editing, setEditing] = useState(false);
-
+function CollectionCard({ collection, allowEdit }: CollectionProps) {
     const defaultState = useMemo<Pick<ItemCollection, 'name' | 'description' | 'theme'>>(
         () => ({
             name: collection.name,
@@ -57,23 +53,18 @@ function Collection({ collection, allowEdit }: CollectionProps) {
         imageData,
         handleImageChange: handleEditImage,
         clearImage,
-    } = useCollectionMainFields(defaultState, defaultImgState);
+    } = useCollectionHandlers(defaultState, defaultImgState);
 
-    const startEditing = () => {
-        if (!allowEdit) return;
-        setEditing(true);
-    };
+    const { editing, startEditing, stopEditing } = useEditing(allowEdit);
     const cancelEdit = () => {
-        setEditing(false);
+        stopEditing();
         resetMainState();
     };
 
     const [updateCollection, updateOptions] = useUpdateCollectionMutation();
+    useInformOfError({ isError: updateOptions.isError, error: updateOptions.error });
+
     const [deleteCollection, deleteOptions] = useDeleteCollectionMutation();
-    useInformOfError([
-        { isError: updateOptions.isError, error: updateOptions.error },
-        { isError: deleteOptions.isError, error: deleteOptions.error },
-    ]);
 
     const navigate = useNavigate();
     const handleSubmitUpdate = (e: React.FormEvent<HTMLFormElement>) => {
@@ -88,7 +79,7 @@ function Collection({ collection, allowEdit }: CollectionProps) {
         // if (imgUpdate) finalUpdate = { ...finalUpdate, ...imgUpdate };
 
         if (mainFieldsUpdate || imgUpdate) updateCollection(finalUpdate);
-        setEditing(false);
+        stopEditing();
     };
     const handleDelete = async () => {
         if (deleteOptions.isLoading) return;
@@ -100,7 +91,6 @@ function Collection({ collection, allowEdit }: CollectionProps) {
         }
     };
 
-    const { theme } = useThemeContext();
     const t = useLocale('collectionPage');
     const tDict = useLocale('dictionary');
 
@@ -120,8 +110,9 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                         <h6
                             style={{
                                 position: 'relative',
-                                top: editing ? '0.5rem' : undefined,
+                                top: editing ? '0.75rem' : undefined,
                             }}
+                            className='mt-2 mb-0'
                         >
                             {t('by')}
                             {collection.authorName}
@@ -129,16 +120,13 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                     </div>
                     {allowEdit && (
                         <div className='d-flex gap-2'>
-                            <Button
-                                onClick={editing ? cancelEdit : startEditing}
-                                className='text-nowrap'
-                            >
-                                <Image
-                                    src={theme === 'light' ? edit : editDark}
-                                    className='me-2'
-                                />
-                                {editing ? t('stopEdit') : t('edit')}
-                            </Button>
+                            <EditButton
+                                editing={editing}
+                                startEditing={startEditing}
+                                startEditMsg={t('edit')}
+                                cancelEdit={cancelEdit}
+                                cancelEditMsg={t('stopEdit')}
+                            />
                             <DeleteButton
                                 handleDelete={handleDelete}
                                 disabled={deleteOptions.isLoading}
@@ -197,7 +185,11 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                                 style={{ paddingTop: '0.4375rem' }}
                             >
                                 <Row className='w-lg-50 w-100'>
-                                    <Col xs={6} sm={3}>
+                                    <Col
+                                        xs={6}
+                                        sm={3}
+                                        className='text-secondary-emphasis'
+                                    >
                                         {t('fieldName')}
                                     </Col>
                                     <Col xs={6} sm={9}>
@@ -205,7 +197,11 @@ function Collection({ collection, allowEdit }: CollectionProps) {
                                     </Col>
                                 </Row>
                                 <Row className='w-lg-50 w-100'>
-                                    <Col xs={6} sm={3}>
+                                    <Col
+                                        xs={6}
+                                        sm={3}
+                                        className='text-secondary-emphasis'
+                                    >
                                         {t('fieldType')}
                                     </Col>
                                     <Col xs={6} sm={9}>
@@ -234,4 +230,4 @@ function Collection({ collection, allowEdit }: CollectionProps) {
     );
 }
 
-export default Collection;
+export default CollectionCard;

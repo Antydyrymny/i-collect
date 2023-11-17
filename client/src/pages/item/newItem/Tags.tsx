@@ -5,13 +5,22 @@ import { CloseButton, Col, Container, Dropdown, Row, Spinner } from 'react-boots
 import { SearchBar, TooltipOverlay } from '../../../components';
 
 type TagsProps = {
+    editing?: boolean;
     tags: string[];
     addTag: (tag: string) => () => void;
     removeTag: (tag: string) => () => void;
     submitCurTag: (tag: string) => (e: React.FormEvent<HTMLFormElement>) => void;
+    asHeading?: boolean;
 };
 
-function Tags({ tags, addTag, removeTag, submitCurTag }: TagsProps) {
+function Tags({
+    editing = true,
+    tags,
+    addTag,
+    removeTag,
+    submitCurTag,
+    asHeading = false,
+}: TagsProps) {
     const [curTag, setCurTag] = useState('');
     const handleCurTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCurTag(e.target.value);
@@ -30,36 +39,39 @@ function Tags({ tags, addTag, removeTag, submitCurTag }: TagsProps) {
 
     return (
         <>
-            <Row>
-                <Col xs={12} lg={6} className='position-relative'>
-                    <SearchBar
-                        searchQuery={curTag}
-                        handleSearchChange={handleCurTagChange}
-                        clearSearch={clearCurTag}
-                        submitSearch={submitCurTag(curTag)}
-                        label={t('tagSearchLabel')}
-                        placeholder={t('tagPlaceholder')}
-                        searchButtonText={t('tagSubmit')}
-                        hideFloatingLabel
-                    />
-                    <Dropdown.Menu
-                        show={!!tagSuggestions?.length}
-                        className='end-0 start-0'
-                        style={{ marginInline: '0.75rem' }}
-                    >
-                        {tagSearchOptions.isFetching && (
-                            <Container className='d-flex justify-content-center'>
-                                <Spinner />
-                            </Container>
-                        )}
-                        {tagSuggestions?.map((suggestedTag, ind) => (
-                            <Dropdown.Item key={ind} onClick={addTag(suggestedTag)}>
-                                {suggestedTag}
-                            </Dropdown.Item>
-                        ))}
-                    </Dropdown.Menu>
-                </Col>
-            </Row>
+            {editing && (
+                <Row>
+                    <Col xs={12} lg={6} className='position-relative'>
+                        <SearchBar
+                            searchQuery={curTag}
+                            handleSearchChange={handleCurTagChange}
+                            clearSearch={clearCurTag}
+                            submitSearch={submitCurTag(curTag)}
+                            label={t('tagSearchLabel')}
+                            placeholder={t('tagPlaceholder')}
+                            searchButtonText={t('tagSubmit')}
+                            hideFloatingLabel
+                            asHeading={asHeading}
+                        />
+                        <Dropdown.Menu
+                            show={!!tagSuggestions?.length}
+                            className='end-0 start-0'
+                            style={{ marginInline: '0.75rem' }}
+                        >
+                            {tagSearchOptions.isFetching && (
+                                <Container className='d-flex justify-content-center'>
+                                    <Spinner />
+                                </Container>
+                            )}
+                            {tagSuggestions?.map((suggestedTag, ind) => (
+                                <Dropdown.Item key={ind} onClick={addTag(suggestedTag)}>
+                                    {suggestedTag}
+                                </Dropdown.Item>
+                            ))}
+                        </Dropdown.Menu>
+                    </Col>
+                </Row>
+            )}
             <Row>
                 <Col xs={12} lg={6} className='mt-3'>
                     <h5>
@@ -67,18 +79,22 @@ function Tags({ tags, addTag, removeTag, submitCurTag }: TagsProps) {
                             <span
                                 key={ind}
                                 className='badge border border-primary text-primary
-                                                rounded-5 me-2 mb-2 ps-3 d-inline-flex align-items-center '
+                                                rounded-5 me-2 mb-2 ps-3 d-inline-flex align-items-center'
                             >
-                                {tag}
-                                <TooltipOverlay
-                                    id={'delete' + tag}
-                                    tooltipMessage={t('delete')}
-                                >
-                                    <CloseButton
-                                        onClick={removeTag(tag)}
-                                        style={{ scale: '0.7' }}
-                                    />
-                                </TooltipOverlay>
+                                <span className={`${!editing && 'py-1 pe-2'}`}>
+                                    {tag}
+                                </span>
+                                {editing && (
+                                    <TooltipOverlay
+                                        id={'delete' + tag}
+                                        tooltipMessage={t('delete')}
+                                    >
+                                        <CloseButton
+                                            onClick={removeTag(tag)}
+                                            style={{ scale: '0.7' }}
+                                        />
+                                    </TooltipOverlay>
+                                )}
                             </span>
                         ))}
                     </h5>

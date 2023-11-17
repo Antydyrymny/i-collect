@@ -1,55 +1,39 @@
-import { useState } from 'react';
+import { useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useLocale } from '../../../contexts/locale';
-import { useTagsHandlers } from '../../../hooks';
+import { useItemHandlers, useTagHandlers } from '../../../hooks';
 import { useNewItemMutation } from '../../../app/services/api';
 import { useCollection } from '../../layouts/collectionLayout/useCollection';
 import { toast } from 'react-toastify';
 import { Button, Card, Col, Form, Row, Spinner } from 'react-bootstrap';
 import { CardWrapper, GenericInputField } from '../../../components';
-import { ClientRoutes, ItemReqFormatField, isStringError } from '../../../types';
+import { ClientRoutes, isStringError } from '../../../types';
 import Tags from './Tags';
 
 function NewItem() {
     const collection = useCollection();
 
-    const [name, setName] = useState('');
-    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
-    };
-
-    const { tags, addTag, removeTag, submitCurTag } = useTagsHandlers();
-
-    const [fields, setFields] = useState<ItemReqFormatField[]>(() =>
-        collection.format.map((field) => ({
-            ...field,
-            fieldValue:
-                field.fieldType === 'boolean'
-                    ? true
-                    : field.fieldType === 'number'
-                    ? 0
-                    : field.fieldType === 'date'
-                    ? dayjs().format('YYYY-MM-DD')
-                    : '',
-        }))
+    const fieldsInitializer = useCallback(
+        () =>
+            collection.format.map((field) => ({
+                ...field,
+                fieldValue:
+                    field.fieldType === 'boolean'
+                        ? true
+                        : field.fieldType === 'number'
+                        ? 0
+                        : field.fieldType === 'date'
+                        ? dayjs().format('YYYY-MM-DD')
+                        : '',
+            })),
+        [collection.format]
     );
-    const handleFieldChange =
-        (ind: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-            setFields((prevFields) =>
-                prevFields.map((field, fieldInd) =>
-                    fieldInd === ind
-                        ? {
-                              ...field,
-                              fieldValue:
-                                  field.fieldType === 'boolean'
-                                      ? e.target.checked
-                                      : e.target.value,
-                          }
-                        : { ...field }
-                )
-            );
-        };
+    const { name, handleNameChange, fields, handleFieldChange } = useItemHandlers(
+        '',
+        fieldsInitializer
+    );
+    const { tags, addTag, removeTag, submitCurTag } = useTagHandlers();
 
     const [createItem, itemOptions] = useNewItemMutation();
     const navigate = useNavigate();
@@ -73,15 +57,15 @@ function NewItem() {
 
     return (
         <CardWrapper>
-            <h2 className='mt-2 mb-2'>{t('newItem')}</h2>
-            <h6 className='mb-3'>
-                {t('ofCollection')}
-                <b>
+            <header className='mb-4'>
+                <h2 className='mt-2 mb-2'>{t('newItem')}</h2>
+                <h6>
+                    {t('ofCollection')}
                     <Link to={ClientRoutes.CollectionPath + collection._id}>
                         {collection.name}
                     </Link>
-                </b>
-            </h6>
+                </h6>
+            </header>
             <Card>
                 <Card.Body>
                     <h6 className='mt-2 mb-4'>{t('info')}</h6>
@@ -97,16 +81,14 @@ function NewItem() {
                                     inlineLabel={false}
                                 />
                             </Col>
-                            {collection.format.map((field, ind) => (
+                            {fields.map(({ fieldType, fieldName, fieldValue }, ind) => (
                                 <Col key={ind} xs={12} lg={6}>
                                     <GenericInputField
-                                        type={field.fieldType}
-                                        value={fields[ind].fieldValue}
+                                        type={fieldType}
+                                        value={fieldValue}
                                         onChange={handleFieldChange(ind)}
-                                        label={field.fieldName}
-                                        placeholder={
-                                            t('genericPlaceholder') + field.fieldName
-                                        }
+                                        label={fieldName}
+                                        placeholder={t('genericPlaceholder') + fieldName}
                                         inlineLabel={false}
                                     />
                                 </Col>

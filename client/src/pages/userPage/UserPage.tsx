@@ -10,9 +10,8 @@ import { useLocale } from '../../contexts/locale';
 import { useSelectUser } from '../../app/services/features/auth';
 import { Button, Col, Container, Row, Spinner, Stack } from 'react-bootstrap';
 import CollectionCardPreview from './CollectionCardPreview';
-import styles from './userPageStyles.module.scss';
+import { MainSpinner, SearchBar } from '../../components';
 import { ClientRoutes } from '../../types';
-import { SearchBar } from '../../components';
 
 function UserPage() {
     const user = useSelectUser();
@@ -59,13 +58,7 @@ function UserPage() {
     return (
         <Container>
             <Row>
-                {ownerOptions.isFetching && (
-                    <Stack
-                        className={`${styles.spinner} d-flex justify-content-center align-items-center`}
-                    >
-                        <Spinner />
-                    </Stack>
-                )}
+                {ownerOptions.isFetching && <MainSpinner />}
                 {ownerOptions.isSuccess && (
                     <>
                         <Col className='ps-0 pe-0'>

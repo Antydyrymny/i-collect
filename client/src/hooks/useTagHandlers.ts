@@ -8,8 +8,9 @@ import { useCallback, useState } from 'react';
  * @addTag adds a tag from string
  * @removeTag removes tag by name
  * @submitCurTag adds a tag by submitting a form
+ * @resetTags resets tags to their default state
  */
-export const useTagsHandlers = (defaultTags: string[] = []) => {
+export const useTagHandlers = (defaultTags: string[] = []) => {
     const [tags, setTags] = useState<string[]>(defaultTags);
     const addTag = useCallback(
         (tag: string) => () => {
@@ -32,5 +33,9 @@ export const useTagsHandlers = (defaultTags: string[] = []) => {
         },
         []
     );
-    return { tags, addTag, removeTag, submitCurTag };
+    const resetTags = useCallback(() => {
+        setTags(defaultTags);
+    }, [defaultTags]);
+
+    return { tags, addTag, removeTag, submitCurTag, resetTags };
 };

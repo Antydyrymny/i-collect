@@ -16,16 +16,12 @@ export type Item = {
     dateFields: Map<string, Date>;
 };
 
-export type ItemReqFormatField = FormatField & {
+export type ItemFormatField = FormatField & {
     fieldValue: boolean | number | string | Date;
 };
-export type ItemResFormatField = {
-    [key: string]: boolean | number | string | Date;
-};
-
 export type ItemReq = {
     tags: string[];
-    fields: ItemReqFormatField[];
+    fields: ItemFormatField[];
 };
 
 export type NewItemReq = ItemReq & {
@@ -74,7 +70,7 @@ export type ItemResponse = {
     tags: string[];
     userLikes: boolean;
     likesNumber: number;
-    fields: ItemResFormatField[];
+    fields: ItemFormatField[];
 };
 
 export type ItemPreview = {
@@ -82,5 +78,5 @@ export type ItemPreview = {
     name: string;
     tags: string[];
     likesNumber: number;
-    fields: ItemResFormatField[];
+    fields: ItemFormatField[];
 };

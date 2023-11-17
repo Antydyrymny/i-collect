@@ -4,10 +4,9 @@ import { ObjectId, Schema } from 'mongoose';
 import { CommentModel, ItemModel, TagModel } from '../../models';
 import { largestCollections, latestItems, updatesRequired } from '../../data';
 import {
-    ItemResFormatField,
     ItemModelType,
     ItemPreview,
-    ItemReqFormatField,
+    ItemFormatField,
     ItemResponse,
     ResponseError,
     CollectionModelType,
@@ -19,16 +18,18 @@ import {
 dotenv.config();
 
 const maxPreviewFields = +process.env.MAX_ITEM_PREVIEW_FIELDS;
-const ordering = ['stringFields', 'dateFields'] as const;
+const previewFields = ['string', 'date'] as const;
+const allFields = [...previewFields, 'text', 'number', 'boolean'] as const;
 
 export const getItemPreview = (
     item: Omit<ItemModelType, 'comments' | 'parentCollection'>,
     itemWithObjectPropsFromSearch = false,
     includeAllFields = false
 ): ItemPreview => {
-    const previewFields: ItemResFormatField[] = [];
+    const returnedFields: ItemFormatField[] = [];
     if (includeAllFields) {
-        [...ordering, 'textFields'].forEach((fieldType) => {
+        allFields.forEach((type) => {
+            const fieldType = type + 'Fields';
             const allFieldsOfCurType = itemWithObjectPropsFromSearch
                 ? Object.entries(
                       item[fieldType] as {
@@ -41,19 +42,28 @@ export const getItemPreview = (
                       ).entries()
                   );
             allFieldsOfCurType.forEach(([key, value]) =>
-                previewFields.push({ [key]: value })
+                returnedFields.push({
+                    fieldType: type,
+                    fieldName: key,
+                    fieldValue: value,
+                })
             );
         });
     } else {
-        main: for (const fieldType of ordering) {
+        main: for (const type of previewFields) {
+            const fieldType = type + 'Fields';
             for (const [key, value] of itemWithObjectPropsFromSearch
-                ? Object.entries(item[fieldType])
-                : Array.from(
-                      (
-                          item[fieldType] as Map<string, string | boolean | number | Date>
-                      ).entries()
-                  )) {
-                previewFields.push({ [key]: value });
+                ? Object.entries(
+                      item[fieldType] as {
+                          [key: string]: string | Date;
+                      }
+                  )
+                : Array.from((item[fieldType] as Map<string, string | Date>).entries())) {
+                returnedFields.push({
+                    fieldType: type,
+                    fieldName: key,
+                    fieldValue: value,
+                });
                 if (previewFields.length === maxPreviewFields) break main;
             }
         }
@@ -64,7 +74,7 @@ export const getItemPreview = (
         name: item.name,
         tags: item.tags,
         likesNumber: item.likesFrom.length,
-        fields: previewFields,
+        fields: returnedFields,
     };
 };
 
@@ -91,7 +101,7 @@ export const getItemResponse = (
 
 export const setItemFields = (
     item: Omit<ItemModelType, 'comments'>,
-    fields: ItemReqFormatField[]
+    fields: ItemFormatField[]
 ) => {
     fields.forEach(({ fieldName: key, fieldValue: val, fieldType: type }) => {
         item[type + 'Fields'].set(key, type === 'date' ? new Date(val as string) : val);

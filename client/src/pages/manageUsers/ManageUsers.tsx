@@ -28,7 +28,9 @@ import { DeleteButton } from '../../components';
 
 function ManageUsers() {
     const authUser = useSelectUser();
-    useSubscribeToUsersQuery(authUser._id!);
+    const { ...manageUsersSocket } = useSubscribeToUsersQuery(authUser._id!, {
+        skip: !authUser._id,
+    });
 
     const t = useLocale('manageUsers');
     const { theme } = useThemeContext();
@@ -47,6 +49,7 @@ function ManageUsers() {
     useInformOfError([
         { isError, error },
         { isError: countPagesUtils.isError, error: countPagesUtils.error },
+        { isError: manageUsersSocket.isError, error: manageUsersSocket.error },
     ]);
 
     const [selected, setSelected] = useState<string[]>([]);

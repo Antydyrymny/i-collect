@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { NewCollectionReq } from '../types';
 
-export const useCollectionMainFields = (
+export const useCollectionHandlers = (
     defaultMainState: Pick<NewCollectionReq, 'name' | 'description' | 'theme'>,
     defaultImgState: {
         file: File | null;

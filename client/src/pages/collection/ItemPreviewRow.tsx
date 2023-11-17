@@ -15,12 +15,6 @@ type ItemPreviewProps = {
 };
 
 function ItemPreviewRow({ item, allowEdit, collectionId }: ItemPreviewProps) {
-    const isValidDate = (dateString: Date | string) => {
-        const parsedDate = dayjs(dateString);
-        return parsedDate.isValid() ? parsedDate : false;
-    };
-    const formatDate = (date: dayjs.Dayjs) => date.format('HH:mm:ss, D MMM, YYYY');
-
     const [deleteItem, deleteOptions] = useDeleteItemMutation();
 
     const handleDelete = useCallback(() => {
@@ -47,30 +41,19 @@ function ItemPreviewRow({ item, allowEdit, collectionId }: ItemPreviewProps) {
                 {!item.tags.length && '-'}
                 {item.tags.length > 3 ? '...' : ''}
             </td>
-            {item.fields.map((field, ind) => {
-                const val = Object.values(field)[0];
-                let displayVal;
-                switch (typeof val) {
-                    case 'boolean':
-                        displayVal = val ? t('true') : t('false');
-                        break;
-                    case 'object': {
-                        const parsedDate = isValidDate(val);
-                        displayVal = parsedDate
-                            ? formatDate(parsedDate)
-                            : val.toISOString();
-                        break;
-                    }
-                    case 'string': {
-                        const parsedDate = isValidDate(val);
-                        displayVal = parsedDate ? formatDate(parsedDate) : val;
-                        break;
-                    }
-                    default:
-                        displayVal = val;
-                        break;
-                }
-                return <td key={ind}>{displayVal}</td>;
+            {item.fields.map(({ fieldType, fieldValue }, ind) => {
+                const displayVal =
+                    fieldType === 'boolean'
+                        ? fieldValue
+                            ? t('true')
+                            : t('false')
+                        : fieldType === 'date'
+                        ? dayjs(fieldValue as Date | string).format(
+                              'HH:mm:ss, D MMM, YYYY'
+                          )
+                        : fieldValue;
+
+                return <td key={ind}>{displayVal as string | number}</td>;
             })}
             {allowEdit && (
                 <td>

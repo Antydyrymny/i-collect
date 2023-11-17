@@ -94,9 +94,27 @@ export const updateItem = (builder: ApiBuilder) =>
                 api.util.updateQueryData(
                     'getItem',
                     _id as unknown as GetItemQuery,
-                    (draft) => {
-                        Object.assign(draft, request);
-                    }
+                    (draft) => ({
+                        ...draft,
+                        name: request.name ?? draft.name,
+                        tags: request.tags,
+                        fields: !request.fields
+                            ? draft.fields
+                            : draft.fields.map((field) => {
+                                  const updatedInd = request.fields?.findIndex(
+                                      ({ fieldName }) => {
+                                          field.fieldName === fieldName;
+                                      }
+                                  );
+                                  return !!updatedInd && updatedInd !== -1
+                                      ? {
+                                            ...field,
+                                            fieldValue:
+                                                request.fields![updatedInd].fieldValue,
+                                        }
+                                      : field;
+                              }),
+                    })
                 )
             );
             try {
