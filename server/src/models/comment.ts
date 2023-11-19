@@ -22,6 +22,11 @@ const commentSchema = new mongoose.Schema<CommentModelType>({
         minlength: 1,
         required: true,
     },
+    createdAt: {
+        type: Date,
+        immutable: true,
+        default: () => new Date(),
+    },
 });
 
 export const CommentModel = mongoose.model<CommentModelType>(

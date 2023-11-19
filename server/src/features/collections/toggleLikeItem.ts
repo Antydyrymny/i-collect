@@ -8,7 +8,7 @@ import {
     ServerToItemViewer,
     ToggleLikeItemReq,
 } from '../../types';
-import { Schema } from 'mongoose';
+import { Schema, Types } from 'mongoose';
 
 export const toggleLikeItem = async (req: Request, res: Response) => {
     const { _id, action }: ToggleLikeItemReq = req.body;
@@ -31,7 +31,11 @@ export const toggleLikeItem = async (req: Request, res: Response) => {
 
     existingItem.likesFrom =
         action === 'like'
-            ? existingItem.likesFrom.concat(new Schema.Types.ObjectId(requestingUser._id))
+            ? existingItem.likesFrom.concat(
+                  new Types.ObjectId(
+                      requestingUser._id
+                  ) as unknown as Schema.Types.ObjectId
+              )
             : existingItem.likesFrom.filter(
                   (userThatLiked) => requestingUser._id !== userThatLiked.toString()
               );

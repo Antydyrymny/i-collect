@@ -4,6 +4,7 @@ import {
     DeleteCommentReq,
     EditCommentReq,
     GetItemCommentsQuery,
+    ItemComments,
     NewCommentReq,
     Routes,
 } from '../../../../types';
@@ -13,7 +14,7 @@ const defaultGetItemCommentsParams = {
 };
 
 export const getItemComments = (builder: ApiBuilder) =>
-    builder.query<CommentRes[], GetItemCommentsQuery>({
+    builder.query<ItemComments, GetItemCommentsQuery>({
         query: (request) => ({
             url: Routes.GetItemComments,
             params: { ...defaultGetItemCommentsParams, ...request },
@@ -21,8 +22,20 @@ export const getItemComments = (builder: ApiBuilder) =>
         serializeQueryArgs: ({ endpointName }) => {
             return endpointName;
         },
-        merge: (currentCache, newComments) => {
-            currentCache.push(...newComments);
+        transformResponse: (response: CommentRes[]): ItemComments => ({
+            comments: response,
+            moreToFetch: response.length === defaultGetItemCommentsParams.limit,
+        }),
+        merge: (currentCache, newComments, { arg }) => {
+            if (arg.page < 2)
+                return {
+                    comments: newComments.comments,
+                    moreToFetch: newComments.moreToFetch,
+                };
+            return {
+                comments: [...currentCache.comments, ...newComments.comments],
+                moreToFetch: newComments.moreToFetch,
+            };
         },
         forceRefetch: ({ currentArg, previousArg }) => {
             return (
@@ -34,6 +47,7 @@ export const getItemComments = (builder: ApiBuilder) =>
                     ))
             );
         },
+        keepUnusedDataFor: 0,
     });
 
 export const newComment = (builder: ApiBuilder) =>

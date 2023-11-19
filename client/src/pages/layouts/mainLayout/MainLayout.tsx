@@ -6,7 +6,7 @@ function MainLayout() {
     return (
         <>
             <MainNav />
-            <Container className='mt-5 pb-5'>
+            <Container className='mt-5 pb-5 px-5'>
                 <Outlet />
             </Container>
         </>

@@ -1,11 +1,7 @@
 import { Request, Response } from 'express';
-import { ItemModel } from '../../models';
-import {
-    CommentModelType,
-    CommentRes,
-    GetItemCommentsQuery,
-    ResponseError,
-} from '../../types';
+import { CommentModel, ItemModel } from '../../models';
+import { CommentRes, GetItemCommentsQuery, ResponseError } from '../../types';
+import { getCommentResponse } from './utils';
 
 export const getItemComments = async (req: Request, res: Response<CommentRes[]>) => {
     const queryParams = req.query as GetItemCommentsQuery;
@@ -14,20 +10,15 @@ export const getItemComments = async (req: Request, res: Response<CommentRes[]>)
     const page = parseInt(queryParams.page) || 1;
     const limit = parseInt(queryParams.limit) || 10;
 
-    const existingItem = await ItemModel.findOne(
-        { _id: itemId },
-        { comments: { $slice: [(page - 1) * limit, limit] } }
-    ).populate<{
-        comments: CommentModelType[];
-    }>('comments');
-
+    const existingItem = await ItemModel.findOne({ _id: itemId });
     if (!existingItem) throw new ResponseError(`Item with id: ${itemId} not found`, 404);
 
-    res.status(200).json(
-        existingItem.comments.map((comment) => ({
-            _id: comment._id,
-            authorName: comment.authorName,
-            content: comment.content,
-        }))
-    );
+    const results = await CommentModel.find({
+        _id: { $in: existingItem.comments },
+    })
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+    res.status(200).json(results.map((comment) => getCommentResponse(comment)));
 };

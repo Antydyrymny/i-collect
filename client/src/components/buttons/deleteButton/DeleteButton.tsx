@@ -4,6 +4,7 @@ import { Button, Spinner, Image } from 'react-bootstrap';
 import trash from '../../../assets/deleteUser.png';
 import trashDark from '../../../assets/deleteUser-dark.png';
 import { useThemeContext } from '../../../contexts/theme';
+import { nanoid } from '@reduxjs/toolkit';
 
 type DeleteButtonOptions = {
     handleDelete: () => void;
@@ -24,7 +25,7 @@ const DeleteButton = memo(function DeleteButton({
     const { theme } = useThemeContext();
 
     return (
-        <TooltipOverlay id='delete' tooltipMessage={tooltipMsg}>
+        <TooltipOverlay id={'delete' + nanoid()} tooltipMessage={tooltipMsg}>
             <Button
                 disabled={disabled}
                 onClick={handleDelete}

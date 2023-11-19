@@ -106,7 +106,6 @@ function UserPage() {
                                 />
                             ))}
                     </Row>
-
                     {!(searchQuery && searchResults) && (
                         <Row>
                             {collectionsOptions.isSuccess &&

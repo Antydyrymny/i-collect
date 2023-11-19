@@ -16,6 +16,8 @@ import DeleteButton from './buttons/deleteButton/DeleteButton';
 export { DeleteButton };
 import EditButton from './buttons/editButton/EditButton';
 export { EditButton };
+import LikeButton from './buttons/likeButton/LikeButton';
+export { LikeButton };
 
 import CardWrapper from './cardWrapper/CardWrapper';
 export { CardWrapper };

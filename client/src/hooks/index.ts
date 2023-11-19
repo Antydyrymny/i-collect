@@ -8,3 +8,6 @@ export * from './useSearchUtils';
 export * from './useTagHandlers';
 export * from './useItemHandlers';
 export * from './useEditing';
+export * from './useScrollToTop';
+export * from './useRichTextEditor';
+export * from './useTimeAgo';

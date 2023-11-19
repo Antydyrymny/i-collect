@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
     useGetCollectionItemsQuery,
     useLazyFindCollectionItemsQuery,
@@ -21,7 +21,7 @@ type ItemsProps = {
     formatFields: FormatField[];
 };
 
-const Items = memo(function Items({
+function Items({
     collectionId,
     allowEdit,
     itemsNumber,
@@ -139,6 +139,6 @@ const Items = memo(function Items({
             <span ref={pageBottomRef} />
         </>
     );
-});
+}
 
 export default Items;

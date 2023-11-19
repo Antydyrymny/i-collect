@@ -41,7 +41,10 @@ export const subscribeToItemUpdates = (builder: ApiBuilder) =>
                         apiSlice.util.updateQueryData(
                             'getItemComments',
                             'getItemComments' as unknown as GetItemCommentsQuery,
-                            (draft) => [...draft, newComment]
+                            (draft) => ({
+                                comments: [newComment, ...draft.comments],
+                                moreToFetch: draft.moreToFetch,
+                            })
                         )
                     );
                 });
@@ -53,15 +56,17 @@ export const subscribeToItemUpdates = (builder: ApiBuilder) =>
                             apiSlice.util.updateQueryData(
                                 'getItemComments',
                                 'getItemComments' as unknown as GetItemCommentsQuery,
-                                (draft) =>
-                                    draft.map((comment) =>
+                                (draft) => ({
+                                    comments: draft.comments.map((comment) =>
                                         comment._id === commentUpdate._id
                                             ? {
                                                   ...comment,
                                                   content: commentUpdate.content,
                                               }
                                             : comment
-                                    )
+                                    ),
+                                    moreToFetch: draft.moreToFetch,
+                                })
                             )
                         );
                     }
@@ -73,10 +78,12 @@ export const subscribeToItemUpdates = (builder: ApiBuilder) =>
                                 apiSlice.util.updateQueryData(
                                     'getItemComments',
                                     'getItemComments' as unknown as GetItemCommentsQuery,
-                                    (draft) =>
-                                        draft.filter(
+                                    (draft) => ({
+                                        comments: draft.comments.filter(
                                             (comment) => comment._id !== deletedCommentId
-                                        )
+                                        ),
+                                        moreToFetch: draft.moreToFetch,
+                                    })
                                 )
                             );
                         }
@@ -99,16 +106,18 @@ export const autocompleteTag = (builder: ApiBuilder) =>
         queryFn: (query) => {
             const itemViewerSocket = getItemViewerSocket();
 
-            return new Promise((resolve) => {
-                itemViewerSocket.emit(
-                    ItemViewerToServer.AutocompleteTag,
-                    query,
-                    (tagSuggestions) => {
-                        resolve({
-                            data: tagSuggestions,
-                        });
-                    }
-                );
-            });
+            return query === ''
+                ? { data: [] }
+                : new Promise((resolve) => {
+                      itemViewerSocket.emit(
+                          ItemViewerToServer.AutocompleteTag,
+                          query,
+                          (tagSuggestions) => {
+                              resolve({
+                                  data: tagSuggestions,
+                              });
+                          }
+                      );
+                  });
         },
     });

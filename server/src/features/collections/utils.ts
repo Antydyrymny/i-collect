@@ -13,6 +13,8 @@ import {
     CollectionPreview,
     AuthUser,
     Indexes,
+    CommentRes,
+    CommentModelType,
 } from '../../types';
 
 dotenv.config();
@@ -253,3 +255,11 @@ export const itemSearch = async (
         return [];
     }
 };
+
+export const getCommentResponse = (comment: CommentModelType): CommentRes => ({
+    _id: comment._id,
+    authorId: comment.authorId,
+    authorName: comment.authorName,
+    content: comment.content,
+    createdAt: comment.createdAt,
+});

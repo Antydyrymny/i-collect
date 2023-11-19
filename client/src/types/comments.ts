@@ -3,6 +3,7 @@ export type Comment = {
     authorName: string;
     toItem: string;
     content: string;
+    createdAt: Date;
 };
 
 export type NewCommentReq = Pick<Comment, 'content'> & {
@@ -16,13 +17,14 @@ export type DeleteCommentReq = {
 };
 export type GetItemCommentsQuery = {
     itemId: string;
-    page: string;
-    limit: string;
+    page: number;
 };
 
-export type CommentRes = {
+export type CommentRes = Omit<Comment, 'toItem'> & {
     _id: string;
-    authorName: string;
-    content: string;
 };
-export type CommentUpdate = Omit<CommentRes, 'authorName'>;
+export type ItemComments = {
+    comments: CommentRes[];
+    moreToFetch: boolean;
+};
+export type CommentUpdate = Pick<CommentRes, '_id' | 'content'>;

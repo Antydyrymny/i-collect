@@ -61,7 +61,10 @@ function NewItem() {
                 <h2 className='mt-2 mb-2'>{t('newItem')}</h2>
                 <h6>
                     {t('ofCollection')}
-                    <Link to={ClientRoutes.CollectionPath + collection._id}>
+                    <Link
+                        to={ClientRoutes.CollectionPath + collection._id}
+                        className='text-decoration-underline text-primary-emphasis'
+                    >
                         {collection.name}
                     </Link>
                 </h6>
@@ -100,6 +103,7 @@ function NewItem() {
                         addTag={addTag}
                         removeTag={removeTag}
                         submitCurTag={submitCurTag}
+                        asHeading
                     />
                 </Card.Body>
             </Card>

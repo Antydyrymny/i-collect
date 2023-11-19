@@ -68,7 +68,7 @@ export const getItem = (builder: ApiBuilder) =>
             url: Routes.GetItem,
             params: request,
         }),
-        serializeQueryArgs: ({ queryArgs }) => queryArgs._id,
+        serializeQueryArgs: ({ queryArgs }) => queryArgs._id ?? queryArgs,
         providesTags: ['CurItem'],
         keepUnusedDataFor: 0,
     });

@@ -9,6 +9,7 @@ import {
     Routes,
     ServerToItemViewer,
 } from '../../types';
+import { getCommentResponse } from './utils';
 
 export const newComment = async (req: Request, res: Response) => {
     const { toItem, content }: NewCommentReq = req.body;
@@ -30,11 +31,7 @@ export const newComment = async (req: Request, res: Response) => {
 
     io.of(Routes.Api + Routes.ItemSocket)
         .to(toItem)
-        .emit(ServerToItemViewer.NewComment, {
-            _id: newComment._id,
-            authorName: newComment.authorName,
-            content,
-        });
+        .emit(ServerToItemViewer.NewComment, getCommentResponse(newComment));
 
     res.status(200).json('Comment created successfully');
 };

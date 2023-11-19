@@ -11,7 +11,6 @@ export const getCollectionItems = async (req: Request, res: Response<ItemPreview
     const limit = parseInt(queryParams.limit) || 10;
 
     const existingCollection = await CollectionModel.findOne({ _id: collectionId });
-
     if (!existingCollection)
         throw new ResponseError(`Collection with id: ${collectionId} not found`, 404);
 

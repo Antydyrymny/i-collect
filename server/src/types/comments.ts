@@ -5,6 +5,7 @@ export type Comment = {
     authorName: string;
     toItem: Schema.Types.ObjectId;
     content: string;
+    createdAt: Date;
 };
 
 export type NewCommentReq = Pick<Comment, 'content'> & {
@@ -22,9 +23,7 @@ export type GetItemCommentsQuery = {
     limit: string;
 };
 
-export type CommentRes = {
-    _id: Schema.Types.ObjectId;
-    authorName: string;
-    content: string;
+export type CommentRes = Omit<Comment, 'toItem'> & {
+    _id: string;
 };
-export type CommentUpdate = Omit<CommentRes, 'authorName'>;
+export type CommentUpdate = Pick<CommentRes, '_id' | 'content'>;

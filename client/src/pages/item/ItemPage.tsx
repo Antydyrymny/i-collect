@@ -33,7 +33,7 @@ function ItemPage() {
             {itemOptions.isSuccess && (
                 <>
                     <ItemCard item={item!} allowEdit={allowEdit} />
-                    <Comments />
+                    <Comments itemId={itemId} />
                 </>
             )}
         </>

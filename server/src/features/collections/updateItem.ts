@@ -28,9 +28,10 @@ export const updateItem = async (req: Request, res: Response<ItemResponse>) => {
 
     const itemConformsToCollectionFormat =
         !fields ||
-        fields.every(({ fieldName: key, fieldType: type }) => {
-            existingItem[type + 'Fields'].has(key);
-        });
+        fields.every(({ fieldName: key, fieldType: type }) =>
+            existingItem[type + 'Fields'].has(key)
+        );
+
     if (!itemConformsToCollectionFormat)
         throw new ResponseError(
             `Request's field formats are incompatible with the collection schema`,

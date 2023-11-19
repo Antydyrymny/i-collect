@@ -29,51 +29,60 @@ function Tags({
         setCurTag('');
     };
 
+    const { data: tagSuggestions, ...tagSearchOptions } = useAutocompleteTagQuery(curTag);
+
     useEffect(() => {
         setCurTag('');
     }, [tags]);
 
-    const { data: tagSuggestions, ...tagSearchOptions } = useAutocompleteTagQuery(curTag);
-
     const t = useLocale('newItem');
+    const tItem = useLocale('itemPage');
 
     return (
         <>
-            {editing && (
-                <Row>
-                    <Col xs={12} lg={6} className='position-relative'>
-                        <SearchBar
-                            searchQuery={curTag}
-                            handleSearchChange={handleCurTagChange}
-                            clearSearch={clearCurTag}
-                            submitSearch={submitCurTag(curTag)}
-                            label={t('tagSearchLabel')}
-                            placeholder={t('tagPlaceholder')}
-                            searchButtonText={t('tagSubmit')}
-                            hideFloatingLabel
-                            asHeading={asHeading}
-                        />
-                        <Dropdown.Menu
-                            show={!!tagSuggestions?.length}
-                            className='end-0 start-0'
-                            style={{ marginInline: '0.75rem' }}
-                        >
-                            {tagSearchOptions.isFetching && (
-                                <Container className='d-flex justify-content-center'>
-                                    <Spinner />
-                                </Container>
-                            )}
-                            {tagSuggestions?.map((suggestedTag, ind) => (
-                                <Dropdown.Item key={ind} onClick={addTag(suggestedTag)}>
-                                    {suggestedTag}
-                                </Dropdown.Item>
-                            ))}
-                        </Dropdown.Menu>
-                    </Col>
-                </Row>
-            )}
             <Row>
-                <Col xs={12} lg={6} className='mt-3'>
+                <Col xs={12} lg={6} className='position-relative'>
+                    {!editing && asHeading && (
+                        <h6 className='mt-4 mb-3'>{tItem('tags')}</h6>
+                    )}
+                    {editing && (
+                        <>
+                            <SearchBar
+                                searchQuery={curTag}
+                                handleSearchChange={handleCurTagChange}
+                                clearSearch={clearCurTag}
+                                submitSearch={submitCurTag(curTag)}
+                                label={t('tagSearchLabel')}
+                                placeholder={t('tagPlaceholder')}
+                                searchButtonText={t('tagSubmit')}
+                                hideFloatingLabel
+                                asHeading={asHeading}
+                            />
+                            <Dropdown.Menu
+                                show={!!tagSuggestions?.length}
+                                className='end-0 start-0'
+                                style={{ marginInline: '0.75rem' }}
+                            >
+                                {tagSearchOptions.isFetching && (
+                                    <Container className='d-flex justify-content-center'>
+                                        <Spinner />
+                                    </Container>
+                                )}
+                                {tagSuggestions?.map((suggestedTag, ind) => (
+                                    <Dropdown.Item
+                                        key={ind}
+                                        onClick={addTag(suggestedTag)}
+                                    >
+                                        {suggestedTag}
+                                    </Dropdown.Item>
+                                ))}
+                            </Dropdown.Menu>
+                        </>
+                    )}
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={12} lg={6} className={editing ? 'mt-4' : 'mt-3'}>
                     <h5>
                         {tags.map((tag, ind) => (
                             <span

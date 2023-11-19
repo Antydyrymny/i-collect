@@ -20,8 +20,9 @@ import {
     DeleteButton,
     EditButton,
     GenericInputField,
+    LikeButton,
 } from '../../components';
-import { Card, Col, Form, Row } from 'react-bootstrap';
+import { Button, Card, Col, Form, Row, Spinner } from 'react-bootstrap';
 
 type ItemCardProps = {
     item: ItemResponse;
@@ -62,6 +63,7 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
         );
         updateItem({
             _id: item._id,
+            name: name !== item.name ? name : undefined,
             tags: tags,
             fields: updatedFields.length > 0 ? updatedFields : undefined,
         });
@@ -75,7 +77,7 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
             return;
         }
         if (likeOptions.isLoading || deleteOptions.isLoading) return;
-        toogleLike({ _id: user._id, action: item.userLikes ? 'dislike' : 'like' });
+        toogleLike({ _id: item._id, action: item.userLikes ? 'dislike' : 'like' });
     };
 
     const navigate = useNavigate();
@@ -112,6 +114,7 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
                         {'from collection: '}
                         <Link
                             to={ClientRoutes.CollectionPath + item.parentCollection._id}
+                            className='text-decoration-underline text-primary-emphasis'
                         >
                             {item.parentCollection.name}
                         </Link>
@@ -140,16 +143,6 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
                     <h6 className='mt-2 mb-4'>{'Item info'}</h6>
                     <Form id='item' onSubmit={handleSubmitUpdate} className='mb-2'>
                         <Row>
-                            <Col xs={12} lg={6}>
-                                <GenericInputField
-                                    editing={editing}
-                                    type={'string'}
-                                    value={name}
-                                    onChange={handleNameChange}
-                                    label={'Item name'}
-                                    placeholder={'Enter item name'}
-                                />
-                            </Col>
                             {fields.map(({ fieldType, fieldName, fieldValue }, ind) => (
                                 <Col key={ind} xs={12} lg={6}>
                                     <GenericInputField
@@ -174,6 +167,30 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
                     />
                 </Card.Body>
             </Card>
+            <div className='d-flex gap-2 mt-4 mb-2 justify-content-between'>
+                <>
+                    <LikeButton
+                        liked={item.userLikes}
+                        handleLike={handleToogleLike}
+                        notAllowed={!user._id}
+                        totalLikes={item.likesNumber}
+                    />
+                    {allowEdit && (
+                        <Form>
+                            <Button
+                                type='submit'
+                                form='item'
+                                disabled={updateOptions.isLoading}
+                            >
+                                {updateOptions.isLoading && (
+                                    <Spinner size='sm' className='me-2' />
+                                )}
+                                {'Save'}
+                            </Button>
+                        </Form>
+                    )}
+                </>
+            </div>
         </CardWrapper>
     );
 }

@@ -21,7 +21,7 @@ function MainNav() {
 
     return (
         <Navbar className='mb-5' expand='xl' sticky='top' bg='primary-subtle'>
-            <Container>
+            <Container className='px-5'>
                 <Navbar.Brand>
                     <TooltipOverlay
                         id='home'

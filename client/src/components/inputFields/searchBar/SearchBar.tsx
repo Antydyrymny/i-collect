@@ -30,7 +30,7 @@ const SearchBar = memo(function SearchBar({
     const t = useLocale('general');
     const id = 'search_' + nanoid();
 
-    const LabelWrapper = asHeading ? 'h6' : React.Fragment;
+    const LabelWrapper = asHeading ? 'h6' : 'div';
     return (
         <Form onSubmit={submitSearch}>
             <LabelWrapper className={asHeading ? 'mt-4 mb-3' : ''}>

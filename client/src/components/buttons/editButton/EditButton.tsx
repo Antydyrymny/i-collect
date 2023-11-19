@@ -2,6 +2,8 @@ import { Button, Image } from 'react-bootstrap';
 import { useThemeContext } from '../../../contexts/theme';
 import edit from '../../../assets/edit.png';
 import editDark from '../../../assets/edit-dark.png';
+import { TooltipOverlay } from '../..';
+import { nanoid } from '@reduxjs/toolkit';
 
 type EditButtonProps = {
     editing: boolean;
@@ -9,6 +11,8 @@ type EditButtonProps = {
     cancelEdit: () => void;
     startEditMsg: string;
     cancelEditMsg: string;
+    sm?: boolean;
+    outline?: boolean;
 };
 
 function EditButton({
@@ -17,14 +21,32 @@ function EditButton({
     startEditMsg,
     cancelEdit,
     cancelEditMsg,
+    sm = false,
+    outline = false,
 }: EditButtonProps) {
     const { theme } = useThemeContext();
+    const textContent = editing ? cancelEditMsg : startEditMsg;
 
+    const Wrapper = ({ children }: { children: JSX.Element }) =>
+        sm ? (
+            <TooltipOverlay id={'editButton' + nanoid()} tooltipMessage={textContent}>
+                {children}
+            </TooltipOverlay>
+        ) : (
+            <>{children}</>
+        );
     return (
-        <Button onClick={editing ? cancelEdit : startEditing} className='text-nowrap'>
-            <Image src={theme === 'light' ? edit : editDark} className='me-2' />
-            {editing ? cancelEditMsg : startEditMsg}
-        </Button>
+        <Wrapper>
+            <Button
+                onClick={editing ? cancelEdit : startEditing}
+                size={sm ? 'sm' : undefined}
+                className='text-nowrap d-flex align-items-center justify-content-center gap-2'
+                variant={outline ? 'outline-primary' : 'primary'}
+            >
+                <Image src={theme === 'light' ? edit : editDark} />
+                {!sm && <span>{textContent}</span>}
+            </Button>
+        </Wrapper>
     );
 }
 

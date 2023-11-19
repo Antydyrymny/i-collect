@@ -133,19 +133,16 @@ function GenericInputField<T extends FieldType | 'select'>({
                 <Form.Label
                     column={inlineLabel || undefined}
                     sm={inlineLabel ? labelCol : undefined}
-                    className={inlineLabel ? 'text-secondary-emphasis' : ''}
+                    className={inlineLabel ? 'text-secondary-emphasis text-nowrap' : ''}
                 >
                     {label}
                 </Form.Label>
             )}
             <Col
                 className={
-                    type === 'boolean' && editing
-                        ? 'd-flex align-items-center'
-                        : type === 'text' && !editing
-                        ? 'mb-2'
-                        : ''
+                    type === 'boolean' && editing ? 'd-flex align-items-center' : ''
                 }
+                style={{ marginBottom: type === 'text' && !editing ? '0.4375rem' : '0' }}
                 sm={inlineLabel ? inputCol : undefined}
             >
                 {mainComponent}

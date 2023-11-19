@@ -115,7 +115,7 @@ function ManageUsers() {
     }, [selected, deleteUsers]);
 
     return (
-        <Container>
+        <>
             <Row className='mb-3 '>
                 <ButtonToolbar className='gap-2'>
                     <ButtonToolbar className='gap-2'>
@@ -225,7 +225,7 @@ function ManageUsers() {
                     <PaginationUI pages={pages || 1} />
                 </Container>
             </Row>
-        </Container>
+        </>
     );
 }
 

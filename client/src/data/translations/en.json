@@ -2,7 +2,24 @@
     "general": {
         "clear": "Clear",
         "search": "Search",
-        "delete": "Delete"
+        "edit": "Edit",
+        "delete": "Delete",
+        "like": "Like",
+        "noLike": "Remove like",
+        "likeNotAllowed": "Sign in to use likes"
+    },
+    "time": {
+        "lessM": "less than a minute ago",
+        "m": "minute",
+        "ms": "minutes",
+        "mss": "minutes",
+        "h": "hour",
+        "hs": "hours",
+        "hss": "hours",
+        "d": "day",
+        "ds": "days",
+        "dss": "days",
+        "ago": "ago"
     },
     "login": {
         "header": "Sign in",
@@ -141,5 +158,8 @@
         "delete": "Remove tag",
         "save": "Save item",
         "cancel": "Cancel"
+    },
+    "itemPage": {
+        "tags": "Item tags"
     }
 }
