@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
-import { io } from '../../app';
-import { CommentModel } from '../../models';
-import { EditCommentReq, ResponseError, Routes, ServerToItemViewer } from '../../types';
-import { authorizeCommentEdit } from './utils';
+import { io } from '../../../app';
+import { CommentModel } from '../../../models';
+import {
+    EditCommentReq,
+    ResponseError,
+    Routes,
+    ServerToItemViewer,
+} from '../../../types';
+import { authorizeCommentEdit } from '../utils';
 
 export const editComment = async (req: Request, res: Response) => {
     const { _id, content }: EditCommentReq = req.body;

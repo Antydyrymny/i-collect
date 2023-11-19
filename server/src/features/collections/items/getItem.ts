@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { Schema } from 'mongoose';
-import { ItemModel } from '../../models';
-import { getItemResponse } from './utils';
-import { GetItemQuery, ItemResponse, ResponseError } from '../../types';
+import { ItemModel } from '../../../models';
+import { getItemResponse } from '../utils';
+import { GetItemQuery, ItemResponse, ResponseError } from '../../../types';
 
 export const getItem = async (req: Request, res: Response<ItemResponse>) => {
     const queryParams = req.query as GetItemQuery;

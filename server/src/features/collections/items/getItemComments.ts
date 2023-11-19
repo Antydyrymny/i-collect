@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { CommentModel, ItemModel } from '../../models';
-import { CommentRes, GetItemCommentsQuery, ResponseError } from '../../types';
-import { getCommentResponse } from './utils';
+import { CommentModel, ItemModel } from '../../../models';
+import { CommentRes, GetItemCommentsQuery, ResponseError } from '../../../types';
+import { getCommentResponse } from '../utils';
 
 export const getItemComments = async (req: Request, res: Response<CommentRes[]>) => {
     const queryParams = req.query as GetItemCommentsQuery;

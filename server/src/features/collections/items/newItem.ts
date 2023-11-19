@@ -1,21 +1,21 @@
 import { Request, Response } from 'express';
-import { CollectionModel, ItemModel } from '../../models';
-import { getNameVersion } from '../../utils/nameVersioning';
+import { CollectionModel, ItemModel } from '../../../models';
+import { getNameVersion } from '../../../utils/nameVersioning';
 import {
     authorizeCollectionOwnership,
     getCollectionPreview,
     getItemPreview,
     setItemFields,
     updateTags,
-} from './utils';
-import { NewItemReq, NewItemRes, ResponseError } from '../../types';
+} from '../utils';
+import { NewItemReq, NewItemRes, ResponseError } from '../../../types';
 import {
     largestCollections,
     largestCollectionsLimit,
     latestItems,
     latestItemsLimit,
     updatesRequired,
-} from '../../data';
+} from '../../../data';
 
 export const newItem = async (req: Request, res: Response<NewItemRes>) => {
     const { name, parentCollectionId, tags = [], fields = [] }: NewItemReq = req.body;

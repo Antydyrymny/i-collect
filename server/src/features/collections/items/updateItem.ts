@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
-import { CollectionModel, ItemModel } from '../../models';
-import { getNameVersion } from '../../utils/nameVersioning';
+import { CollectionModel, ItemModel } from '../../../models';
+import { getNameVersion } from '../../../utils/nameVersioning';
 import {
     authorizeCollectionOwnership,
     getItemResponse,
     setItemFields,
     updateTags,
-} from './utils';
-import { UpdateItemReq, ItemResponse, ResponseError, AuthUser } from '../../types';
+} from '../utils';
+import { UpdateItemReq, ItemResponse, ResponseError, AuthUser } from '../../../types';
 
 export const updateItem = async (req: Request, res: Response<ItemResponse>) => {
     const { _id, name: newName, tags = [], fields }: UpdateItemReq = req.body;

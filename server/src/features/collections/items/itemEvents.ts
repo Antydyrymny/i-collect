@@ -1,6 +1,6 @@
-import { io } from '../../app';
-import { TagModel } from '../../models';
-import { DefaultEvents, Indexes, ItemViewerToServer, Routes } from '../../types';
+import { io } from '../../../app';
+import { TagModel } from '../../../models';
+import { DefaultEvents, Indexes, ItemViewerToServer, Routes } from '../../../types';
 
 export function subscribeToItemUpdates() {
     io.of(Routes.Api + Routes.ItemSocket).on(DefaultEvents.Connection, (socket) => {

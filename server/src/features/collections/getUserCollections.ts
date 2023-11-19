@@ -9,7 +9,7 @@ import {
     ResponseError,
 } from '../../types';
 
-export const userCollections = async (
+export const getUserCollections = async (
     req: Request,
     res: Response<CollectionPreview[]>
 ) => {

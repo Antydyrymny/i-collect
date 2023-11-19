@@ -25,7 +25,7 @@ import {
     validateDeleteComment,
     deleteComment,
     validateUserCollections,
-    userCollections,
+    getUserCollections,
     validateGetUserCollection,
     findUserCollection,
 } from '../features/collections';
@@ -91,7 +91,7 @@ protectedRouter.get(
 protectedRouter.get(
     Routes.GetUserCollections,
     validate(validateUserCollections),
-    forwardErrors(userCollections)
+    forwardErrors(getUserCollections)
 );
 
 export { protectedRouter };

@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
-import { io } from '../../app';
-import { CommentModel, ItemModel } from '../../models';
-import { DeleteCommentReq, ResponseError, Routes, ServerToItemViewer } from '../../types';
-import { authorizeCommentEdit } from './utils';
+import { io } from '../../../app';
+import { CommentModel, ItemModel } from '../../../models';
+import {
+    DeleteCommentReq,
+    ResponseError,
+    Routes,
+    ServerToItemViewer,
+} from '../../../types';
+import { authorizeCommentEdit } from '../utils';
 
 export const deleteComment = async (req: Request, res: Response) => {
     const { _id }: DeleteCommentReq = req.body;

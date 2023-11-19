@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
-import { ItemModel } from '../../models';
-import { io } from '../../app';
+import { ItemModel } from '../../../models';
+import { io } from '../../../app';
 import {
     AuthUser,
     ResponseError,
     Routes,
     ServerToItemViewer,
     ToggleLikeItemReq,
-} from '../../types';
+} from '../../../types';
 import { Schema, Types } from 'mongoose';
 
 export const toggleLikeItem = async (req: Request, res: Response) => {

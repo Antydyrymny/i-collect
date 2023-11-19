@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { CollectionModel, CommentModel, ItemModel } from '../../models';
-import { authorizeCollectionOwnership, handleHomeOnDeleteUpdates } from './utils';
-import { DeleteItemReq, ResponseError } from '../../types';
+import { CollectionModel, CommentModel, ItemModel } from '../../../models';
+import { authorizeCollectionOwnership, handleHomeOnDeleteUpdates } from '../utils';
+import { DeleteItemReq, ResponseError } from '../../../types';
 
 export const deleteItem = async (req: Request, res: Response) => {
     const { _id }: DeleteItemReq = req.body;

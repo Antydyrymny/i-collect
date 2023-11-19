@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { CollectionModel, ItemModel } from '../../models';
-import { getItemPreview } from './utils';
-import { GetCollectionItemsQuery, ItemPreview, ResponseError } from '../../types';
+import { CollectionModel, ItemModel } from '../../../models';
+import { getItemPreview } from '../utils';
+import { GetCollectionItemsQuery, ItemPreview, ResponseError } from '../../../types';
 
 export const getCollectionItems = async (req: Request, res: Response<ItemPreview[]>) => {
     const queryParams = req.query as GetCollectionItemsQuery;

@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
 import { Types } from 'mongoose';
-import { io } from '../../app';
-import { CommentModel, ItemModel } from '../../models';
+import { io } from '../../../app';
+import { CommentModel, ItemModel } from '../../../models';
 import {
     AuthUser,
     NewCommentReq,
     ResponseError,
     Routes,
     ServerToItemViewer,
-} from '../../types';
-import { getCommentResponse } from './utils';
+} from '../../../types';
+import { getCommentResponse } from '../utils';
 
 export const newComment = async (req: Request, res: Response) => {
     const { toItem, content }: NewCommentReq = req.body;
