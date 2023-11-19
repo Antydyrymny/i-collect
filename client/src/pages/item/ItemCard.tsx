@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
     useEditing,
@@ -11,6 +11,7 @@ import {
     useToggleLikeItemMutation,
     useUpdateItemMutation,
 } from '../../app/services/api';
+import { useLocale } from '../../contexts/locale';
 import { ClientRoutes, ItemResponse, isStringError } from '../../types';
 import { useSelectUser } from '../../app/services/features/auth';
 import { toast } from 'react-toastify';
@@ -38,12 +39,12 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
     const { tags, addTag, removeTag, submitCurTag, resetTags } =
         useTagHandlers(defaultTags);
 
-    const { editing, startEditing, stopEditing } = useEditing(allowEdit);
-    const cancelEdit = () => {
-        stopEditing();
+    const resetToDefaultState = useCallback(() => {
         resetState();
         resetTags();
-    };
+    }, [resetState, resetTags]);
+
+    const { editing, onChange, stopEditing } = useEditing(allowEdit, resetToDefaultState);
 
     const [updateItem, updateOptions] = useUpdateItemMutation();
     const [toogleLike, likeOptions] = useToggleLikeItemMutation();
@@ -54,13 +55,20 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
 
     const handleSubmitUpdate = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (updateOptions.isLoading || deleteOptions.isLoading) return;
+        if (!editing || updateOptions.isLoading || deleteOptions.isLoading) return;
 
         const updatedFields = fields.filter(
             ({ fieldName, fieldValue }) =>
-                defaultFields.find((field) => field.fieldName === fieldName)
-                    ?.fieldValue !== fieldValue
+                item.fields.find((field) => field.fieldName === fieldName)?.fieldValue !==
+                fieldValue
         );
+        if (
+            name === item.name &&
+            tags.join('') === item.tags.join('') &&
+            updatedFields.length === 0
+        )
+            return;
+
         updateItem({
             _id: item._id,
             name: name !== item.name ? name : undefined,
@@ -70,10 +78,13 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
         stopEditing();
     };
 
+    const t = useLocale('itemPage');
+    const tGeneral = useLocale('general');
+
     const user = useSelectUser();
     const handleToogleLike = () => {
         if (!user._id) {
-            toast.info('Sign in to use likes');
+            toast.info(tGeneral('likeNotAllowed'));
             return;
         }
         if (likeOptions.isLoading || deleteOptions.isLoading) return;
@@ -101,7 +112,7 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
                         value={name}
                         onChange={handleNameChange}
                         editing={editing}
-                        placeholder={`Enter item's name`}
+                        placeholder={t('itemNamePlaceholder')}
                         asHeading
                     />
                     <h6
@@ -111,7 +122,7 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
                         }}
                         className='mb-0'
                     >
-                        {'from collection: '}
+                        {t('fromCollection')}
                         <Link
                             to={ClientRoutes.CollectionPath + item.parentCollection._id}
                             className='text-decoration-underline text-primary-emphasis'
@@ -124,23 +135,22 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
                     <div className='d-flex gap-2'>
                         <EditButton
                             editing={editing}
-                            startEditing={startEditing}
-                            startEditMsg={'Edit item'}
-                            cancelEdit={cancelEdit}
-                            cancelEditMsg={'Cancel edit'}
+                            onChange={onChange}
+                            startEditMsg={t('editItem')}
+                            cancelEditMsg={t('stopEdit')}
                         />
                         <DeleteButton
                             handleDelete={handleDelete}
                             disabled={deleteOptions.isLoading}
                             isLoading={deleteOptions.isLoading}
-                            tooltipMsg={'Delete item'}
+                            tooltipMsg={t('deleteItem')}
                         />
                     </div>
                 )}
             </header>
             <Card>
                 <Card.Body>
-                    <h6 className='mt-2 mb-4'>{'Item info'}</h6>
+                    <h6 className='mt-2 mb-4'>{t('itemInfo')}</h6>
                     <Form id='item' onSubmit={handleSubmitUpdate} className='mb-2'>
                         <Row>
                             {fields.map(({ fieldType, fieldName, fieldValue }, ind) => (
@@ -151,7 +161,7 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
                                         value={fieldValue}
                                         onChange={handleFieldChange(ind)}
                                         label={fieldName}
-                                        placeholder={'Enter' + fieldName}
+                                        placeholder={t('genericPlaceholder') + fieldName}
                                     />
                                 </Col>
                             ))}
@@ -180,12 +190,12 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
                             <Button
                                 type='submit'
                                 form='item'
-                                disabled={updateOptions.isLoading}
+                                disabled={!editing || updateOptions.isLoading}
                             >
                                 {updateOptions.isLoading && (
                                     <Spinner size='sm' className='me-2' />
                                 )}
-                                {'Save'}
+                                {t('save')}
                             </Button>
                         </Form>
                     )}

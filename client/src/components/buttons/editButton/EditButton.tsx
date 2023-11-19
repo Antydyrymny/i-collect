@@ -1,53 +1,67 @@
-import { Button, Image } from 'react-bootstrap';
+import { Image, ToggleButton } from 'react-bootstrap';
 import { useThemeContext } from '../../../contexts/theme';
 import edit from '../../../assets/edit.png';
 import editDark from '../../../assets/edit-dark.png';
 import { TooltipOverlay } from '../..';
 import { nanoid } from '@reduxjs/toolkit';
+import { memo } from 'react';
 
 type EditButtonProps = {
     editing: boolean;
-    startEditing: () => void;
-    cancelEdit: () => void;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     startEditMsg: string;
     cancelEditMsg: string;
     sm?: boolean;
-    outline?: boolean;
 };
 
-function EditButton({
+const Wrapper = memo(function Wrapper({
+    children,
+    id,
+    sm,
+    tooltipMessage,
+}: {
+    children: JSX.Element;
+    id: string;
+    sm: boolean;
+    tooltipMessage: string;
+}) {
+    return sm ? (
+        <TooltipOverlay id={id} tooltipMessage={tooltipMessage}>
+            {children}
+        </TooltipOverlay>
+    ) : (
+        <div id={'tooltip' + id}>{children}</div>
+    );
+});
+
+const EditButton = memo(function EditButton({
     editing,
-    startEditing,
+    onChange,
     startEditMsg,
-    cancelEdit,
     cancelEditMsg,
     sm = false,
-    outline = false,
 }: EditButtonProps) {
     const { theme } = useThemeContext();
     const textContent = editing ? cancelEditMsg : startEditMsg;
 
-    const Wrapper = ({ children }: { children: JSX.Element }) =>
-        sm ? (
-            <TooltipOverlay id={'editButton' + nanoid()} tooltipMessage={textContent}>
-                {children}
-            </TooltipOverlay>
-        ) : (
-            <>{children}</>
-        );
+    const id = 'editButton' + nanoid();
     return (
-        <Wrapper>
-            <Button
-                onClick={editing ? cancelEdit : startEditing}
+        <Wrapper id={id} tooltipMessage={textContent} sm={sm}>
+            <ToggleButton
+                id={id}
+                type='checkbox'
+                value={'1'}
+                checked={editing}
+                onChange={onChange}
                 size={sm ? 'sm' : undefined}
                 className='text-nowrap d-flex align-items-center justify-content-center gap-2'
-                variant={outline ? 'outline-primary' : 'primary'}
+                variant='outline-primary'
             >
                 <Image src={theme === 'light' ? edit : editDark} />
                 {!sm && <span>{textContent}</span>}
-            </Button>
+            </ToggleButton>
         </Wrapper>
     );
-}
+});
 
 export default EditButton;

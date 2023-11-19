@@ -94,27 +94,16 @@ export const updateItem = (builder: ApiBuilder) =>
                 api.util.updateQueryData(
                     'getItem',
                     _id as unknown as GetItemQuery,
-                    (draft) => ({
-                        ...draft,
-                        name: request.name ?? draft.name,
-                        tags: request.tags,
-                        fields: !request.fields
-                            ? draft.fields
-                            : draft.fields.map((field) => {
-                                  const updatedInd = request.fields?.findIndex(
-                                      ({ fieldName }) => {
-                                          field.fieldName === fieldName;
-                                      }
-                                  );
-                                  return !!updatedInd && updatedInd !== -1
-                                      ? {
-                                            ...field,
-                                            fieldValue:
-                                                request.fields![updatedInd].fieldValue,
-                                        }
-                                      : field;
-                              }),
-                    })
+                    (draft) => {
+                        draft.name = request.name ?? draft.name;
+                        draft.tags = [...request.tags];
+                        request.fields?.forEach(({ fieldName, fieldValue }) => {
+                            const updatedFieldInd = draft.fields.findIndex(
+                                (field) => field.fieldName === fieldName
+                            );
+                            draft.fields[updatedFieldInd].fieldValue = fieldValue;
+                        });
+                    }
                 )
             );
             try {

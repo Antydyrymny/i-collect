@@ -4,7 +4,7 @@ import StarterKit from '@tiptap/starter-kit';
 export const useRichTextEditor = (
     content: string,
     updateContent?: React.Dispatch<React.SetStateAction<string>>,
-    readOnly: boolean = updateContent ? false : true
+    editable = false
 ) => {
     return useEditor({
         extensions: [
@@ -25,13 +25,14 @@ export const useRichTextEditor = (
             : ({ editor }) => {
                   updateContent(editor.getHTML());
               },
+        editable,
         editorProps: {
-            attributes: readOnly
-                ? {}
-                : {
-                      class: 'form-control rounded-bottom-0',
+            attributes: editable
+                ? {
+                      class: 'form-control rounded-top-0 rounded-bottom-0',
                       style: 'height: 5.4rem; overflow-y: auto',
-                  },
+                  }
+                : { class: 'form-control rounded-top-0 rounded-bottom-2' },
         },
     });
 };

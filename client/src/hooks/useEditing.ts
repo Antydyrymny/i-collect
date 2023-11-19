@@ -6,19 +6,22 @@ import { useCallback, useState } from 'react';
  * @param resetState function to reset the edit state on canceling
  * @returns
  * @editing boolean state
- * @startEditing function to start edit
+ * @onChange function to handle editing change
  * @stopEditing function to stop edit
  */
-export const useEditing = (allowEdit: boolean = true) => {
+export const useEditing = (allowEdit: boolean = true, resetState: () => void) => {
     const [editing, setEditing] = useState(false);
-
-    const startEditing = useCallback(() => {
-        if (!allowEdit) return;
-        setEditing(true);
-    }, [allowEdit]);
+    const onChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            if (!editing && !allowEdit) return;
+            if (editing) resetState();
+            setEditing(e.target.checked);
+        },
+        [allowEdit, editing, resetState]
+    );
 
     const stopEditing = useCallback(() => {
         setEditing(false);
     }, []);
-    return { editing, startEditing, stopEditing };
+    return { editing, onChange, stopEditing };
 };

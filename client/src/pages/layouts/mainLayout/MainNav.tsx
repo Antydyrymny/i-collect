@@ -43,7 +43,7 @@ function MainNav() {
                     <ThemeSwitcher />
                     <Navbar.Toggle className='ms-5' aria-controls='navbarEexpand' />
                 </Nav>
-                <Navbar.Collapse className='justify-content-end gap-3'>
+                <Navbar.Collapse id='navbarEexpand' className='justify-content-end gap-3'>
                     <Nav className='d-xl-flex d-none'>
                         <LocalePicker />
                         <ThemeSwitcher />

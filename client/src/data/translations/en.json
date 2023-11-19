@@ -160,6 +160,28 @@
         "cancel": "Cancel"
     },
     "itemPage": {
-        "tags": "Item tags"
+        "tags": "Item tags",
+        "itemNamePlaceholder": "Enter item's name",
+        "fromCollection": "from collection: ",
+        "editItem": "Edit item",
+        "stopEdit": "Cancel editing",
+        "deleteItem": "Delete item",
+        "itemInfo": "Item info",
+        "genericPlaceholder": "Enter ",
+        "save": "Submit changes",
+        "signInForComments": "Sign in to leave comments",
+        "commentAs": "Leave a comment as ",
+        "comment": "Comment",
+        "editComment": "Edit comment",
+        "deleteComment": "Delete comment",
+        "bold": "Bold",
+        "italic": "Italic",
+        "strike": "Strikethrough",
+        "code": "code",
+        "h2": "Heading-2",
+        "bulletList": "Bullet list",
+        "orderedList": "Ordered list",
+        "undo": "Undo",
+        "redo": "Redo"
     }
 }

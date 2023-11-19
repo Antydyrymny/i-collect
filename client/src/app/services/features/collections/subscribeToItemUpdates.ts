@@ -56,17 +56,15 @@ export const subscribeToItemUpdates = (builder: ApiBuilder) =>
                             apiSlice.util.updateQueryData(
                                 'getItemComments',
                                 'getItemComments' as unknown as GetItemCommentsQuery,
-                                (draft) => ({
-                                    comments: draft.comments.map((comment) =>
-                                        comment._id === commentUpdate._id
-                                            ? {
-                                                  ...comment,
-                                                  content: commentUpdate.content,
-                                              }
-                                            : comment
-                                    ),
-                                    moreToFetch: draft.moreToFetch,
-                                })
+                                (draft) => {
+                                    const commentInd = draft.comments.findIndex(
+                                        (comment) => comment._id === commentUpdate._id
+                                    );
+                                    if (commentInd !== undefined && commentInd !== -1) {
+                                        draft.comments[commentInd].content =
+                                            commentUpdate.content;
+                                    }
+                                }
                             )
                         );
                     }

@@ -55,11 +55,7 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
         clearImage,
     } = useCollectionHandlers(defaultState, defaultImgState);
 
-    const { editing, startEditing, stopEditing } = useEditing(allowEdit);
-    const cancelEdit = () => {
-        stopEditing();
-        resetMainState();
-    };
+    const { editing, onChange, stopEditing } = useEditing(allowEdit, resetMainState);
 
     const [updateCollection, updateOptions] = useUpdateCollectionMutation();
     useInformOfError({ isError: updateOptions.isError, error: updateOptions.error });
@@ -69,7 +65,7 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
     const navigate = useNavigate();
     const handleSubmitUpdate = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (updateOptions.isLoading || deleteOptions.isLoading) return;
+        if (!editing || updateOptions.isLoading || deleteOptions.isLoading) return;
 
         const mainFieldsUpdate = getUpdatedFields(collection, editState);
         const imgUpdate = imageData.file ? { image: imageData.file } : false;
@@ -122,9 +118,8 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
                         <div className='d-flex gap-2'>
                             <EditButton
                                 editing={editing}
-                                startEditing={startEditing}
+                                onChange={onChange}
                                 startEditMsg={t('edit')}
-                                cancelEdit={cancelEdit}
                                 cancelEditMsg={t('stopEdit')}
                             />
                             <DeleteButton

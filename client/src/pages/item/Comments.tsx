@@ -6,6 +6,7 @@ import { useSelectUser } from '../../app/services/features/auth';
 
 import NewComment from './comment/NewComment';
 import CommentCard from './comment/CommentCard';
+import { useLocale } from '../../contexts/locale';
 
 type CommentsProps = {
     itemId: string | undefined;
@@ -31,13 +32,15 @@ function Comments({ itemId }: CommentsProps) {
 
     const user = useSelectUser();
 
+    const t = useLocale('itemPage');
+
     return (
         <>
             <Row className='my-4 mb-5'>
                 <Col>
                     {!user._id && (
                         <p className='text-secondary-emphasis'>
-                            Sign in to leave comments
+                            {t('signInForComments')}
                         </p>
                     )}
                     {itemId && user._id && (
