@@ -1,0 +1,10 @@
+.tagCloud {
+    user-select: none;
+    span {
+        cursor: pointer;
+    }
+    span:hover {
+        color: var(--bs-link-color);
+        font-weight: bold;
+    }
+}

@@ -164,7 +164,7 @@ export const handleHomeOnDeleteUpdates = (
 
 export const itemSearch = async (
     query: string,
-    fromCollectionItems?: Schema.Types.ObjectId[],
+    restrictToCollectionItems?: Schema.Types.ObjectId[],
     limit = 10
 ) => {
     if (!query || typeof query !== 'string') {
@@ -198,10 +198,10 @@ export const itemSearch = async (
             },
         },
     });
-    if (fromCollectionItems) {
+    if (restrictToCollectionItems) {
         itemPipeline.push({
             $match: {
-                _id: { $in: fromCollectionItems },
+                _id: { $in: restrictToCollectionItems },
             },
         });
     }
@@ -218,10 +218,10 @@ export const itemSearch = async (
             },
         },
     });
-    if (fromCollectionItems) {
+    if (restrictToCollectionItems) {
         commentPipeLine.push({
             $match: {
-                toItem: { $in: fromCollectionItems },
+                toItem: { $in: restrictToCollectionItems },
             },
         });
     }
