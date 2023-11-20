@@ -1,50 +1,92 @@
-import TagCloud, { TagCloudOptions } from '@frank-mayer/react-tag-cloud';
-import { Col, Container, Row } from 'react-bootstrap';
-import { SearchBar } from '../../components';
-import styles from './homeStyles.module.scss';
+import {
+    useHomePageSearchQuery,
+    useSubscribeToHomeEventsQuery,
+} from '../../app/services/api';
+import { Col, Container, Dropdown, Row, Spinner } from 'react-bootstrap';
+import { MainSpinner, SearchBar } from '../../components';
+import TagCloud from './TagCloud';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useInformOfError } from '../../hooks';
+import { useDebounce } from 'use-debounce';
+import ItemTable from '../collection/ItemTable';
+import ItemPreviewRow from '../collection/ItemPreviewRow';
 
 function Home() {
+    const { data: homeData, ...homeOptions } = useSubscribeToHomeEventsQuery();
+    const tags = useMemo(() => homeData?.tags || [], [homeData?.tags]);
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedQuery, debouncedQueryOptions] = useDebounce(searchQuery, 250);
+
+    const { data: searchResults, ...searchOptions } =
+        useHomePageSearchQuery(debouncedQuery);
+    useInformOfError({ isError: searchOptions.isError, error: searchOptions.error });
+
+    const handleQueryChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+    }, []);
+    const handleTagClick = useCallback(
+        (tag: string) => {
+            setSearchQuery(tag);
+            debouncedQueryOptions.flush();
+        },
+        [debouncedQueryOptions]
+    );
+    const clearSearch = useCallback(() => {
+        setSearchQuery('');
+    }, []);
+
+    useEffect(() => {
+        if (searchQuery === '') debouncedQueryOptions.flush();
+    }, [debouncedQueryOptions, searchQuery]);
+    const submitSearch = useCallback(
+        (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            if (!searchQuery) return;
+            debouncedQueryOptions.flush();
+        },
+        [searchQuery, debouncedQueryOptions]
+    );
+
     return (
         <>
-            <Row>
-                <Col className='d-flex justify-content-center'>
-                    <TagCloud
-                        className={styles.tagCloud}
-                        options={(w: Window & typeof globalThis): TagCloudOptions => ({
-                            radius: Math.min(500, w.innerWidth, w.innerHeight) / 2.5,
-                            maxSpeed: 'fast',
-                        })}
-                        onClick={(tag: string, ev: MouseEvent) => alert(tag)}
-                        onClickOptions={{ passive: true }}
-                    >
-                        {[
-                            'VSCode',
-                            'TypeScript',
-                            'React',
-                            'Preact',
-                            'Parcel',
-                            'Jest',
-                            'Next',
-                            'ESLint',
-                            'Framer Motion',
-                            'Three.js',
-                        ]}
-                    </TagCloud>
-                </Col>
-            </Row>
-            <Row className='d-flex justify-content-center'>
-                <Col xl={5} lg={6} md={9} sm={12}>
-                    <SearchBar
-                        searchQuery=''
-                        handleSearchChange={() => {}}
-                        clearSearch={() => {}}
-                        submitSearch={() => {}}
-                        label='Search'
-                        placeholder='Enter search'
-                        hideFloatingLabel
-                    />
-                </Col>
-            </Row>
+            {homeOptions.isLoading && <MainSpinner />}
+            {homeOptions.isSuccess && (
+                <>
+                    <TagCloud tags={tags} handleTagClick={handleTagClick} />
+                    <Row className='d-flex justify-content-center mt-4'>
+                        <Col xl={5} lg={6} md={9} sm={12} className='position-relative'>
+                            <SearchBar
+                                searchQuery={searchQuery}
+                                handleSearchChange={handleQueryChange}
+                                clearSearch={clearSearch}
+                                submitSearch={submitSearch}
+                                label='Search'
+                                placeholder='Enter search'
+                                hideFloatingLabel
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            {searchQuery &&
+                                searchOptions.isSuccess &&
+                                searchOptions.originalArgs === searchQuery && (
+                                    <ItemTable allowEdit={false}>
+                                        {searchResults?.map((foundItem) => (
+                                            <ItemPreviewRow
+                                                key={foundItem._id}
+                                                item={foundItem}
+                                                allowEdit={false}
+                                                displayAllFields={false}
+                                            />
+                                        ))}
+                                    </ItemTable>
+                                )}
+                        </Col>
+                    </Row>
+                </>
+            )}
         </>
     );
 }

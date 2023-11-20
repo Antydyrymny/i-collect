@@ -16,16 +16,23 @@ import {
     Routes,
     ServerToHome,
 } from '../../types';
-import { itemSearch } from './utils';
+import { getRandomTags, itemSearch } from './utils';
 
 export function subscribeToHomeUpdates() {
     io.of(Routes.Api + Routes.HomeSocket).on(DefaultEvents.Connection, (socket) => {
-        socket.on(HomeToServer.SubscribingToHome, (acknowledgeHomeData) => {
+        socket.on(HomeToServer.SubscribingToHome, async (acknowledgeHomeData) => {
             socket.join(DefaultRooms.Home);
+            const tags = await getRandomTags();
+
             acknowledgeHomeData({
                 latestItems,
                 largestCollections,
+                tags,
             });
+        });
+
+        socket.on(HomeToServer.RefreshingTags, async (acknowledgeNewTags) => {
+            acknowledgeNewTags(await getRandomTags());
         });
 
         socket.on(HomeToServer.SearchingItems, async (query, acknowledgeSearch) => {

@@ -46,6 +46,7 @@ import {
     homePageSearch,
     findUserCollection,
     findCollectionItems,
+    refreshHomeTags,
 } from './features/collections';
 import {
     RefreshResponse,
@@ -159,6 +160,7 @@ const apiSlice = createApi({
         subscribeToItemUpdates: subscribeToItemUpdates(builder),
         autocompleteTag: autocompleteTag(builder),
         subscribeToHomeEvents: subscribeToHomeEvents(builder),
+        refreshHomeTags: refreshHomeTags(builder),
         homePageSearch: homePageSearch(builder),
     }),
 });
@@ -197,5 +199,6 @@ export const {
     useSubscribeToItemUpdatesQuery,
     useAutocompleteTagQuery,
     useSubscribeToHomeEventsQuery,
+    useLazyRefreshHomeTagsQuery,
     useHomePageSearchQuery,
 } = apiSlice;

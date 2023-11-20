@@ -11,3 +11,4 @@ export * from './useEditing';
 export * from './useScrollToTop';
 export * from './useRichTextEditor';
 export * from './useTimeAgo';
+export * from './useBreakpoints';

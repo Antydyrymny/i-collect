@@ -11,14 +11,20 @@ import { useLocale } from '../../contexts/locale';
 type ItemPreviewProps = {
     item: ItemPreview;
     allowEdit: boolean;
-    collectionId: string;
+    collectionId?: string;
+    displayAllFields?: boolean;
 };
 
-function ItemPreviewRow({ item, allowEdit, collectionId }: ItemPreviewProps) {
+function ItemPreviewRow({
+    item,
+    allowEdit,
+    collectionId,
+    displayAllFields = true,
+}: ItemPreviewProps) {
     const [deleteItem, deleteOptions] = useDeleteItemMutation();
 
     const handleDelete = useCallback(() => {
-        if (deleteOptions.isLoading) return;
+        if (deleteOptions.isLoading || collectionId === undefined) return;
         deleteItem({ itemToDeleteId: item._id, collectionId: collectionId });
     }, [collectionId, deleteItem, deleteOptions.isLoading, item._id]);
 
@@ -41,20 +47,20 @@ function ItemPreviewRow({ item, allowEdit, collectionId }: ItemPreviewProps) {
                 {!item.tags.length && '-'}
                 {item.tags.length > 3 ? '...' : ''}
             </td>
-            {item.fields.map(({ fieldType, fieldValue }, ind) => {
-                const displayVal =
-                    fieldType === 'boolean'
-                        ? fieldValue
-                            ? t('true')
-                            : t('false')
-                        : fieldType === 'date'
-                        ? dayjs(fieldValue as Date | string).format(
-                              'HH:mm:ss, D MMM, YYYY'
-                          )
-                        : fieldValue;
-
-                return <td key={ind}>{displayVal as string | number}</td>;
-            })}
+            {displayAllFields &&
+                item.fields.map(({ fieldType, fieldValue }, ind) => {
+                    const displayVal =
+                        fieldType === 'boolean'
+                            ? fieldValue
+                                ? t('true')
+                                : t('false')
+                            : fieldType === 'date'
+                            ? dayjs(fieldValue as Date | string).format(
+                                  'HH:mm:ss, D MMM, YYYY'
+                              )
+                            : fieldValue;
+                    return <td key={ind}>{displayVal as string | number}</td>;
+                })}
             {allowEdit && (
                 <td>
                     <DeleteButton

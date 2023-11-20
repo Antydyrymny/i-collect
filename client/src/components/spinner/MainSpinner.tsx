@@ -4,7 +4,7 @@ function MainSpinner() {
     return (
         <Stack
             className='d-flex justify-content-center align-items-center'
-            style={{ minHeight: 'calc(100vh - 8.5rem)' }}
+            style={{ minHeight: 'calc(100vh - 9.5rem)' }}
         >
             <Spinner />
         </Stack>

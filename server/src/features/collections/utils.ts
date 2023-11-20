@@ -256,6 +256,20 @@ export const itemSearch = async (
     }
 };
 
+const tagLimit = +process.env.HOMEPAGE_TAG_LIMIT;
+export const getRandomTags = async () => {
+    try {
+        const randomTags = await TagModel.aggregate([
+            { $sample: { size: tagLimit } },
+            { $project: { _id: 0, name: 1 } },
+        ]);
+        return randomTags.map((tag) => tag.name);
+    } catch (error) {
+        console.log(`Tags couldn't be fetched, error: ${error.message}`);
+        return [];
+    }
+};
+
 export const getCommentResponse = (comment: CommentModelType): CommentRes => ({
     _id: comment._id,
     authorId: comment.authorId,

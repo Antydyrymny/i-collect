@@ -3,6 +3,7 @@ import { useLocale } from '../../../contexts/locale';
 import { useAutocompleteTagQuery } from '../../../app/services/api';
 import { CloseButton, Col, Container, Dropdown, Row, Spinner } from 'react-bootstrap';
 import { SearchBar, TooltipOverlay } from '../../../components';
+import { useDebounce } from 'use-debounce';
 
 type TagsProps = {
     editing?: boolean;
@@ -22,6 +23,8 @@ function Tags({
     asHeading = false,
 }: TagsProps) {
     const [curTag, setCurTag] = useState('');
+    const [debouncedTag] = useDebounce(curTag, 250);
+
     const handleCurTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCurTag(e.target.value);
     };
@@ -29,7 +32,8 @@ function Tags({
         setCurTag('');
     };
 
-    const { data: tagSuggestions, ...tagSearchOptions } = useAutocompleteTagQuery(curTag);
+    const { data: tagSuggestions, ...tagSearchOptions } =
+        useAutocompleteTagQuery(debouncedTag);
 
     useEffect(() => {
         setCurTag('');

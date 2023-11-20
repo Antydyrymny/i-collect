@@ -44,6 +44,9 @@ export type HomeToServerEvents = {
         query: string,
         acknowledgeSearch: (foundItems: ItemPreview[]) => void
     ) => void;
+    [HomeToServer.RefreshingTags]: (
+        acknowledgeNewTags: (newTags: string[]) => void
+    ) => void;
     [DefaultEvents.Disconnecting]: () => void;
 };
 export type ServerToHomeEvents = {
@@ -76,12 +79,14 @@ export enum ServerToItemViewer {
 export enum HomeToServer {
     SubscribingToHome = 'subToHome',
     SearchingItems = 'searchingItems',
+    RefreshingTags = 'refreshTags',
 }
 export enum ServerToHome {
     HomeUpdated = 'homeUpdated',
 }
 
 export type HomeInitialData = {
+    tags: string[];
     latestItems: ItemPreview[];
     largestCollections: CollectionPreview[];
 };

@@ -1,17 +1,17 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import {
     useGetCollectionItemsQuery,
     useLazyFindCollectionItemsQuery,
 } from '../../app/services/api';
-import { Button, Col, Row, Spinner, Stack, Table } from 'react-bootstrap';
+import { useLocale } from '../../contexts/locale';
+import { Button, Col, Row, Spinner, Stack } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { SearchBar } from '../../components';
 import ItemPreviewRow from './ItemPreviewRow';
 import { useInfiniteScrollLoading, useInformOfError, useSearchUtils } from '../../hooks';
 import { getItemPreviewHeadings } from './getItemPreviewHeadings';
 import { ClientRoutes, FormatField } from '../../types';
-import styles from './collectionPageStyles.module.scss';
-import { useLocale } from '../../contexts/locale';
+import ItemTable from './ItemTable';
 
 type ItemsProps = {
     collectionId: string;
@@ -60,7 +60,10 @@ function Items({
         { isError: searchOptions.isError, error: searchOptions.error },
     ]);
 
-    const additionalHeadings = getItemPreviewHeadings(formatFields);
+    const additionalHeadings = useMemo(
+        () => getItemPreviewHeadings(formatFields),
+        [formatFields]
+    );
 
     const t = useLocale('collectionPage');
 
@@ -89,48 +92,33 @@ function Items({
                     <Button>{t('newItem')}</Button>
                 </Link>
             )}
-            <Table responsive className={`${styles.table} mt-5 mb-5`}>
-                <thead>
-                    <tr>
-                        <th>{t('name')}</th>
-                        <th>{t('tags')}</th>
-                        {additionalHeadings.map((heading, ind) => (
-                            <th key={ind}>
-                                {heading +
-                                    (ind === additionalHeadings.length - 1 &&
-                                    collectionFieldsNumber > ind + 1
-                                        ? '...'
-                                        : '')}
-                            </th>
-                        ))}
-                        {allowEdit && <th>{t('delete')}</th>}
-                        <th className='text-center'>{t('link')}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {searchQuery &&
-                        searchOptions.isSuccess &&
-                        searchOptions.originalArgs?.query === searchQuery &&
-                        searchResults?.map((foundItem) => (
-                            <ItemPreviewRow
-                                key={foundItem._id}
-                                item={foundItem}
-                                allowEdit={allowEdit}
-                                collectionId={collectionId}
-                            />
-                        ))}
-                    {!(searchQuery && searchResults) &&
-                        itemsOptions.isSuccess &&
-                        itemsData?.items.map((item) => (
-                            <ItemPreviewRow
-                                key={item._id}
-                                item={item}
-                                allowEdit={allowEdit}
-                                collectionId={collectionId}
-                            />
-                        ))}
-                </tbody>
-            </Table>
+            <ItemTable
+                allowEdit={allowEdit}
+                extraHeadings={additionalHeadings}
+                totalFieldsNumber={collectionFieldsNumber}
+            >
+                {searchQuery &&
+                    searchOptions.isSuccess &&
+                    searchOptions.originalArgs?.query === searchQuery &&
+                    searchResults?.map((foundItem) => (
+                        <ItemPreviewRow
+                            key={foundItem._id}
+                            item={foundItem}
+                            allowEdit={allowEdit}
+                            collectionId={collectionId}
+                        />
+                    ))}
+                {!(searchQuery && searchResults) &&
+                    itemsOptions.isSuccess &&
+                    itemsData?.items.map((item) => (
+                        <ItemPreviewRow
+                            key={item._id}
+                            item={item}
+                            allowEdit={allowEdit}
+                            collectionId={collectionId}
+                        />
+                    ))}
+            </ItemTable>
             {(itemsOptions.isFetching || searchOptions.isFetching) && (
                 <Stack className='mb-5 d-flex justify-content-center align-items-center'>
                     <Spinner />

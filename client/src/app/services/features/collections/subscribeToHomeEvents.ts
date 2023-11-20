@@ -1,3 +1,4 @@
+import api from '../../api';
 import { getHomeSocket } from '../../getSocket';
 import {
     ApiBuilder,
@@ -20,6 +21,7 @@ export const subscribeToHomeEvents = (builder: ApiBuilder) =>
                 });
             });
         },
+        serializeQueryArgs: ({ endpointName }) => endpointName,
         async onCacheEntryAdded(
             _,
             { cacheDataLoaded, cacheEntryRemoved, updateCachedData }
@@ -46,17 +48,47 @@ export const subscribeToHomeEvents = (builder: ApiBuilder) =>
         },
     });
 
+export const refreshHomeTags = (builder: ApiBuilder) =>
+    builder.query<void, void>({
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        queryFn: async (_, { dispatch }) => {
+            const homeSocket = getHomeSocket();
+
+            const newTags: string[] = await new Promise((resolve) => {
+                homeSocket.emit(HomeToServer.RefreshingTags, (newTags) => {
+                    resolve(newTags);
+                });
+            });
+            dispatch(
+                api.util.updateQueryData(
+                    'subscribeToHomeEvents',
+                    'subscribeToHomeEvents' as unknown as void,
+                    (draft) => {
+                        draft.tags = newTags;
+                    }
+                )
+            );
+            return { data: undefined };
+        },
+    });
+
 export const homePageSearch = (builder: ApiBuilder) =>
     builder.query<ItemPreview[], string>({
         queryFn: (query) => {
             const homeSocket = getHomeSocket();
 
-            return new Promise((resolve) => {
-                homeSocket.emit(HomeToServer.SearchingItems, query, (foundItems) => {
-                    resolve({
-                        data: foundItems,
-                    });
-                });
-            });
+            return query === ''
+                ? { data: [] }
+                : new Promise((resolve) => {
+                      homeSocket.emit(
+                          HomeToServer.SearchingItems,
+                          query,
+                          (foundItems) => {
+                              resolve({
+                                  data: foundItems,
+                              });
+                          }
+                      );
+                  });
         },
     });
