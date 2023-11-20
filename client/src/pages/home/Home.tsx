@@ -2,7 +2,7 @@ import {
     useHomePageSearchQuery,
     useSubscribeToHomeEventsQuery,
 } from '../../app/services/api';
-import { Col, Container, Dropdown, Row, Spinner } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import { MainSpinner, SearchBar } from '../../components';
 import TagCloud from './TagCloud';
 import { useCallback, useEffect, useMemo, useState } from 'react';

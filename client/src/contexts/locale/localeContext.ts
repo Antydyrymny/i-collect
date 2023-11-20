@@ -6,6 +6,6 @@ type LocaleContext = {
     changeLocale: (locale: Locale) => void;
 };
 export const LocaleContext = createContext<LocaleContext>({
-    locale: 'ENG',
+    locale: 'en',
     changeLocale: () => {},
 });
