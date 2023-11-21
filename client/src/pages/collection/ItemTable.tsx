@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { useLocale } from '../../contexts/locale';
 import { Table } from 'react-bootstrap';
 import styles from './collectionPageStyles.module.scss';
@@ -10,7 +9,7 @@ type ItemTableProps = {
     totalFieldsNumber?: number;
 };
 
-const ItemTable = memo(function ItemTable({
+function ItemTable({
     children,
     allowEdit,
     extraHeadings,
@@ -40,6 +39,6 @@ const ItemTable = memo(function ItemTable({
             <tbody>{children}</tbody>
         </Table>
     );
-});
+}
 
 export default ItemTable;

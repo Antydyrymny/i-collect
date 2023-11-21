@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { Request } from 'express';
 import { ObjectId, Schema } from 'mongoose';
-import { CommentModel, ItemModel, TagModel } from '../../models';
+import { CollectionModel, CommentModel, ItemModel, TagModel } from '../../models';
 import { largestCollections, latestItems, updatesRequired } from '../../data';
 import {
     ItemModelType,
@@ -162,15 +162,41 @@ export const handleHomeOnDeleteUpdates = (
     }
 };
 
-export const itemSearch = async (
-    query: string,
-    restrictToCollectionItems?: Schema.Types.ObjectId[],
-    limit = 10
-) => {
+export async function itemSearch({
+    query,
+    searchInCollections,
+    limit = 10,
+}: {
+    query: string;
+    limit?: number;
+    searchInCollections: true;
+}): Promise<(ItemPreview | CollectionPreview)[]>;
+export async function itemSearch({
+    query,
+    searchInCollections,
+    limit = 10,
+    restrictToCollectionItems,
+}: {
+    query: string;
+    limit?: number;
+    searchInCollections: false;
+    restrictToCollectionItems?: Schema.Types.ObjectId[];
+}): Promise<ItemPreview[]>;
+
+export async function itemSearch({
+    query,
+    searchInCollections,
+    restrictToCollectionItems,
+    limit = 10,
+}: {
+    query: string;
+    searchInCollections: boolean;
+    restrictToCollectionItems?: Schema.Types.ObjectId[];
+    limit?: number;
+}): Promise<ItemPreview[] | (ItemPreview | CollectionPreview)[]> {
     if (!query || typeof query !== 'string') {
         return [];
     }
-
     const addSortScoreAndSort = [
         {
             $addFields: {
@@ -207,6 +233,20 @@ export const itemSearch = async (
     }
     itemPipeline.push(...addSortScoreAndSort);
 
+    const collectionsPipeline = [];
+    if (searchInCollections) {
+        collectionsPipeline.push({
+            $match: {
+                $text: {
+                    $search: query,
+                    $caseSensitive: false,
+                    $diacriticSensitive: false,
+                },
+            },
+        });
+        collectionsPipeline.push(...addSortScoreAndSort);
+    }
+
     const commentPipeLine = [];
     commentPipeLine.push({
         $search: {
@@ -228,33 +268,62 @@ export const itemSearch = async (
     commentPipeLine.push(...addSortScoreAndSort);
 
     try {
-        const [items, comments] = await Promise.all([
+        const [items, comments, collections] = await Promise.all([
             ItemModel.aggregate(itemPipeline).limit(limit),
             CommentModel.aggregate(commentPipeLine).limit(limit),
+            searchInCollections
+                ? CollectionModel.aggregate(collectionsPipeline).limit(limit)
+                : undefined,
         ]);
 
-        const commentsToInclude = comments.filter((comment) =>
-            items.every((item) => !item._id.equals(comment._id))
-        );
+        const commentsToInclude = new Map();
+        comments.forEach((comment) => {
+            const ind = comment.toItem.toString();
+            if (commentsToInclude.has(ind)) {
+                if (commentsToInclude.get(ind).score < comment.score)
+                    commentsToInclude.set(ind, comment);
+            } else if (items.every((item) => !item._id.equals(comment._id)))
+                commentsToInclude.set(ind, comment);
+        });
+
+        const commentsToIncludeArr = Array.from(commentsToInclude.values());
         const commentsItems = await Promise.all(
-            commentsToInclude.map((comment) => ItemModel.findById(comment.toItem))
+            commentsToIncludeArr.map((comment) => ItemModel.findById(comment.toItem))
         );
 
-        return [...items, ...commentsToInclude]
-            .sort((a, b) => b.score - a.score)
-            .slice(0, limit)
-            .map((searchRes) =>
-                searchRes.toItem
-                    ? getItemPreview(
-                          commentsItems.find((item) => item._id.equals(searchRes.toItem))
-                      )
-                    : getItemPreview(searchRes, true)
-            );
+        if (!searchInCollections) {
+            return [...items, ...commentsToIncludeArr]
+                .sort((a, b) => b.score - a.score)
+                .slice(0, limit)
+                .map((searchRes) =>
+                    searchRes.toItem
+                        ? getItemPreview(
+                              commentsItems.find((item) =>
+                                  item._id.equals(searchRes.toItem)
+                              )
+                          )
+                        : getItemPreview(searchRes, true)
+                );
+        } else
+            return [...[], ...items, ...collections, ...commentsToIncludeArr]
+                .sort((a, b) => b.score - a.score)
+                .slice(0, limit)
+                .map((searchRes) =>
+                    searchRes.toItem
+                        ? getItemPreview(
+                              commentsItems.find((item) =>
+                                  item._id.equals(searchRes.toItem)
+                              )
+                          )
+                        : searchRes.items
+                        ? getCollectionPreview(searchRes)
+                        : getItemPreview(searchRes, true)
+                );
     } catch (error) {
         console.log(`Item search failed with error: ${error.message}`);
         return [];
     }
-};
+}
 
 const tagLimit = +process.env.HOMEPAGE_TAG_LIMIT;
 export const getRandomTags = async () => {

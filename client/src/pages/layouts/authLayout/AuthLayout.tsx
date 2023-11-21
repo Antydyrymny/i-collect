@@ -2,18 +2,18 @@ import { Outlet } from 'react-router-dom';
 import { useRedirect } from '../../../hooks/useRedirect';
 import { useSelectUser } from '../../../app/services/features/auth';
 import { LocalePicker } from '../../../contexts/locale';
-import { Card, Col, Container, Navbar, Row } from 'react-bootstrap';
+import { Card, Col, Container, Row } from 'react-bootstrap';
 import styles from './authStyle.module.scss';
+import { HomeButton } from '../../../components';
 
 function AuthLayout() {
     useRedirect(!!useSelectUser().name);
 
     return (
         <Container className='vh-100 d-flex flex-column justify-content-center align-items-center'>
-            <Container className='d-flex justify-content-end'>
-                <Navbar expand='lg' className={` position-fixed top-0`}>
-                    <LocalePicker />
-                </Navbar>
+            <Container className='d-flex justify-content-between position-fixed top-0 mt-2'>
+                <HomeButton />
+                <LocalePicker />
             </Container>
             <Container>
                 <Row className='d-flex justify-content-center align-items-center'>

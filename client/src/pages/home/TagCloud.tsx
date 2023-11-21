@@ -5,6 +5,7 @@ import { RefreshCcw } from 'lucide-react';
 import styles from './homeStyles.module.scss';
 import { Button, Col, Row } from 'react-bootstrap';
 import { TooltipOverlay } from '../../components';
+import { useBreakpoints } from '../../hooks';
 
 type TagCloudProps = {
     tags: string[];
@@ -17,14 +18,36 @@ const TagCloud = memo(function TagCloud({ tags, handleTagClick }: TagCloudProps)
         refresHTags();
     };
 
+    const screenSize = useBreakpoints();
+    let radius = 100;
+    switch (screenSize) {
+        case 'xxl':
+            radius = 220;
+            break;
+        case 'xl':
+            radius = 200;
+            break;
+        case 'lg':
+            radius = 180;
+            break;
+        case 'md':
+            radius = 160;
+            break;
+        case 'sm':
+            radius = 140;
+            break;
+        case 'xs':
+            radius = 120;
+            break;
+    }
     return (
         <Row>
             <Col className='d-flex justify-content-center'>
                 <div className='position-relative'>
                     <ReactTagCloud
                         className={styles.tagCloud}
-                        options={(w: Window & typeof globalThis): TagCloudOptions => ({
-                            radius: Math.min(500, w.innerWidth, w.innerHeight) / 2.4,
+                        options={(): TagCloudOptions => ({
+                            radius: radius,
                             maxSpeed: 'fast',
                         })}
                         onClick={handleTagClick}

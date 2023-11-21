@@ -83,6 +83,7 @@ function GenericInputField<T extends FieldType | 'select'>({
                         placeholder={placeholder}
                         required
                         size={asHeading ? 'lg' : undefined}
+                        style={{ cursor: 'text' }}
                     />
                 );
                 break;

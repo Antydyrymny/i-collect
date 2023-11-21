@@ -2,14 +2,15 @@ import {
     useHomePageSearchQuery,
     useSubscribeToHomeEventsQuery,
 } from '../../app/services/api';
-import { Col, Row } from 'react-bootstrap';
+import { Col, Container, Row, Spinner } from 'react-bootstrap';
 import { MainSpinner, SearchBar } from '../../components';
 import TagCloud from './TagCloud';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useInformOfError } from '../../hooks';
 import { useDebounce } from 'use-debounce';
-import ItemTable from '../collection/ItemTable';
 import ItemPreviewRow from '../collection/ItemPreviewRow';
+import SearchTable from './SearchTable';
+import CollectionPreviewRow from './CollectionPreviewRow';
 
 function Home() {
     const { data: homeData, ...homeOptions } = useSubscribeToHomeEventsQuery();
@@ -69,19 +70,43 @@ function Home() {
                     </Row>
                     <Row>
                         <Col>
+                            {searchQuery && searchOptions.isFetching && (
+                                <Container className='mt-5 d-flex justify-content-center align-items-center'>
+                                    <Spinner />
+                                </Container>
+                            )}
                             {searchQuery &&
                                 searchOptions.isSuccess &&
                                 searchOptions.originalArgs === searchQuery && (
-                                    <ItemTable allowEdit={false}>
-                                        {searchResults?.map((foundItem) => (
-                                            <ItemPreviewRow
-                                                key={foundItem._id}
-                                                item={foundItem}
-                                                allowEdit={false}
-                                                displayAllFields={false}
-                                            />
-                                        ))}
-                                    </ItemTable>
+                                    <>
+                                        {searchResults?.length === 0 && (
+                                            <Container className='mt-5 text-center'>
+                                                <b>No results were found</b>
+                                            </Container>
+                                        )}
+                                        {searchResults?.length !== 0 && (
+                                            <SearchTable>
+                                                {searchResults?.map((foundItem) =>
+                                                    'itemNumber' in foundItem ? (
+                                                        <CollectionPreviewRow
+                                                            key={foundItem._id}
+                                                            collection={foundItem}
+                                                        />
+                                                    ) : (
+                                                        <ItemPreviewRow
+                                                            key={foundItem._id}
+                                                            item={foundItem}
+                                                            allowEdit={false}
+                                                            displayType={true}
+                                                            displayAdditionalFields={
+                                                                false
+                                                            }
+                                                        />
+                                                    )
+                                                )}
+                                            </SearchTable>
+                                        )}
+                                    </>
                                 )}
                         </Col>
                     </Row>

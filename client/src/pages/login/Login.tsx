@@ -5,6 +5,7 @@ import { useInformOfError } from '../../hooks';
 import { useLocale } from '../../contexts/locale';
 import { Button, Card, Form, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import { nanoid } from '@reduxjs/toolkit';
 
 function Login() {
     const t = useLocale('login');
@@ -35,7 +36,7 @@ function Login() {
             <Card.Subtitle className=' mb-5'>{t('header-msg')}</Card.Subtitle>
             <div className='mb-3'>
                 <Form onSubmit={allowSubmit ? handleSubmit : undefined}>
-                    <Form.Group className='mb-3' controlId='email'>
+                    <Form.Group className='mb-3' controlId={'email' + nanoid()}>
                         <Form.Label className='text-center'>
                             {t('email-label')}
                         </Form.Label>
@@ -47,7 +48,7 @@ function Login() {
                             onChange={changeLoginState('email')}
                         />
                     </Form.Group>
-                    <Form.Group className='mb-3' controlId='password'>
+                    <Form.Group className='mb-3' controlId={'password' + nanoid()}>
                         <Form.Label>{t('password-label')}</Form.Label>
                         <Form.Control
                             type='password'

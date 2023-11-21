@@ -12,14 +12,16 @@ type ItemPreviewProps = {
     item: ItemPreview;
     allowEdit: boolean;
     collectionId?: string;
-    displayAllFields?: boolean;
+    displayType?: boolean;
+    displayAdditionalFields?: boolean;
 };
 
 function ItemPreviewRow({
     item,
     allowEdit,
     collectionId,
-    displayAllFields = true,
+    displayType = false,
+    displayAdditionalFields = true,
 }: ItemPreviewProps) {
     const [deleteItem, deleteOptions] = useDeleteItemMutation();
 
@@ -34,6 +36,7 @@ function ItemPreviewRow({
 
     return (
         <tr>
+            {displayType && <td>{t('item')}</td>}
             <td>{item.name}</td>
             <td>
                 {item.tags.slice(0, 3).map((tag, ind) => (
@@ -47,7 +50,7 @@ function ItemPreviewRow({
                 {!item.tags.length && '-'}
                 {item.tags.length > 3 ? '...' : ''}
             </td>
-            {displayAllFields &&
+            {displayAdditionalFields &&
                 item.fields.map(({ fieldType, fieldValue }, ind) => {
                     const displayVal =
                         fieldType === 'boolean'

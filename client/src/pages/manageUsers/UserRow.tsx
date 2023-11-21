@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useThemeContext } from '../../contexts/theme';
@@ -16,7 +15,7 @@ type UserRowProps = {
     handleSelectOne: (id: string) => (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const UserRow = memo(function UserRow({ user, selected, handleSelectOne }: UserRowProps) {
+function UserRow({ user, selected, handleSelectOne }: UserRowProps) {
     const t = useLocale('manageUsers');
     const { theme } = useThemeContext();
     const adminState = useSelectUser();
@@ -57,6 +56,6 @@ const UserRow = memo(function UserRow({ user, selected, handleSelectOne }: UserR
             </td>
         </tr>
     );
-});
+}
 
 export default UserRow;

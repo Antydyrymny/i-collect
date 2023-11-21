@@ -18,6 +18,8 @@ import EditButton from './buttons/editButton/EditButton';
 export { EditButton };
 import LikeButton from './buttons/likeButton/LikeButton';
 export { LikeButton };
+import HomeButton from './buttons/homeButton/HomeButton';
+export { HomeButton };
 
 import CardWrapper from './cardWrapper/CardWrapper';
 export { CardWrapper };

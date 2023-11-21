@@ -36,7 +36,7 @@ export function subscribeToHomeUpdates() {
         });
 
         socket.on(HomeToServer.SearchingItems, async (query, acknowledgeSearch) => {
-            acknowledgeSearch(await itemSearch(query));
+            acknowledgeSearch(await itemSearch({ query, searchInCollections: true }));
         });
     });
 }

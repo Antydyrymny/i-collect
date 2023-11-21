@@ -3,9 +3,9 @@ import { getHomeSocket } from '../../getSocket';
 import {
     ApiBuilder,
     HomeInitialData,
+    HomeSearchRes,
     HomeToServer,
     HomeUpdate,
-    ItemPreview,
     ServerToHome,
 } from '../../../../types';
 
@@ -73,7 +73,7 @@ export const refreshHomeTags = (builder: ApiBuilder) =>
     });
 
 export const homePageSearch = (builder: ApiBuilder) =>
-    builder.query<ItemPreview[], string>({
+    builder.query<HomeSearchRes, string>({
         queryFn: (query) => {
             const homeSocket = getHomeSocket();
 

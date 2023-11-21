@@ -2,14 +2,11 @@ import { Link } from 'react-router-dom';
 import { ClientRoutes } from '../../../types';
 import { useSelectUser } from '../../../app/services/features/auth';
 import { useLogoutMutation } from '../../../app/services/api';
-import { useThemeContext } from '../../../contexts/theme';
 import { ThemeSwitcher } from '../../../contexts/theme';
 import { LocalePicker } from '../../../contexts/locale';
 import { useLocale } from '../../../contexts/locale';
-import { Container, Navbar, Button, Image, Nav, NavbarText } from 'react-bootstrap';
-import logo from '../../../assets/logo.png';
-import logoDark from '../../../assets/logo-dark.png';
-import TooltipOverlay from '../../../components/tooltip/TooltipOverlay';
+import { Container, Navbar, Button, Nav, NavbarText } from 'react-bootstrap';
+import { HomeButton } from '../../../components';
 
 function MainNav() {
     const t = useLocale('navbar');
@@ -17,26 +14,11 @@ function MainNav() {
     const authState = useSelectUser();
     const [logout] = useLogoutMutation();
 
-    const { theme } = useThemeContext();
-
     return (
         <Navbar className='mb-5' expand='xl' sticky='top' bg='primary-subtle'>
             <Container className='px-5'>
                 <Navbar.Brand>
-                    <TooltipOverlay
-                        id='home'
-                        tooltipMessage={t('home')}
-                        placement='bottom'
-                    >
-                        <Link
-                            to={ClientRoutes.Home}
-                            className='d-flex justify-content-center align-items-center gap-2'
-                        >
-                            {theme === 'light' && <Image src={logo} />}
-                            {theme === 'dark' && <Image src={logoDark} />}
-                            I-Collect
-                        </Link>
-                    </TooltipOverlay>
+                    <HomeButton />
                 </Navbar.Brand>
                 <Nav className='d-xl-none d-flex flex-row'>
                     <LocalePicker />
@@ -53,7 +35,9 @@ function MainNav() {
                         {!authState._id && (
                             <>
                                 <Link to={ClientRoutes.Login}>
-                                    <Button className='w-100 h-100'>{t('login')}</Button>
+                                    <Button className='w-100 h-100 mt-3 mt-xl-0'>
+                                        {t('login')}
+                                    </Button>
                                 </Link>
                                 <Link to={ClientRoutes.Register}>
                                     <Button

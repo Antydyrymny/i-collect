@@ -47,7 +47,7 @@ export type HomeToServerEvents = {
     ) => void;
     [HomeToServer.SearchingItems]: (
         query: string,
-        acknowledgeSearch: (foundItems: ItemPreview[]) => void
+        acknowledgeSearch: (searchRes: HomeSearchRes) => void
     ) => void;
     [HomeToServer.RefreshingTags]: (
         acknowledgeNewTags: (newTags: string[]) => void
@@ -96,3 +96,4 @@ export type HomeInitialData = {
     largestCollections: CollectionPreview[];
 };
 export type HomeUpdate = Partial<HomeInitialData>;
+export type HomeSearchRes = (ItemPreview | CollectionPreview)[];

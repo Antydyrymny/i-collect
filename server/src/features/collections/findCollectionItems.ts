@@ -11,7 +11,11 @@ export const findCollectionItems = async (req: Request, res: Response<ItemPrevie
     if (!existingCollection)
         throw new ResponseError(`Collection with id: ${collectionId} not found`, 404);
 
-    const results = await itemSearch(query, existingCollection.items);
+    const results = await itemSearch({
+        query,
+        restrictToCollectionItems: existingCollection.items,
+        searchInCollections: false,
+    });
 
     res.status(200).json(results);
 };

@@ -136,6 +136,7 @@
         "searchLabel": "Find item",
         "searchPlaceholder": "Find item",
         "newItem": "Create new item",
+        "item": "Item",
         "name": "Name",
         "tags": "Tags",
         "delete": "Delete",
