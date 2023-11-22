@@ -3,7 +3,6 @@ import { getHomeSocket } from '../../getSocket';
 import {
     ApiBuilder,
     HomeInitialData,
-    HomeSearchRes,
     HomeToServer,
     HomeUpdate,
     ServerToHome,
@@ -69,26 +68,5 @@ export const refreshHomeTags = (builder: ApiBuilder) =>
                 )
             );
             return { data: undefined };
-        },
-    });
-
-export const homePageSearch = (builder: ApiBuilder) =>
-    builder.query<HomeSearchRes, string>({
-        queryFn: (query) => {
-            const homeSocket = getHomeSocket();
-
-            return query === ''
-                ? { data: [] }
-                : new Promise((resolve) => {
-                      homeSocket.emit(
-                          HomeToServer.SearchingItems,
-                          query,
-                          (foundItems) => {
-                              resolve({
-                                  data: foundItems,
-                              });
-                          }
-                      );
-                  });
         },
     });

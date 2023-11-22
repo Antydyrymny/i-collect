@@ -6,7 +6,7 @@ import {
     ItemViewerToServerEvents,
     ServerToItemViewerEvents,
     HomeToServerEvents,
-    ServerToHomeEvents,
+    MainSearchToServerEvents,
 } from '../../types';
 
 const url =
@@ -30,10 +30,18 @@ export const getItemViewerSocket = () => {
     return itemViewerSocket;
 };
 
-let homeSocket: Socket<ServerToHomeEvents, HomeToServerEvents>;
+let homeSocket: Socket<Record<string, never>, HomeToServerEvents>;
 export const getHomeSocket = () => {
     if (!homeSocket) {
         homeSocket = io(url + Routes.HomeSocket);
     }
     return homeSocket;
+};
+
+let mainSearchSocket: Socket<EventSourceEventMap, MainSearchToServerEvents>;
+export const getMainSearchSocket = () => {
+    if (!mainSearchSocket) {
+        mainSearchSocket = io(url + Routes.MainSearchSocket);
+    }
+    return mainSearchSocket;
 };

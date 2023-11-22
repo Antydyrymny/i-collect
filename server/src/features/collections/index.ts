@@ -17,4 +17,6 @@ export * from './items/getCollectionItems';
 export * from './items/getItem';
 export * from './items/getItemComments';
 export * from './items/itemEvents';
+export * from './mainSearchEvents';
+export * from './homeEvents';
 export * from './utils';

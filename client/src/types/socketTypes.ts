@@ -2,16 +2,19 @@ import { CollectionPreview, CommentRes, CommentUpdate, ItemPreview } from '.';
 import {
     getHomeSocket,
     getItemViewerSocket,
+    getMainSearchSocket,
     getUserManagerSocket,
 } from '../app/services/getSocket';
 
 export type UserManagerSocket = ReturnType<typeof getUserManagerSocket>;
 export type ItemViewerSocket = ReturnType<typeof getItemViewerSocket>;
 export type HomeSocket = ReturnType<typeof getHomeSocket>;
+export type MainSearchSocket = ReturnType<typeof getMainSearchSocket>;
 
 export type ClientToServerEvents = AdminToServerEvents &
     ItemViewerToServerEvents &
-    HomeToServerEvents;
+    HomeToServerEvents &
+    MainSearchToServerEvents;
 export type ServerToClientEvents = ServerToAdminEvents &
     ServerToItemViewerEvents &
     ServerToHomeEvents;
@@ -45,10 +48,6 @@ export type HomeToServerEvents = {
     [HomeToServer.SubscribingToHome]: (
         acknowledgeHomeData: (homeInitialData: HomeInitialData) => void
     ) => void;
-    [HomeToServer.SearchingItems]: (
-        query: string,
-        acknowledgeSearch: (searchRes: HomeSearchRes) => void
-    ) => void;
     [HomeToServer.RefreshingTags]: (
         acknowledgeNewTags: (newTags: string[]) => void
     ) => void;
@@ -56,6 +55,15 @@ export type HomeToServerEvents = {
 };
 export type ServerToHomeEvents = {
     [ServerToHome.HomeUpdated]: (homeUpdate: HomeUpdate) => void;
+};
+
+export type MainSearchToServerEvents = {
+    [DefaultEvents.Connection]: () => void;
+    [MainSearchToServer.Searching]: (
+        query: string,
+        acknowledgeSearch: (searchRes: MainSearchRes) => void
+    ) => void;
+    [DefaultEvents.Disconnecting]: () => void;
 };
 
 export enum DefaultEvents {
@@ -83,7 +91,6 @@ export enum ServerToItemViewer {
 
 export enum HomeToServer {
     SubscribingToHome = 'subToHome',
-    SearchingItems = 'searchingItems',
     RefreshingTags = 'refreshTags',
 }
 export enum ServerToHome {
@@ -96,4 +103,8 @@ export type HomeInitialData = {
     largestCollections: CollectionPreview[];
 };
 export type HomeUpdate = Partial<HomeInitialData>;
-export type HomeSearchRes = (ItemPreview | CollectionPreview)[];
+export type MainSearchRes = (ItemPreview | CollectionPreview)[];
+
+export enum MainSearchToServer {
+    Searching = 'searching',
+}

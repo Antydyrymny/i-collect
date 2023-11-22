@@ -9,11 +9,14 @@ type SearchbarProps = {
     handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     clearSearch: () => void;
     submitSearch: (e: React.FormEvent<HTMLFormElement>) => void;
-    label: string;
-    placeholder: string;
+    label?: string;
+    placeholder?: string;
     searchButtonText?: string;
     hideFloatingLabel?: boolean;
+    hideSearchButton?: boolean;
     asHeading?: boolean;
+    onFocus?: () => void;
+    onBlur?: () => void;
 };
 
 const SearchBar = memo(function SearchBar({
@@ -25,7 +28,10 @@ const SearchBar = memo(function SearchBar({
     placeholder,
     searchButtonText,
     hideFloatingLabel = false,
+    hideSearchButton = false,
     asHeading = false,
+    onFocus,
+    onBlur,
 }: SearchbarProps) {
     const t = useLocale('general');
     const id = 'search_' + nanoid();
@@ -33,18 +39,22 @@ const SearchBar = memo(function SearchBar({
     const LabelWrapper = asHeading ? 'h6' : 'div';
     return (
         <Form onSubmit={submitSearch}>
-            <LabelWrapper className={asHeading ? 'mt-4 mb-3' : ''}>
-                {hideFloatingLabel && <Form.Label htmlFor={id}>{label}</Form.Label>}
-            </LabelWrapper>
+            {label && (
+                <LabelWrapper className={asHeading ? 'mt-4 mb-3' : ''}>
+                    {hideFloatingLabel && <Form.Label htmlFor={id}>{label}</Form.Label>}
+                </LabelWrapper>
+            )}
             <InputGroup>
-                {!hideFloatingLabel && (
+                {!hideFloatingLabel && label && (
                     <FloatingLabel controlId={id} label={label}>
                         <Form.Control
                             value={searchQuery}
                             onChange={handleSearchChange}
+                            onFocus={onFocus ?? undefined}
+                            onBlur={onBlur ?? undefined}
                             type='text'
                             required
-                            placeholder={placeholder}
+                            placeholder={placeholder ?? t('search')}
                             className='shadow-none'
                         />
                     </FloatingLabel>
@@ -54,9 +64,11 @@ const SearchBar = memo(function SearchBar({
                         id={id}
                         value={searchQuery}
                         onChange={handleSearchChange}
+                        onFocus={onFocus ?? undefined}
+                        onBlur={onBlur ?? undefined}
                         type='text'
                         required
-                        placeholder={placeholder}
+                        placeholder={placeholder ?? t('search')}
                     />
                 )}
                 <TooltipOverlay id='clear' tooltipMessage={t('clear')} placement='bottom'>
@@ -64,9 +76,11 @@ const SearchBar = memo(function SearchBar({
                         <CloseButton onClick={clearSearch} />
                     </InputGroup.Text>
                 </TooltipOverlay>
-                <Button type='submit' variant='outline-primary'>
-                    {searchButtonText ?? t('search')}
-                </Button>
+                {!hideSearchButton && (
+                    <Button type='submit' variant='outline-primary'>
+                        {searchButtonText ?? t('search')}
+                    </Button>
+                )}
             </InputGroup>
         </Form>
     );

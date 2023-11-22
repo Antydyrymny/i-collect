@@ -1,5 +1,6 @@
+import { useLocation } from 'react-router-dom';
 import {
-    useHomePageSearchQuery,
+    useMainSearchQuery,
     useSubscribeToHomeEventsQuery,
 } from '../../app/services/api';
 import { Col, Container, Row, Spinner } from 'react-bootstrap';
@@ -16,11 +17,12 @@ function Home() {
     const { data: homeData, ...homeOptions } = useSubscribeToHomeEventsQuery();
     const tags = useMemo(() => homeData?.tags || [], [homeData?.tags]);
 
-    const [searchQuery, setSearchQuery] = useState('');
+    const location = useLocation();
+
+    const [searchQuery, setSearchQuery] = useState(location.state?.query ?? '');
     const [debouncedQuery, debouncedQueryOptions] = useDebounce(searchQuery, 250);
 
-    const { data: searchResults, ...searchOptions } =
-        useHomePageSearchQuery(debouncedQuery);
+    const { data: searchResults, ...searchOptions } = useMainSearchQuery(debouncedQuery);
     useInformOfError({ isError: searchOptions.isError, error: searchOptions.error });
 
     const handleQueryChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {

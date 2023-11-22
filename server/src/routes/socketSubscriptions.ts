@@ -1,9 +1,13 @@
-import { subscribeToItemUpdates } from '../features/collections';
-import { subscribeToHomeUpdates } from '../features/collections/homeEvents';
+import {
+    subscribeToHomeUpdates,
+    subscribeToItemUpdates,
+    subscribeToMainSearch,
+} from '../features/collections';
 import { subscribeAdminsToUserEvents } from '../features/manageUsers';
 
 export const subscribeToSocketEvents = () => {
     subscribeAdminsToUserEvents();
     subscribeToItemUpdates();
     subscribeToHomeUpdates();
+    subscribeToMainSearch();
 };

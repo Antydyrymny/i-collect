@@ -49,7 +49,8 @@
         "register": "Sign up",
         "users": "Manage users",
         "myPage": "My Collections",
-        "logout": "Logout"
+        "logout": "Logout",
+        "collection": "- collection"
     },
     "theme": {
         "light": "Switch to Dark mode",

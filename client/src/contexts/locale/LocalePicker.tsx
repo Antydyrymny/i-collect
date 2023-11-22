@@ -20,7 +20,7 @@ export default function LocalePicker() {
             controlId={'locale' + nanoid()}
             className='d-flex justify-content-center align-items-center '
         >
-            <Form.Label className='m-0'>
+            <Form.Label className='m-0 d-none d-sm-block'>
                 {theme === 'light' && <Image src={globe} />}
                 {theme === 'dark' && <Image src={globeDark} />}
             </Form.Label>
@@ -31,10 +31,10 @@ export default function LocalePicker() {
                 aria-label='Choose locale'
             >
                 <option value={'en'} className={`bg-${theme}`}>
-                    English
+                    Eng
                 </option>
                 <option value={'ru'} className={`bg-${theme}`}>
-                    Русский
+                    Рус
                 </option>
             </Form.Select>
         </Form.Group>

@@ -5,6 +5,7 @@ export enum Routes {
     ManageUsersSocket = '/manage-users',
     ItemSocket = '/item-socket',
     HomeSocket = '/home-socket',
+    MainSearchSocket = '/main-search',
     Login = '/login',
     Register = '/register',
     RefreshToken = '/refresh-token',

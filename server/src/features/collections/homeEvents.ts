@@ -16,7 +16,7 @@ import {
     Routes,
     ServerToHome,
 } from '../../types';
-import { getRandomTags, itemSearch } from './utils';
+import { getRandomTags } from './utils';
 
 export function subscribeToHomeUpdates() {
     io.of(Routes.Api + Routes.HomeSocket).on(DefaultEvents.Connection, (socket) => {
@@ -33,10 +33,6 @@ export function subscribeToHomeUpdates() {
 
         socket.on(HomeToServer.RefreshingTags, async (acknowledgeNewTags) => {
             acknowledgeNewTags(await getRandomTags());
-        });
-
-        socket.on(HomeToServer.SearchingItems, async (query, acknowledgeSearch) => {
-            acknowledgeSearch(await itemSearch({ query, searchInCollections: true }));
         });
     });
 }

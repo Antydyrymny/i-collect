@@ -21,6 +21,7 @@ export default function ThemeSwitcher() {
                 id={'ThemeSwitcher' + nanoid()}
                 variant={`outline${theme === 'dark' ? '-light' : ''}`}
                 className={`${sytles.switcher} d-flex justify-content-center align-items-center`}
+                size='sm'
             >
                 <>
                     {theme === 'light' && <Image src={light} aria-label='light theme' />}
