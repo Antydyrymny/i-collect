@@ -94,7 +94,6 @@ export const updateCollection = (builder: ApiBuilder) =>
     builder.mutation<CollectionResponse, UpdateCollectionReq>({
         query: (request) => {
             const formDataReq = getFormDataRequest(request);
-
             return {
                 url: Routes.Auth + Routes.UpdateCollection,
                 method: 'PATCH',

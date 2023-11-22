@@ -47,15 +47,14 @@ export const updateCollection = async (
                 req.body[paramName] ?? existingCollection[paramName])
     );
     if (image) {
-        const { url, id } = await uploadImage(image);
-        if (existingCollection.imageId)
+        if (existingCollection.imageId) {
             await deleteImageFromCloud(existingCollection.imageId);
+        }
+        const { url, id } = await uploadImage(image);
 
         existingCollection.image = url;
         existingCollection.imageId = id;
-    }
-
-    if (deleteImage && existingCollection.image && existingCollection.imageId) {
+    } else if (deleteImage && existingCollection.image && existingCollection.imageId) {
         await deleteImageFromCloud(existingCollection.imageId);
 
         existingCollection.image = '';
