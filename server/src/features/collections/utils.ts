@@ -142,8 +142,9 @@ export const getCollectionResponse = (
 
 export const authorizeCommentEdit = (req: Request, authorId: Schema.Types.ObjectId) => {
     const editor = req.user as AuthUser;
-    if (!editor.admin || editor._id !== authorId.toString())
+    if (!editor.admin && editor._id !== authorId.toString()) {
         throw new ResponseError('Unauthorized', 401);
+    }
 };
 
 export const authorizeCollectionOwnership = (
@@ -174,7 +175,7 @@ export const handleHomeOnDeleteUpdates = (
 export async function itemSearch({
     query,
     searchInCollections,
-    limit = 10,
+    limit = 12,
 }: {
     query: string;
     limit?: number;
@@ -291,7 +292,7 @@ export async function itemSearch({
             if (commentsToInclude.has(ind)) {
                 if (commentsToInclude.get(ind).score < comment.score)
                     commentsToInclude.set(ind, comment);
-            } else if (items.every((item) => !item._id.equals(comment._id)))
+            } else if (items.every((item) => !item._id.equals(comment.toItem)))
                 commentsToInclude.set(ind, comment);
         });
 
@@ -313,8 +314,8 @@ export async function itemSearch({
                           )
                         : getItemPreview(searchRes, true)
                 );
-        } else
-            return [...[], ...items, ...collections, ...commentsToIncludeArr]
+        } else {
+            return [...items, ...collections, ...commentsToIncludeArr]
                 .sort((a, b) => b.score - a.score)
                 .slice(0, limit)
                 .map((searchRes) =>
@@ -328,6 +329,7 @@ export async function itemSearch({
                         ? getCollectionPreview(searchRes)
                         : getItemPreview(searchRes, true)
                 );
+        }
     } catch (error) {
         console.log(`Item search failed with error: ${error.message}`);
         return [];

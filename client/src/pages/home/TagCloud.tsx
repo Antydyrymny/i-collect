@@ -50,7 +50,7 @@ const TagCloud = memo(function TagCloud({ tags, handleTagClick }: TagCloudProps)
                 className={styles.tagCloud}
                 options={(): TagCloudOptions => ({
                     radius: radius,
-                    maxSpeed: 'fast',
+                    maxSpeed: 'normal',
                 })}
                 onClick={handleTagClick}
                 onClickOptions={{ passive: true }}
