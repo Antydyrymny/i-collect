@@ -40,25 +40,19 @@ export type GetItemQuery = {
     userId?: string;
 };
 
-export type ItemResponse = {
-    _id: string;
-    authorId: string;
-    name: string;
-    parentCollection: {
-        _id: string;
-        name: string;
-    };
-    tags: string[];
-    userLikes: boolean;
-    likesNumber: number;
-    fields: ItemFormatField[];
-};
-
 export type ItemPreview = {
     _id: string;
     name: string;
     tags: string[];
     likesNumber: number;
     fields: ItemFormatField[];
+};
+export type ItemResponse = ItemPreview & {
+    parentCollection: {
+        _id: string;
+        name: string;
+    };
+    authorId: string;
+    userLikes: boolean;
 };
 export type CollectionItems = { items: ItemPreview[]; moreToFetch: boolean };

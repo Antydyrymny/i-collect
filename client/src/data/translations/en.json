@@ -96,7 +96,7 @@
         "uploadImage": "Upload image",
         "noImage": "No image",
         "clearImage": "Clear image",
-        "additionalFields": "Additional fields",
+        "additionalFields": "Additional fields (each item you create will have those)",
         "optionalFieldName": "Field name",
         "optionalFieldType": "Field type",
         "delete": "Delete",
@@ -145,7 +145,8 @@
         "true": "True",
         "false": "False",
         "deleteItem": "Delete item",
-        "toItem": "To item"
+        "toItem": "To item",
+        "noItems": "No items here yet..."
     },
     "newItem": {
         "newItem": "Create new item",
@@ -185,5 +186,21 @@
         "orderedList": "Ordered list",
         "undo": "Undo",
         "redo": "Redo"
+    },
+    "home": {
+        "largestCollections": "Largest collections",
+        "latestItems": "Recently created items",
+        "searchLabel": "Browse through I-Collect!",
+        "searchPlaceholder": "Search",
+        "noResults": "No results were found",
+        "refreshTags": "Load random tags",
+        "collectionName": "Collection",
+        "author": "Author",
+        "itemNumber": "Item number",
+        "toCollection": "To collection: ",
+        "itemName": "Item",
+        "ofCollection": "Of collection",
+        "tags": "Tags",
+        "toItem": "To item: "
     }
 }

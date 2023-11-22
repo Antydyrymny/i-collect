@@ -13,6 +13,8 @@ import ItemPreviewRow from '../collection/ItemPreviewRow';
 import SearchTable from './SearchTable';
 import CollectionPreviewRow from './CollectionPreviewRow';
 import LargestCollections from './LargestCollections';
+import LatestItems from './LatestItems';
+import { useLocale } from '../../contexts/locale';
 
 function Home() {
     const { data: homeData, ...homeOptions } = useSubscribeToHomeEventsQuery();
@@ -21,7 +23,7 @@ function Home() {
     const location = useLocation();
 
     const [searchQuery, setSearchQuery] = useState(location.state?.query ?? '');
-    const [debouncedQuery, debouncedQueryOptions] = useDebounce(searchQuery, 250);
+    const [debouncedQuery, debouncedQueryOptions] = useDebounce(searchQuery, 500);
 
     const { data: searchResults, ...searchOptions } = useMainSearchQuery(debouncedQuery);
     useInformOfError({ isError: searchOptions.isError, error: searchOptions.error });
@@ -52,27 +54,30 @@ function Home() {
         [searchQuery, debouncedQueryOptions]
     );
 
+    const t = useLocale('home');
+
     return (
         <>
             {homeOptions.isLoading && <MainSpinner />}
             {homeOptions.isSuccess && (
                 <>
-                    <TagCloud tags={tags} handleTagClick={handleTagClick} />
-                    <Row className='d-flex justify-content-center mt-4'>
-                        <Col xl={5} lg={6} md={9} sm={12} className='position-relative'>
+                    <Row>
+                        <Col lg={{ span: 4, order: 'last', offset: 1 }}>
+                            <div className='d-flex justify-content-center align-items-start'>
+                                <TagCloud tags={tags} handleTagClick={handleTagClick} />
+                            </div>
+                        </Col>
+                        <Col lg={{ order: 'first', span: 7 }}>
                             <SearchBar
                                 searchQuery={searchQuery}
                                 handleSearchChange={handleQueryChange}
                                 clearSearch={clearSearch}
                                 submitSearch={submitSearch}
-                                label='Search'
-                                placeholder='Enter search'
+                                label={t('searchLabel')}
+                                placeholder={t('searchPlaceholder')}
                                 hideFloatingLabel
+                                asHeading
                             />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
                             {searchQuery && searchOptions.isFetching && (
                                 <Container className='mt-5 d-flex justify-content-center align-items-center'>
                                     <Spinner />
@@ -84,7 +89,7 @@ function Home() {
                                     <>
                                         {searchResults?.length === 0 && (
                                             <Container className='mt-5 text-center'>
-                                                <b>No results were found</b>
+                                                <b>{t('noResults')}</b>
                                             </Container>
                                         )}
                                         {searchResults?.length !== 0 && (
@@ -111,20 +116,22 @@ function Home() {
                                         )}
                                     </>
                                 )}
-                        </Col>
-                    </Row>
-                    {homeOptions.isSuccess && (
-                        <Row className='my-5'>
-                            <Col>
+                            <div className='my-5'>
                                 <CardWrapper>
-                                    <h6>Largest collections</h6>
+                                    <h6>{t('largestCollections')}</h6>
                                     <LargestCollections
                                         collections={homeData!.largestCollections}
                                     />
                                 </CardWrapper>
-                            </Col>
-                        </Row>
-                    )}
+                            </div>
+                            <div className='mb-5'>
+                                <CardWrapper>
+                                    <h6>{t('latestItems')}</h6>
+                                    <LatestItems items={homeData!.latestItems} />
+                                </CardWrapper>
+                            </div>
+                        </Col>
+                    </Row>
                 </>
             )}
         </>

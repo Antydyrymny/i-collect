@@ -1,4 +1,5 @@
 import { Card } from 'react-bootstrap';
+import { useBreakpoints } from '../../hooks';
 
 function CardWrapper({
     children,
@@ -7,7 +8,9 @@ function CardWrapper({
     children: React.ReactNode;
     classes?: string;
 }) {
-    return (
+    const screenSize = useBreakpoints();
+
+    return screenSize !== 'xs' && screenSize !== 'sm' ? (
         <Card style={{ borderRadius: '0.5rem' }}>
             <Card.Body
                 className={`${classes} p-3 bg-body-tertiary`}
@@ -16,6 +19,8 @@ function CardWrapper({
                 {children}
             </Card.Body>
         </Card>
+    ) : (
+        <>{children}</>
     );
 }
 

@@ -4,7 +4,7 @@ import { getNameVersion } from '../../../utils/nameVersioning';
 import {
     authorizeCollectionOwnership,
     getCollectionPreview,
-    getItemPreview,
+    getItemResponse,
     setItemFields,
     updateTags,
 } from '../utils';
@@ -72,7 +72,9 @@ export const newItem = async (req: Request, res: Response<NewItemRes>) => {
     res.status(200).json({ _id: newItem._id });
 
     if (latestItems.length > latestItemsLimit) latestItems.pop();
-    latestItems.unshift(getItemPreview(newItem));
+    latestItems.unshift(
+        getItemResponse(newItem, existingCollection._id, existingCollection.name)
+    );
     updatesRequired.latestItems = true;
     if (existingCollection.items.length > largestCollections.at(-1)?.itemNumber) {
         if (largestCollections.length > largestCollectionsLimit) largestCollections.pop();

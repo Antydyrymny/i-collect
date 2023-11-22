@@ -59,24 +59,18 @@ export type GetItemQuery = {
     userId?: string;
 };
 
-export type ItemResponse = {
-    _id: string;
-    authorId: Schema.Types.ObjectId;
-    name: string;
-    parentCollection: {
-        _id: Schema.Types.ObjectId;
-        name: string;
-    };
-    tags: string[];
-    userLikes: boolean;
-    likesNumber: number;
-    fields: ItemFormatField[];
-};
-
 export type ItemPreview = {
     _id: string;
     name: string;
     tags: string[];
     likesNumber: number;
     fields: ItemFormatField[];
+};
+export type ItemResponse = ItemPreview & {
+    parentCollection: {
+        _id: Schema.Types.ObjectId;
+        name: string;
+    };
+    userLikes: boolean;
+    authorId: Schema.Types.ObjectId;
 };

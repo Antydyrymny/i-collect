@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { CommentRes, CommentUpdate } from './comments';
-import { ItemPreview } from './items';
+import { ItemPreview, ItemResponse } from './items';
 import { CollectionPreview } from './collections';
 
 export type ClientToServerEvents = AdminToServerEvents &
@@ -92,7 +92,7 @@ export enum ServerToHome {
 
 export type HomeInitialData = {
     tags: string[];
-    latestItems: ItemPreview[];
+    latestItems: ItemResponse[];
     largestCollections: CollectionPreview[];
 };
 export type HomeUpdate = Partial<HomeInitialData>;

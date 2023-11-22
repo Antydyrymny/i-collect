@@ -1,4 +1,10 @@
-import { CollectionPreview, CommentRes, CommentUpdate, ItemPreview } from '.';
+import {
+    CollectionPreview,
+    CommentRes,
+    CommentUpdate,
+    ItemPreview,
+    ItemResponse,
+} from '.';
 import {
     getHomeSocket,
     getItemViewerSocket,
@@ -99,7 +105,7 @@ export enum ServerToHome {
 
 export type HomeInitialData = {
     tags: string[];
-    latestItems: ItemPreview[];
+    latestItems: ItemResponse[];
     largestCollections: CollectionPreview[];
 };
 export type HomeUpdate = Partial<HomeInitialData>;

@@ -185,7 +185,7 @@ function ItemCard({ item, allowEdit }: ItemCardProps) {
                         notAllowed={!user._id}
                         totalLikes={item.likesNumber}
                     />
-                    {allowEdit && (
+                    {(editing || updateOptions.isLoading) && (
                         <Form>
                             <Button
                                 type='submit'

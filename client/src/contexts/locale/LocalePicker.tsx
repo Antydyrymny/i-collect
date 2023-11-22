@@ -36,6 +36,9 @@ export default function LocalePicker() {
                 <option value={'ru'} className={`bg-${theme}`}>
                     Рус
                 </option>
+                <option value={'ge'} className={`bg-${theme}`}>
+                    ქარ
+                </option>
             </Form.Select>
         </Form.Group>
     );

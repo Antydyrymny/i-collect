@@ -209,7 +209,7 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
                         ))}
                     </Card.Body>
                 </Card>
-                {allowEdit && (
+                {(editing || updateOptions.isLoading) && (
                     <div className='d-flex mt-4 mb-2 justify-content-end'>
                         <Button
                             type='submit'

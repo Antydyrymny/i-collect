@@ -51,7 +51,7 @@ function GenericInputField<T extends FieldType | 'select'>({
                 break;
             }
             case 'date': {
-                val = dayjs(value as Date).format('HH:mm:ss, D MMM, YYYY');
+                val = dayjs(value as Date).format('D MMM, YYYY');
                 break;
             }
         }

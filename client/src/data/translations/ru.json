@@ -145,7 +145,8 @@
         "true": "Истина",
         "false": "Ложь",
         "deleteItem": "Удалить элемент",
-        "toItem": "К элементу"
+        "toItem": "К элементу",
+        "noItems": "Пока нет элементов..."
     },
     "newItem": {
         "newItem": "Создать новый элемент",
@@ -185,5 +186,21 @@
         "orderedList": "Нумерованный список",
         "undo": "Отменить",
         "redo": "Повторить"
+    },
+    "home": {
+        "largestCollections": "Крупнейшие коллекции",
+        "latestItems": "Недавно созданные элементы",
+        "searchLabel": "Просматривайте I-Collect!",
+        "searchPlaceholder": "Поиск",
+        "noResults": "Результатов не найдено",
+        "refreshTags": "Загрузить случайные теги",
+        "collectionName": "Коллекция",
+        "author": "Автор",
+        "itemNumber": "Номер элемента",
+        "toCollection": "В коллекцию: ",
+        "itemName": "Элемент",
+        "ofCollection": "Коллекции",
+        "tags": "Теги",
+        "toItem": "К элементу: "
     }
 }

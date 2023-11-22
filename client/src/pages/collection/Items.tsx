@@ -92,33 +92,40 @@ function Items({
                     <Button>{t('newItem')}</Button>
                 </Link>
             )}
-            <ItemTable
-                allowEdit={allowEdit}
-                extraHeadings={additionalHeadings}
-                totalFieldsNumber={collectionFieldsNumber}
-            >
-                {searchQuery &&
-                    searchOptions.isSuccess &&
-                    searchOptions.originalArgs?.query === searchQuery &&
-                    searchResults?.map((foundItem) => (
-                        <ItemPreviewRow
-                            key={foundItem._id}
-                            item={foundItem}
-                            allowEdit={allowEdit}
-                            collectionId={collectionId}
-                        />
-                    ))}
-                {!(searchQuery && searchResults) &&
-                    itemsOptions.isSuccess &&
-                    itemsData?.items.map((item) => (
-                        <ItemPreviewRow
-                            key={item._id}
-                            item={item}
-                            allowEdit={allowEdit}
-                            collectionId={collectionId}
-                        />
-                    ))}
-            </ItemTable>
+            {(!!searchResults?.length || !!itemsData?.items.length) && (
+                <ItemTable
+                    allowEdit={allowEdit}
+                    extraHeadings={additionalHeadings}
+                    totalFieldsNumber={collectionFieldsNumber}
+                >
+                    {searchQuery &&
+                        searchOptions.isSuccess &&
+                        searchOptions.originalArgs?.query === searchQuery &&
+                        searchResults?.map((foundItem) => (
+                            <ItemPreviewRow
+                                key={foundItem._id}
+                                item={foundItem}
+                                allowEdit={allowEdit}
+                                collectionId={collectionId}
+                            />
+                        ))}
+                    {!(searchQuery && searchResults) &&
+                        itemsOptions.isSuccess &&
+                        itemsData?.items.map((item) => (
+                            <ItemPreviewRow
+                                key={item._id}
+                                item={item}
+                                allowEdit={allowEdit}
+                                collectionId={collectionId}
+                            />
+                        ))}
+                </ItemTable>
+            )}
+            {!searchResults?.length && !itemsData?.items.length && (
+                <Stack className='mt-5 text-center'>
+                    <h6>{t('noItems')}</h6>
+                </Stack>
+            )}
             {(itemsOptions.isFetching || searchOptions.isFetching) && (
                 <Stack className='mb-5 d-flex justify-content-center align-items-center'>
                     <Spinner />
