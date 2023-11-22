@@ -56,6 +56,7 @@ export type UpdateCollectionReq = {
     description?: string;
     theme?: CollectionTheme;
     image?: File;
+    deleteImage?: true;
 };
 
 export type DeleteCollectionReq = {

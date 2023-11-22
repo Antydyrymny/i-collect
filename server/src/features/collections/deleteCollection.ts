@@ -3,7 +3,7 @@ import { CollectionModel, UserModel, ItemModel, CommentModel } from '../../model
 import { DeleteCollectionReq, ItemModelType, ResponseError } from '../../types';
 import { latestItems, updatesRequired } from '../../data';
 import { authorizeCollectionOwnership, handleHomeOnDeleteUpdates } from './utils';
-import { deleteImage } from '../../utils';
+import { deleteImageFromCloud } from '../../utils';
 
 export const deleteCollection = async (req: Request, res: Response) => {
     const { _id }: DeleteCollectionReq = req.body;
@@ -36,7 +36,8 @@ export const deleteCollection = async (req: Request, res: Response) => {
     updatesRequired.latestItems = true;
     handleHomeOnDeleteUpdates('largestCollections', collectionToDelete._id);
 
-    if (collectionToDelete.imageId) await deleteImage(collectionToDelete.imageId);
+    if (collectionToDelete.imageId)
+        await deleteImageFromCloud(collectionToDelete.imageId);
 
     await collectionToDelete.deleteOne();
 

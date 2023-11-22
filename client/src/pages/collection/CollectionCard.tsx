@@ -68,12 +68,15 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
 
         const mainFieldsUpdate = getUpdatedFields(collection, editState);
         const imgUpdate = imageData.file ? { image: imageData.file } : false;
+        const deleteImg =
+            !imageData.file && defaultImgState.imgPreview ? { deleteImage: true } : false;
 
         let finalUpdate = { _id: collection._id };
         if (mainFieldsUpdate) finalUpdate = { ...finalUpdate, ...mainFieldsUpdate };
         if (imgUpdate) finalUpdate = { ...finalUpdate, ...imgUpdate };
+        if (deleteImg) finalUpdate = { ...finalUpdate, ...deleteImg };
 
-        if (mainFieldsUpdate || imgUpdate) updateCollection(finalUpdate);
+        if (mainFieldsUpdate || imgUpdate || deleteImg) updateCollection(finalUpdate);
         stopEditing();
     };
     const handleDelete = async () => {

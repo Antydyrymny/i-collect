@@ -1,4 +1,4 @@
-import { object, array, string, mixed } from 'yup';
+import { object, array, string, mixed, boolean } from 'yup';
 import {
     DeleteCollectionReq,
     ItemFormatField,
@@ -77,6 +77,7 @@ export const validateUpdateCollection = object({
             ],
             'Theme is not recognized'
         ),
+        deleteImage: boolean().isTrue(),
     }),
 });
 

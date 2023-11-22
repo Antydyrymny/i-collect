@@ -17,7 +17,15 @@ export const uploadImage = async (image: Express.Multer.File) => {
     const { uploader } = cloudinary;
     //prettier-ignore
     const imageDetails = await uploader.upload(
-        `data:image/${fileFormat};base64,${base64}`);
+        `data:image/${fileFormat};base64,${base64}`,
+        {
+            transformation: {
+                width: 320,
+                height: 180,
+                crop: 'fit',
+            },
+        }
+    );
 
     return { url: imageDetails.secure_url, id: imageDetails.public_id };
 };

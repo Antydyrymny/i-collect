@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
 import { CollectionModel, UserModel } from '../../models';
 import { authorizeCollectionOwnership, getCollectionResponse } from './utils';
-import { uploadImage, getNameVersion, deleteImage } from '../../utils';
+import { uploadImage, getNameVersion, deleteImageFromCloud } from '../../utils';
 import { UpdateCollectionReq, ResponseError, CollectionResponse } from '../../types';
 
 export const updateCollection = async (
     req: Request,
     res: Response<CollectionResponse>
 ) => {
-    const { _id, name: newName }: UpdateCollectionReq = req.body;
+    const { _id, name: newName, deleteImage }: UpdateCollectionReq = req.body;
     const image = req.file;
 
     const existingCollection = await CollectionModel.findById(_id);
@@ -41,17 +41,25 @@ export const updateCollection = async (
     }
 
     existingCollection.name = validatedName;
-    ['description', 'theme', 'image'].forEach(
+    ['description', 'theme'].forEach(
         (paramName) =>
             (existingCollection[paramName] =
                 req.body[paramName] ?? existingCollection[paramName])
     );
     if (image) {
         const { url, id } = await uploadImage(image);
-        if (existingCollection.imageId) await deleteImage(existingCollection.imageId);
+        if (existingCollection.imageId)
+            await deleteImageFromCloud(existingCollection.imageId);
 
         existingCollection.image = url;
         existingCollection.imageId = id;
+    }
+
+    if (deleteImage && existingCollection.image && existingCollection.imageId) {
+        await deleteImageFromCloud(existingCollection.imageId);
+
+        existingCollection.image = '';
+        existingCollection.imageId = '';
     }
 
     await existingCollection.save();

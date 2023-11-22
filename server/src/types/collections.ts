@@ -31,15 +31,19 @@ export type CollectionTheme =
 
 export type NewCollectionReq = Omit<
     ItemCollection,
-    'items' | 'authorId' | 'authorName' | 'image' | 'format'
+    'items' | 'authorId' | 'authorName' | 'image'
 > & {
     image: File;
-    format: string;
 };
 
 export type NewCollectionRes = {
     _id: string;
 };
+
+export type FormatFieldUpdate = {
+    action: 'add';
+    fields: FormatField[];
+} & { action: 'update' };
 
 export type UpdateCollectionReq = {
     _id: string;
@@ -47,6 +51,8 @@ export type UpdateCollectionReq = {
     description?: string;
     theme?: CollectionTheme;
     image?: File;
+    deleteImage?: true;
+    format;
 };
 
 export type DeleteCollectionReq = {
