@@ -10,7 +10,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     try {
         const newUser = await UserModel.create({
             name,
-            email,
+            email: email.toLowerCase(),
             password,
         });
 

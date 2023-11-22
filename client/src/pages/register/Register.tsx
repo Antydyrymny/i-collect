@@ -27,7 +27,7 @@ function Register() {
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         toast.dismiss();
-        await register(registerState);
+        await register({ ...registerState, email: registerState.email.toLowerCase() });
     }
 
     return (

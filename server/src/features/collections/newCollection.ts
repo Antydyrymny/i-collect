@@ -3,9 +3,12 @@ import { CollectionModel, UserModel } from '../../models';
 import { getNameVersion } from '../../utils/nameVersioning';
 import { authorizeResourceOwnership } from '../manageUsers';
 import { NewCollectionReq, NewCollectionRes, ResponseError } from '../../types';
+import { uploadImage } from '../../utils';
 
 export const newCollection = async (req: Request, res: Response<NewCollectionRes>) => {
-    const { name, description, theme, image, format }: NewCollectionReq = req.body;
+    const { name, description, theme, format }: NewCollectionReq = req.body;
+    const image = req.file;
+
     const authorId = authorizeResourceOwnership(req);
 
     const existingAuthor = await UserModel.findById(authorId).populate<{
@@ -23,15 +26,22 @@ export const newCollection = async (req: Request, res: Response<NewCollectionRes
         );
     }
 
-    const newCollection = await CollectionModel.create({
+    const newCollection = new CollectionModel({
         name: validatedName,
         description,
         theme,
-        image,
         authorId: existingAuthor._id,
         authorName: existingAuthor.name,
         format,
     });
+
+    if (image) {
+        const { url, id } = await uploadImage(image);
+        newCollection.image = url;
+        newCollection.imageId = id;
+    }
+
+    await newCollection.save();
 
     existingAuthor.collections.push(newCollection._id);
     await existingAuthor.save();

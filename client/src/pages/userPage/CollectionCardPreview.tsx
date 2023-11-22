@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLocale } from '../../contexts/locale';
-import { Button, Card } from 'react-bootstrap';
+import { Button, Card, Image } from 'react-bootstrap';
 import { ClientRoutes, CollectionPreview } from '../../types';
 import { useDeleteCollectionMutation } from '../../app/services/api';
 import { DeleteButton } from '../../components';
@@ -36,13 +36,21 @@ const CollectionCardPreview = memo(function CollectionCardPreview({
                 </div>
             </div>
             <Card.Body>
-                {collection.image && <Card.Img variant='top' src={collection.image} />}
                 <Card.Title>{collection.name}</Card.Title>
                 <Card.Subtitle className='mb-1'>
                     <span>{t('theme') + collection.theme}</span>
                 </Card.Subtitle>
                 <hr />
+
+                {collection.image && (
+                    <Image
+                        className='me-3 border border-secondary-1 rounded-3 object-fit-contain'
+                        style={{ width: '320px', height: '180px', float: 'left' }}
+                        src={collection.image}
+                    />
+                )}
                 <Card.Text>{collection.description}</Card.Text>
+
                 <Card.Text className='d-flex justify-content-end mb-1'>
                     {t('totalItems') + collection.itemNumber}
                 </Card.Text>

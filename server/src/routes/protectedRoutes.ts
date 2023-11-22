@@ -30,6 +30,7 @@ import {
     findUserCollection,
 } from '../features/collections';
 import { Routes } from '../types';
+import { upload } from './mutlerConfig';
 
 const protectedRouter = express.Router();
 protectedRouter.use(protectedRoutesMiddleware);
@@ -37,13 +38,21 @@ protectedRouter.use(protectedRoutesMiddleware);
 protectedRouter.post(Routes.Logout, forwardErrors(logout));
 protectedRouter.post(Routes.SetOnline, forwardErrors(setOnline));
 protectedRouter.get(Routes.GetUserPage, forwardErrors(getUserPage));
+
 protectedRouter.post(
     Routes.NewCollection,
+    upload.single('image'),
+    (req, res, next) => {
+        req.body.format = JSON.parse(req.body.format);
+        next();
+    },
     validate(validateNewCollection),
     forwardErrors(newCollection)
 );
+
 protectedRouter.patch(
     Routes.UpdateCollection,
+    upload.single('image'),
     validate(validateUpdateCollection),
     forwardErrors(updateCollection)
 );

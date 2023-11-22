@@ -15,6 +15,7 @@ import {
     UserCollections,
     isStringError,
 } from '../../../../types';
+import { getFormDataRequest } from '../../../../utils';
 
 const defaultGetUserCollectionsParams = {
     limit: 4,
@@ -76,29 +77,39 @@ export const getCollection = (builder: ApiBuilder) =>
 
 export const newCollection = (builder: ApiBuilder) =>
     builder.mutation<NewCollectionRes, NewCollectionReq>({
-        query: ({ ownerId, ...body }) => ({
-            url: Routes.Auth + Routes.NewCollection,
-            params: ownerId ? { ownerId } : undefined,
-            method: 'POST',
-            body,
-        }),
+        query: ({ ownerId, ...body }) => {
+            const formDataReq = getFormDataRequest(body);
+
+            return {
+                url: Routes.Auth + Routes.NewCollection,
+                params: ownerId ? { ownerId } : undefined,
+                method: 'POST',
+                body: formDataReq,
+                formData: true,
+            };
+        },
     });
 
 export const updateCollection = (builder: ApiBuilder) =>
-    builder.mutation<string, UpdateCollectionReq>({
-        query: (request) => ({
-            url: Routes.Auth + Routes.UpdateCollection,
-            method: 'PATCH',
-            body: request,
-        }),
-        async onQueryStarted({ _id, ...request }, { dispatch, queryFulfilled }) {
-            dispatch(
-                api.util.updateQueryData('getCollection', _id, (draft) => {
-                    Object.assign(draft, request);
-                })
-            );
+    builder.mutation<CollectionResponse, UpdateCollectionReq>({
+        query: (request) => {
+            const formDataReq = getFormDataRequest(request);
+
+            return {
+                url: Routes.Auth + Routes.UpdateCollection,
+                method: 'PATCH',
+                body: formDataReq,
+                formData: true,
+            };
+        },
+        async onQueryStarted({ _id }, { dispatch, queryFulfilled }) {
             try {
-                await queryFulfilled;
+                const { data: collectionUpdate } = await queryFulfilled;
+                dispatch(
+                    api.util.updateQueryData('getCollection', _id, (draft) => {
+                        Object.assign(draft, collectionUpdate);
+                    })
+                );
             } catch (error) {
                 dispatch(api.util.invalidateTags(['CurCollection']));
                 toast.error(

@@ -45,6 +45,11 @@ const collectionSchema = new mongoose.Schema<CollectionModelType>({
         maxlength: 255,
         required: false,
     },
+    imageId: {
+        type: String,
+        maxlength: 255,
+        required: false,
+    },
     authorId: {
         type: Schema.Types.ObjectId,
         ref: Models.User,

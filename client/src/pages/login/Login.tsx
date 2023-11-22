@@ -25,7 +25,7 @@ function Login() {
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         toast.dismiss();
-        await login(loginState);
+        await login({ ...loginState, email: loginState.email.toLowerCase() });
     }
 
     return (

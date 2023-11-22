@@ -5,7 +5,6 @@ import {
     ClientRoutes,
     CollectionResponse,
     ItemCollection,
-    UpdateCollectionReq,
     isStringError,
 } from '../../types';
 import {
@@ -70,9 +69,9 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
         const mainFieldsUpdate = getUpdatedFields(collection, editState);
         const imgUpdate = imageData.file ? { image: imageData.file } : false;
 
-        let finalUpdate: UpdateCollectionReq = { _id: collection._id };
+        let finalUpdate = { _id: collection._id };
         if (mainFieldsUpdate) finalUpdate = { ...finalUpdate, ...mainFieldsUpdate };
-        // if (imgUpdate) finalUpdate = { ...finalUpdate, ...imgUpdate };
+        if (imgUpdate) finalUpdate = { ...finalUpdate, ...imgUpdate };
 
         if (mainFieldsUpdate || imgUpdate) updateCollection(finalUpdate);
         stopEditing();

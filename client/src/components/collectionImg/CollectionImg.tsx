@@ -1,5 +1,5 @@
-import { memo, useRef } from 'react';
-import { Button, CloseButton, Container, Form, Image } from 'react-bootstrap';
+import { memo, useRef, useState } from 'react';
+import { Button, CloseButton, Container, Form, Image, Spinner } from 'react-bootstrap';
 import { TooltipOverlay } from '..';
 import { useLocale } from '../../contexts/locale';
 import { useThemeContext } from '../../contexts/theme';
@@ -35,9 +35,13 @@ const CollectionImg = memo(function CollectionImg({
         }
     };
 
+    const [isLoading, setIsLoading] = useState(() => (imgPreview ? true : false));
+    const handleImageLoad = () => {
+        setIsLoading(false);
+    };
+
     const { theme } = useThemeContext();
     const t = useLocale('newCollection');
-
     return (
         <Form.Group
             className={`${allowEdit ? '' : 'd-none d-lg-block'} w-100`}
@@ -79,6 +83,7 @@ const CollectionImg = memo(function CollectionImg({
                                 <Image
                                     src={theme === 'light' ? upload : uploadDark}
                                     alt={t('uploadImage')}
+                                    onLoad={handleImageLoad}
                                 />
                             </Button>
                         </TooltipOverlay>
@@ -88,21 +93,31 @@ const CollectionImg = memo(function CollectionImg({
                 {!imgPreview && !allowEdit && <div>{t('noImage')}</div>}
                 {imgPreview && (
                     <>
-                        <TooltipOverlay
-                            id='clear'
-                            tooltipMessage={t('clearImage')}
-                            placement='top'
-                        >
-                            <CloseButton
-                                onClick={handleClearImage}
-                                className='position-absolute top-0 end-0 mt-2 me-2'
-                            />
-                        </TooltipOverlay>
+                        {allowEdit && (
+                            <TooltipOverlay
+                                id='clear'
+                                tooltipMessage={t('clearImage')}
+                                placement='top'
+                            >
+                                <CloseButton
+                                    onClick={handleClearImage}
+                                    className='position-absolute top-0 end-0 mt-2 me-2'
+                                />
+                            </TooltipOverlay>
+                        )}
                         <Image
                             src={imgPreview}
                             alt={imgName}
-                            className='h-100 w-100 rounded-3 object-fit-contain'
+                            onLoad={handleImageLoad}
+                            className={`${
+                                isLoading ? 'd-none' : ''
+                            } h-100 w-100 rounded-3 object-fit-contain`}
                         />
+                        {isLoading && (
+                            <Container className='d-flex justify-content-center align-items-center'>
+                                <Spinner />
+                            </Container>
+                        )}
                     </>
                 )}
             </Container>

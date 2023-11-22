@@ -91,7 +91,8 @@ function NewCollection() {
                 name: mainFields.name,
                 description: mainFields.description,
                 theme: mainFields.theme,
-                format: optionalFields,
+                image: imageData.file ?? undefined,
+                format: JSON.stringify(optionalFields),
             }).unwrap();
             navigate(ClientRoutes.CollectionPath + collectionRes._id);
         } catch (error) {

@@ -15,6 +15,7 @@ import {
     Indexes,
     CommentRes,
     CommentModelType,
+    CollectionResponse,
 } from '../../types';
 
 dotenv.config();
@@ -129,6 +130,14 @@ export const getCollectionPreview = (
     image: collection.image,
     authorName: collection.authorName,
     itemNumber: collection.items.length,
+});
+
+export const getCollectionResponse = (
+    collection: CollectionModelType
+): CollectionResponse => ({
+    ...getCollectionPreview(collection),
+    format: collection.format,
+    authorId: collection.authorId,
 });
 
 export const authorizeCommentEdit = (req: Request, authorId: Schema.Types.ObjectId) => {

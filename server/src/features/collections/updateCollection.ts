@@ -1,11 +1,15 @@
 import { Request, Response } from 'express';
 import { CollectionModel, UserModel } from '../../models';
-import { getNameVersion } from '../../utils/nameVersioning';
-import { UpdateCollectionReq, ResponseError } from '../../types';
-import { authorizeCollectionOwnership } from './utils';
+import { authorizeCollectionOwnership, getCollectionResponse } from './utils';
+import { uploadImage, getNameVersion, deleteImage } from '../../utils';
+import { UpdateCollectionReq, ResponseError, CollectionResponse } from '../../types';
 
-export const updateCollection = async (req: Request, res: Response) => {
+export const updateCollection = async (
+    req: Request,
+    res: Response<CollectionResponse>
+) => {
     const { _id, name: newName }: UpdateCollectionReq = req.body;
+    const image = req.file;
 
     const existingCollection = await CollectionModel.findById(_id);
     if (!existingCollection)
@@ -42,7 +46,15 @@ export const updateCollection = async (req: Request, res: Response) => {
             (existingCollection[paramName] =
                 req.body[paramName] ?? existingCollection[paramName])
     );
+    if (image) {
+        const { url, id } = await uploadImage(image);
+        if (existingCollection.imageId) await deleteImage(existingCollection.imageId);
+
+        existingCollection.image = url;
+        existingCollection.imageId = id;
+    }
+
     await existingCollection.save();
 
-    res.status(200).json(`Collection with id: ${_id} updated successfully`);
+    res.status(200).json(getCollectionResponse(existingCollection));
 };

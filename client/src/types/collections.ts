@@ -41,7 +41,10 @@ export type CollectionTheme =
     | 'Other';
 
 export type NewCollectionReq = Partial<AdminQuery> &
-    Omit<ItemCollection, 'items' | 'authorId' | 'authorName'>;
+    Omit<ItemCollection, 'items' | 'authorId' | 'authorName' | 'image' | 'format'> & {
+        image?: File;
+        format: string;
+    };
 
 export type NewCollectionRes = {
     _id: string;
@@ -52,7 +55,7 @@ export type UpdateCollectionReq = {
     name?: string;
     description?: string;
     theme?: CollectionTheme;
-    image?: string;
+    image?: File;
 };
 
 export type DeleteCollectionReq = {

@@ -112,8 +112,8 @@
         "Cars": "Cars",
         "Art": "Art",
         "Other": "Other",
-        "string": "string",
-        "text": "text",
+        "string": "short string",
+        "text": "long text",
         "boolean": "boolean",
         "number": "number",
         "date": "date"

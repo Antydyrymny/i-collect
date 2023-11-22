@@ -5,6 +5,7 @@ export type ItemCollection = {
     description: string;
     theme: CollectionTheme;
     image?: string;
+    imageId?: string;
     authorId: Schema.Types.ObjectId;
     authorName: string;
     format: FormatField[];
@@ -28,7 +29,14 @@ export type CollectionTheme =
     | 'Art'
     | 'Other';
 
-export type NewCollectionReq = Omit<ItemCollection, 'items' | 'authorId' | 'authorName'>;
+export type NewCollectionReq = Omit<
+    ItemCollection,
+    'items' | 'authorId' | 'authorName' | 'image' | 'format'
+> & {
+    image: File;
+    format: string;
+};
+
 export type NewCollectionRes = {
     _id: string;
 };
@@ -38,7 +46,7 @@ export type UpdateCollectionReq = {
     name?: string;
     description?: string;
     theme?: CollectionTheme;
-    image?: string;
+    image?: File;
 };
 
 export type DeleteCollectionReq = {
@@ -60,7 +68,7 @@ export type GetCollectionQuery = {
     _id: string;
 };
 
-export type CollectionResponse = Omit<ItemCollection, 'items'> & {
+export type CollectionResponse = Omit<ItemCollection, 'items' | 'imageId'> & {
     _id: string;
     itemNumber: number;
 };

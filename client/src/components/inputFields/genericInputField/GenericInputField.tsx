@@ -134,7 +134,8 @@ function GenericInputField<T extends FieldType | 'select'>({
                 <Form.Label
                     column={inlineLabel || undefined}
                     sm={inlineLabel ? labelCol : undefined}
-                    className={inlineLabel ? 'text-secondary-emphasis text-nowrap' : ''}
+                    className={inlineLabel ? 'text-secondary-emphasis' : ''}
+                    style={{ whiteSpace: 'pre-wrap' }}
                 >
                     {label}
                 </Form.Label>

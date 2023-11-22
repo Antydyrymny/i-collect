@@ -1,7 +1,7 @@
 export const getUpdatedFields = <T extends object>(
     originalObj: T,
     editState: Partial<T>
-) => {
+): false | { [K in keyof typeof editState]: (typeof editState)[K] } => {
     type EditState = typeof editState;
     const update: EditState = {};
     let isUpdated = false;
