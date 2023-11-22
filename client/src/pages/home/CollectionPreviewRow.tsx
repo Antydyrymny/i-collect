@@ -17,7 +17,11 @@ function CollectionPreviewRow({ collection }: CollectionPreviewProps) {
                     to={ClientRoutes.CollectionPath + collection._id}
                     className='text-nowrap'
                 >
-                    <Button size='sm' variant='outline-primary'>
+                    <Button
+                        size='sm'
+                        variant='outline-primary'
+                        style={{ minWidth: '6rem' }}
+                    >
                         {'To collection'}
                     </Button>
                 </Link>

@@ -4,7 +4,7 @@ import {
     useSubscribeToHomeEventsQuery,
 } from '../../app/services/api';
 import { Col, Container, Row, Spinner } from 'react-bootstrap';
-import { MainSpinner, SearchBar } from '../../components';
+import { CardWrapper, MainSpinner, SearchBar } from '../../components';
 import TagCloud from './TagCloud';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useInformOfError } from '../../hooks';
@@ -12,6 +12,7 @@ import { useDebounce } from 'use-debounce';
 import ItemPreviewRow from '../collection/ItemPreviewRow';
 import SearchTable from './SearchTable';
 import CollectionPreviewRow from './CollectionPreviewRow';
+import LargestCollections from './LargestCollections';
 
 function Home() {
     const { data: homeData, ...homeOptions } = useSubscribeToHomeEventsQuery();
@@ -112,6 +113,18 @@ function Home() {
                                 )}
                         </Col>
                     </Row>
+                    {homeOptions.isSuccess && (
+                        <Row className='my-5'>
+                            <Col>
+                                <CardWrapper>
+                                    <h6>Largest collections</h6>
+                                    <LargestCollections
+                                        collections={homeData!.largestCollections}
+                                    />
+                                </CardWrapper>
+                            </Col>
+                        </Row>
+                    )}
                 </>
             )}
         </>

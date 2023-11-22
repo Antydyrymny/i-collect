@@ -7,7 +7,7 @@ type SearchTableProps = {
 
 function SearchTable({ children }: SearchTableProps) {
     return (
-        <Table responsive className={`${styles.table} mt-5 mb-5`}>
+        <Table responsive hover className={`${styles.table} mt-5 mb-5`}>
             <thead>
                 <tr>
                     <th>{'Type'}</th>

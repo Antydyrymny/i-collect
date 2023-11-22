@@ -78,7 +78,13 @@ function ItemPreviewRow({
             )}
             <td className='text-center'>
                 <Link to={ClientRoutes.ItemPath + item._id} className='text-nowrap'>
-                    <Button size='sm' variant='outline-primary'>
+                    <Button
+                        size='sm'
+                        variant='outline-primary'
+                        style={{
+                            minWidth: '6rem',
+                        }}
+                    >
                         {t('toItem')}
                     </Button>
                 </Link>
