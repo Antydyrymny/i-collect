@@ -67,7 +67,7 @@ export const getItemPreview = (
                     fieldName: key,
                     fieldValue: value,
                 });
-                if (previewFields.length === maxPreviewFields) break main;
+                if (returnedFields.length === maxPreviewFields) break main;
             }
         }
     }

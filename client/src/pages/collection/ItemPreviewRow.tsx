@@ -42,7 +42,7 @@ function ItemPreviewRow({
                 {item.tags.slice(0, 3).map((tag, ind) => (
                     <span
                         key={ind}
-                        className='badge border border-primary text-primary rounded-5 me-1'
+                        className='badge border border-primary text-primary rounded-5 my-1 mx-1'
                     >
                         {tag}
                     </span>
@@ -58,9 +58,7 @@ function ItemPreviewRow({
                                 ? t('true')
                                 : t('false')
                             : fieldType === 'date'
-                            ? dayjs(fieldValue as Date | string).format(
-                                  'HH:mm:ss, D MMM, YYYY'
-                              )
+                            ? dayjs(fieldValue as Date | string).format('D MMM, YYYY')
                             : fieldValue;
                     return <td key={ind}>{displayVal as string | number}</td>;
                 })}
