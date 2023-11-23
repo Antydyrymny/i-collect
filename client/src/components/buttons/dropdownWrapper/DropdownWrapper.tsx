@@ -2,7 +2,7 @@ import { TooltipOverlay } from '../..';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { nanoid } from '@reduxjs/toolkit';
 import { MoreVertical } from 'lucide-react';
-import styles from './dropDownWrapperStyles.module.scss';
+import styles from './dropdownWrapperStyles.module.scss';
 import { useBreakpoints } from '../../../hooks';
 import { Breakpoint } from '../../../types';
 
