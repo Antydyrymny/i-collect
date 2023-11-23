@@ -1,31 +1,47 @@
 import { useCallback, useMemo, useState } from 'react';
+import { ItemPreview } from '../types';
 
-type InitialStateType = { [key: string]: number | Date };
-
-export const useSorting = <T extends InitialStateType>(initialState: T[] = []) => {
+/**
+ * Utils for sorting item previews
+ * @param initialItems array of ItemPreview
+ * @returns
+ * @sortAscending boolean
+ * @sortKey string by which array is currently sorted
+ * @sortedItems sorted array to display
+ * @handleSorting onClick handler for item headings
+ */
+export const useItemSorting = (initialItems: ItemPreview[]) => {
     const [sortAscending, setSortAscending] = useState(true);
-    const [sortKey, setSortKey] = useState<keyof T>(
-        () => Object.keys(initialState[0])?.[0] ?? ''
+    const [sortKey, setSortKey] = useState('name');
+
+    const sortedItems = useMemo(
+        () =>
+            initialItems.slice().sort((a, b) => {
+                if (sortKey === 'name') {
+                    if (a.name < b.name) return sortAscending ? -1 : 1;
+                    else return sortAscending ? 1 : -1;
+                } else {
+                    const getInd = (sortable: ItemPreview) =>
+                        sortable.fields.findIndex((field) => field.fieldName === sortKey);
+
+                    if (a.fields[getInd(a)]?.fieldValue < b.fields[getInd(b)]?.fieldValue)
+                        return sortAscending ? -1 : 1;
+                    else return sortAscending ? 1 : -1;
+                }
+            }),
+        [initialItems, sortAscending, sortKey]
     );
 
     const handleSorting = useCallback(
-        (key: keyof InitialStateType) => () => {
+        (key: string) => () => {
             if (key === sortKey) setSortAscending((prevSort) => !prevSort);
             else {
                 setSortKey(() => key);
-                setSortAscending(true);
+                setSortAscending(false);
             }
         },
         [sortKey]
     );
 
-    const sortedState = useMemo(() => {
-        initialState.sort((a, b) => {
-            if (a[sortKey] < b[sortKey]) return sortAscending ? -1 : 1;
-            if (a[sortKey] > b[sortKey]) return sortAscending ? 1 : -1;
-            return 0;
-        });
-    }, [initialState, sortAscending, sortKey]);
-
-    return [sortedState, handleSorting];
+    return { sortAscending, sortKey, sortedItems, handleSorting };
 };

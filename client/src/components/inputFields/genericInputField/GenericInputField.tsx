@@ -30,8 +30,8 @@ function GenericInputField<T extends FieldType | 'select'>({
     label,
     placeholder,
     inlineLabel = true,
-    inlineProportions = [3, 9],
     asHeading = false,
+    inlineProportions = asHeading ? [12, 0] : [3, 9],
     options,
 }: GenericInputFieldProps<T>) {
     let mainComponent;
@@ -127,7 +127,7 @@ function GenericInputField<T extends FieldType | 'select'>({
         <Form.Group
             as={inlineLabel ? Row : undefined}
             controlId={editing ? label : undefined}
-            className={`${asHeading ? 'mb-0' : 'mb-3'}`}
+            className={`${asHeading ? 'mb-md-0 mb-4' : 'mb-3'}`}
             style={{ maxHeight: asHeading ? '2.57625rem' : undefined }}
         >
             {!!label && (

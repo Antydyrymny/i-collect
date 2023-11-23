@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
     useGetCollectionItemsQuery,
     useLazyFindCollectionItemsQuery,
@@ -11,13 +11,12 @@ import ItemPreviewRow from './ItemPreviewRow';
 import {
     useInfiniteScrollLoading,
     useInformOfError,
+    useItemSorting,
     useSearchUtils,
-    // useSorting,
 } from '../../hooks';
 import { getItemPreviewHeadings } from './getItemPreviewHeadings';
 import { ClientRoutes, FormatField } from '../../types';
 import ItemTable from './ItemTable';
-// import { SortAsc, SortDesc } from 'lucide-react';
 
 type ItemsProps = {
     collectionId: string;
@@ -37,11 +36,18 @@ function Items({
     const { searchQuery, handleSearchChange, clearSearch } = useSearchUtils();
     const [search, { data: searchResults, ...searchOptions }] =
         useLazyFindCollectionItemsQuery();
+
+    const [searching, setSearching] = useState(false);
+    useEffect(() => {
+        setSearching(false);
+    }, [searchQuery]);
+
     const submitSearch = useCallback(
         (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             if (!searchQuery) return;
             search({ query: searchQuery, collectionId });
+            setSearching(true);
         },
         [collectionId, search, searchQuery]
     );
@@ -71,7 +77,53 @@ function Items({
         [formatFields]
     );
 
-    // const [sortedState, setSorted] = useSorting();
+    const itemsToDisplay = useMemo(
+        () =>
+            searching && searchOptions.isSuccess
+                ? searchResults!
+                : itemsOptions.isSuccess
+                ? itemsData!.items!
+                : [],
+        [
+            itemsData,
+            itemsOptions.isSuccess,
+            searchOptions.isSuccess,
+            searchResults,
+            searching,
+        ]
+    );
+
+    const { sortAscending, sortKey, sortedItems, handleSorting } =
+        useItemSorting(itemsToDisplay);
+    // const [sortAscending, setSortAscending] = useState(true);
+    // const [sortKey, setSortKey] = useState('name');
+    // const handleSorting = useCallback(
+    //     (key: string) => () => {
+    //         if (key === sortKey) setSortAscending((prevSort) => !prevSort);
+    //         else {
+    //             setSortKey(() => key);
+    //             setSortAscending(false);
+    //         }
+    //     },
+    //     [sortKey]
+    // );
+    // const sortedItems = useMemo(
+    //     () =>
+    //         itemsToDisplay.slice().sort((a, b) => {
+    //             if (sortKey === 'name') {
+    //                 if (a.name < b.name) return sortAscending ? -1 : 1;
+    //                 else return sortAscending ? 1 : -1;
+    //             } else {
+    //                 const getInd = (sortable: ItemPreview) =>
+    //                     sortable.fields.findIndex((field) => field.fieldName === sortKey);
+
+    //                 if (a.fields[getInd(a)]?.fieldValue < b.fields[getInd(b)]?.fieldValue)
+    //                     return sortAscending ? -1 : 1;
+    //                 else return sortAscending ? 1 : -1;
+    //             }
+    //         }),
+    //     [itemsToDisplay, sortAscending, sortKey]
+    // );
 
     const t = useLocale('collectionPage');
 
@@ -105,28 +157,18 @@ function Items({
                     allowEdit={allowEdit}
                     extraHeadings={additionalHeadings}
                     totalFieldsNumber={collectionFieldsNumber}
+                    sortKey={sortKey}
+                    sortAscending={sortAscending}
+                    handleSorting={handleSorting}
                 >
-                    {searchQuery &&
-                        searchOptions.isSuccess &&
-                        searchOptions.originalArgs?.query === searchQuery &&
-                        searchResults?.map((foundItem) => (
-                            <ItemPreviewRow
-                                key={foundItem._id}
-                                item={foundItem}
-                                allowEdit={allowEdit}
-                                collectionId={collectionId}
-                            />
-                        ))}
-                    {!(searchQuery && searchResults) &&
-                        itemsOptions.isSuccess &&
-                        itemsData?.items.map((item) => (
-                            <ItemPreviewRow
-                                key={item._id}
-                                item={item}
-                                allowEdit={allowEdit}
-                                collectionId={collectionId}
-                            />
-                        ))}
+                    {sortedItems.map((item) => (
+                        <ItemPreviewRow
+                            key={item._id}
+                            item={item}
+                            allowEdit={allowEdit}
+                            collectionId={collectionId}
+                        />
+                    ))}
                 </ItemTable>
             )}
             {!searchResults?.length && !itemsData?.items.length && (

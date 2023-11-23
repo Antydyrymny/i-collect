@@ -205,7 +205,7 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
                                         {t('fieldType')}
                                     </Col>
                                     <Col xs={6} sm={9}>
-                                        {field.fieldType}
+                                        {tDict(field.fieldType)}
                                     </Col>
                                 </Row>
                             </div>
