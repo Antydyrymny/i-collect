@@ -20,6 +20,8 @@ import LikeButton from './buttons/likeButton/LikeButton';
 export { LikeButton };
 import HomeButton from './buttons/homeButton/HomeButton';
 export { HomeButton };
+import DropdownWrapper from './buttons/dropdownWrapper/DropDownWrapper';
+export { DropdownWrapper };
 
 import CardWrapper from './cardWrapper/CardWrapper';
 export { CardWrapper };

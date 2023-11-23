@@ -3,6 +3,14 @@
         margin-top: 0.75em;
     }
 
+    p.is-editor-empty:first-child::before {
+        color: var(--bs-secondary-color);
+        content: attr(data-placeholder);
+        float: left;
+        height: 0;
+        pointer-events: none;
+    }
+
     p {
         margin: auto !important;
     }

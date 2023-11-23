@@ -18,3 +18,5 @@ export type LocalStorageSchema = {
     [colorThemeKey]: ColorTheme;
     [localeKey]: Locale;
 };
+
+export type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';

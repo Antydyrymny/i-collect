@@ -185,7 +185,10 @@
         "bulletList": "Bullet list",
         "orderedList": "Ordered list",
         "undo": "Undo",
-        "redo": "Redo"
+        "redo": "Redo",
+        "more1": "More options",
+        "more2": "Groupings",
+        "more3": "Undo / Redo"
     },
     "home": {
         "largestCollections": "Largest collections",

@@ -6,7 +6,7 @@ import MenuBar from './MenuBar';
 import { Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { ClientRoutes } from '../../../types';
-import './commentStyles.scss';
+import '../../../components/inputFields/richText/commentStyles.scss';
 import { useLocale } from '../../../contexts/locale';
 
 type NewCommentProps = {
@@ -24,7 +24,11 @@ function NewComment({ itemId, userName, userId }: NewCommentProps) {
         error: newCommentOptions.error,
     });
 
-    const editor = useRichTextEditor(newComment, setNewComment, true);
+    const editor = useRichTextEditor({
+        content: newComment,
+        updateContent: setNewComment,
+        editable: true,
+    });
 
     const handleSubmitComment = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

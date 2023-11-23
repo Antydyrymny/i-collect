@@ -24,6 +24,11 @@ export const useCollectionHandlers = (
                 })),
         []
     );
+
+    const handleDescriptionChange = (newDescription: string) => {
+        setMainFields((prevState) => ({ ...prevState, description: newDescription }));
+    };
+
     const resetMainState = useCallback(() => {
         setMainFields(defaultMainState);
         setImageData(defaultImgState);
@@ -48,6 +53,7 @@ export const useCollectionHandlers = (
         mainFields,
         resetMainState,
         handleMainStateChange,
+        handleDescriptionChange,
         imageData,
         handleImageChange,
         clearImage,

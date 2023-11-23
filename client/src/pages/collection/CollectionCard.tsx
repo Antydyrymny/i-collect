@@ -14,6 +14,7 @@ import {
     EditButton,
     GenericInputField,
 } from '../../components';
+import RichTextInput from '../../components/inputFields/richText/RichTextInput';
 import {
     useDeleteCollectionMutation,
     useUpdateCollectionMutation,
@@ -49,6 +50,7 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
         mainFields: editState,
         resetMainState,
         handleMainStateChange: handleEditMainFields,
+        handleDescriptionChange,
         imageData,
         handleImageChange: handleEditImage,
         clearImage,
@@ -151,14 +153,24 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
                                     )}
                                     label={t('themeLabel')}
                                 />
-                                <GenericInputField
-                                    type={'text'}
-                                    value={editState.description}
-                                    onChange={handleEditMainFields('description')}
-                                    editing={editing}
-                                    label={t('descriptionLabel')}
-                                    placeholder={t('descriptionPlaceholder')}
-                                />
+                                <Form.Group as={Row}>
+                                    <Col sm={3}>
+                                        <Form.Label className='text-center'>
+                                            {t('descriptionLabel')}
+                                        </Form.Label>
+                                    </Col>
+                                    <Col sm={9}>
+                                        <RichTextInput
+                                            initialContent={defaultState.description}
+                                            editedContent={editState.description}
+                                            setEditedContent={handleDescriptionChange}
+                                            editing={editing}
+                                            placeholder={t('descriptionPlaceholder')}
+                                            required
+                                            xs
+                                        />
+                                    </Col>
+                                </Form.Group>
                             </Col>
                             {(collection.image || allowEdit) && (
                                 <Col>

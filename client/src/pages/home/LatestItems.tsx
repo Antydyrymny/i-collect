@@ -62,7 +62,7 @@ function LatestItems({ items }: LatestItemsProps) {
                                     {item.tags.slice(0, 3).map((tag, ind) => (
                                         <span
                                             key={ind}
-                                            className='badge border border-primary text-primary rounded-5 me-1'
+                                            className='badge border border-primary text-primary rounded-5 my-1 me-1'
                                         >
                                             {tag}
                                         </span>

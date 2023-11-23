@@ -3,6 +3,7 @@ import { useLocale } from '../../../contexts/locale';
 import { Card, Form } from 'react-bootstrap';
 import { NewCollectionReq } from '../../../types';
 import { CollectionImg } from '../../../components';
+import RichTextInput from '../../../components/inputFields/richText/RichTextInput';
 
 type RequiredFieldsProps = {
     requiredFields: Pick<NewCollectionReq, 'name' | 'description' | 'theme'>;
@@ -13,6 +14,7 @@ type RequiredFieldsProps = {
             ? React.ChangeEvent<HTMLSelectElement>
             : React.ChangeEvent<HTMLInputElement>
     ) => void;
+    changeDescription: (arg: string) => void;
     imgPreview: string | undefined;
     imgName: string | undefined;
     handleImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -22,6 +24,7 @@ type RequiredFieldsProps = {
 function RequiredFields({
     requiredFields,
     changeRequiredState,
+    changeDescription,
     imgPreview,
     imgName,
     handleImageChange,
@@ -53,11 +56,11 @@ function RequiredFields({
                             <Form.Label className='text-center'>
                                 {t('descriptionLabel')}
                             </Form.Label>
-                            <Form.Control
-                                as='textarea'
-                                rows={3}
-                                value={requiredFields.description}
-                                onChange={changeRequiredState('description')}
+                            <RichTextInput
+                                initialContent=''
+                                editedContent={requiredFields.description}
+                                setEditedContent={changeDescription}
+                                editing
                                 placeholder={t('descriptionPlaceholder')}
                                 required
                             />

@@ -41,6 +41,7 @@ function NewCollection() {
     const {
         mainFields,
         handleMainStateChange,
+        handleDescriptionChange,
         imageData,
         handleImageChange,
         clearImage,
@@ -109,6 +110,7 @@ function NewCollection() {
                 <RequiredFields
                     requiredFields={mainFields}
                     changeRequiredState={handleMainStateChange}
+                    changeDescription={handleDescriptionChange}
                     imgPreview={imageData.imgPreview}
                     imgName={imageData.file?.name}
                     handleImageChange={handleImageChange}

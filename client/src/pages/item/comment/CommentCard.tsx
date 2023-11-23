@@ -1,7 +1,7 @@
 import { EditorContent } from '@tiptap/react';
 import { useInformOfError, useRichTextEditor, useTimeAgo } from '../../../hooks';
 import { CommentRes } from '../../../types';
-import './commentStyles.scss';
+import '../../../components/inputFields/richText/commentStyles.scss';
 import { Card, Form } from 'react-bootstrap';
 import { useLocale } from '../../../contexts/locale';
 import { useCallback, useEffect, useState } from 'react';
@@ -18,22 +18,26 @@ type CommentCardProps = {
 };
 
 function CommentCard({ comment, allowEdit }: CommentCardProps) {
-    const setT = useState(0)[1];
+    const setTimeUpdater = useState(0)[1];
     useEffect(() => {
         const updateTimeAgo = setInterval(() => {
-            setT(Date.now());
+            setTimeUpdater(Date.now());
         }, 60000);
 
         return () => clearInterval(updateTimeAgo);
-    }, [setT]);
+    }, [setTimeUpdater]);
 
     const timeAgo = useTimeAgo(comment.createdAt);
 
     const [editedContent, setEditedContent] = useState(() => comment.content);
     const [editing, setEditing] = useState(false);
 
-    const displayer = useRichTextEditor(comment.content);
-    const editor = useRichTextEditor(editedContent, setEditedContent, true);
+    const displayer = useRichTextEditor({ content: comment.content });
+    const editor = useRichTextEditor({
+        content: editedContent,
+        updateContent: setEditedContent,
+        editable: true,
+    });
 
     useEffect(() => {
         if (!displayer) {

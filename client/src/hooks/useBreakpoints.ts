@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-
-export type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+import { Breakpoint } from '../types';
 
 const resolveBreakpoint = (width: number): Breakpoint => {
     if (width < 576) return 'xs';
