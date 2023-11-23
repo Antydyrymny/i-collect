@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import { FormatField } from './collections';
+import { FormatField } from './collectionsTypes';
 
 export type Item = {
     name: string;

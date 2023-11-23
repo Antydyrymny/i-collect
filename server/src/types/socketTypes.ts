@@ -1,8 +1,8 @@
 import { Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
-import { CommentRes, CommentUpdate } from './comments';
-import { ItemPreview, ItemResponse } from './items';
-import { CollectionPreview } from './collections';
+import { CommentRes, CommentUpdate } from './commentsTypes';
+import { ItemPreview, ItemResponse } from './itemsTypes';
+import { CollectionPreview } from './collectionsTypes';
 
 export type ClientToServerEvents = AdminToServerEvents &
     ItemViewerToServerEvents &

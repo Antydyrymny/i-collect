@@ -1,9 +1,9 @@
 import { Document } from 'mongoose';
-import { User } from './users';
-import { ItemCollection } from './collections';
-import { Item } from './items';
-import { Tag } from './tags';
-import { Comment } from './comments';
+import { User } from './usersTypes';
+import { ItemCollection } from './collectionsTypes';
+import { Item } from './itemsTypes';
+import { Tag } from './tagsTypes';
+import { Comment } from './commentsTypes';
 
 export enum Models {
     User = 'users',
