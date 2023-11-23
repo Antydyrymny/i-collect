@@ -12,6 +12,8 @@ export const getLatestItems = async () => {
             )
             .sort({ createdAt: -1 })
             .limit(latestItemsLimit + 1);
+
+        latestItems.length = 0;
         foundItems.forEach((item) =>
             latestItems.push(
                 getItemResponse(

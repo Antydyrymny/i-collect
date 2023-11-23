@@ -8,10 +8,16 @@ import { Button, Col, Row, Spinner, Stack } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { SearchBar } from '../../components';
 import ItemPreviewRow from './ItemPreviewRow';
-import { useInfiniteScrollLoading, useInformOfError, useSearchUtils } from '../../hooks';
+import {
+    useInfiniteScrollLoading,
+    useInformOfError,
+    useSearchUtils,
+    // useSorting,
+} from '../../hooks';
 import { getItemPreviewHeadings } from './getItemPreviewHeadings';
 import { ClientRoutes, FormatField } from '../../types';
 import ItemTable from './ItemTable';
+// import { SortAsc, SortDesc } from 'lucide-react';
 
 type ItemsProps = {
     collectionId: string;
@@ -64,6 +70,8 @@ function Items({
         () => getItemPreviewHeadings(formatFields),
         [formatFields]
     );
+
+    // const [sortedState, setSorted] = useSorting();
 
     const t = useLocale('collectionPage');
 

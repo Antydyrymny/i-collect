@@ -1,11 +1,15 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 export const onlineAdminsIdsToSocketIds = new Map<string, string>();
 export const adminsSkippingUserUpdate = new Set<string>();
 
-export const latestItemsLimit = 5;
+export const latestItemsLimit = +process.env.LATEST_ITEMS_LIMIT;
 export const latestItems = [];
 export { getLatestItems } from './getLatestItems';
 
-export const largestCollectionsLimit = 5;
+export const largestCollectionsLimit = +process.env.LARGEST_COLLECTIONS_LIMIT;
 export const largestCollections = [];
 export { getLargestCollections } from './getLargestCollections';
 

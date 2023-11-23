@@ -25,8 +25,8 @@ export function subscribeToHomeUpdates() {
             const tags = await getRandomTags();
 
             acknowledgeHomeData({
-                latestItems,
-                largestCollections,
+                latestItems: latestItems.slice(0, latestItemsLimit),
+                largestCollections: largestCollections.slice(0, largestCollectionsLimit),
                 tags,
             });
         });

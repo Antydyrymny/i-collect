@@ -76,10 +76,21 @@ export const newItem = async (req: Request, res: Response<NewItemRes>) => {
         getItemResponse(newItem, existingCollection._id, existingCollection.name)
     );
     updatesRequired.latestItems = true;
-    if (existingCollection.items.length > largestCollections.at(-1)?.itemNumber) {
+    if (
+        existingCollection.items.length > largestCollections.at(-1)?.itemNumber &&
+        largestCollections.every(
+            (collection) => !collection._id.equals(existingCollection._id)
+        )
+    ) {
         if (largestCollections.length > largestCollectionsLimit) largestCollections.pop();
         largestCollections.push(getCollectionPreview(existingCollection));
         largestCollections.sort((a, b) => b.itemNumber - a.itemNumber);
+        updatesRequired.largestCollections = true;
+    } else {
+        const collectionInd = largestCollections.findIndex((collection) =>
+            collection._id.equals(existingCollection._id)
+        );
+        if (collectionInd !== -1) largestCollections[collectionInd].itemNumber++;
         updatesRequired.largestCollections = true;
     }
 };

@@ -17,6 +17,7 @@ export const getLargestCollections = async () => {
             .sort({ itemsCount: -1 })
             .limit(largestCollectionsLimit + 1);
 
+        largestCollections.length = 0;
         foundCollections.forEach((collection) =>
             largestCollections.push(getCollectionPreview(collection))
         );

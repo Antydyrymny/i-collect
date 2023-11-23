@@ -33,7 +33,7 @@ function ItemPreviewRow({
     useInformOfError({ isError: deleteOptions.isError, error: deleteOptions.error });
 
     const t = useLocale('collectionPage');
-
+    console.log(item);
     return (
         <tr>
             {displayType && <td>{t('item')}</td>}
