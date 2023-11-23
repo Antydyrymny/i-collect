@@ -32,8 +32,17 @@ export const deleteCollection = async (req: Request, res: Response) => {
         _id: { $in: collectionToDelete.items.map((item) => item._id) },
     });
 
-    latestItems.length = 0;
-    updatesRequired.latestItems = true;
+    let newLatestItemsInd = 0;
+    latestItems.forEach((item, ind) => {
+        if (
+            collectionToDelete.items.every((deletedItem) => !item._id.equals(deletedItem))
+        ) {
+            if (ind! === newLatestItemsInd) latestItems[newLatestItemsInd] = item;
+            newLatestItemsInd++;
+        } else updatesRequired.latestItems = true;
+    });
+    latestItems.length = newLatestItemsInd;
+
     handleHomeOnDeleteUpdates('largestCollections', collectionToDelete._id);
 
     if (collectionToDelete.imageId)

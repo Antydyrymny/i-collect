@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { CollectionModel, CommentModel, ItemModel } from '../../../models';
 import { authorizeCollectionOwnership, handleHomeOnDeleteUpdates } from '../utils';
 import { DeleteItemReq, ResponseError } from '../../../types';
-import { largestCollections, latestItems } from '../../../data';
+import { largestCollections } from '../../../data';
 
 export const deleteItem = async (req: Request, res: Response) => {
     const { _id }: DeleteItemReq = req.body;
@@ -25,19 +25,15 @@ export const deleteItem = async (req: Request, res: Response) => {
 
     await CommentModel.deleteMany({ _id: { $in: itemToDelete.comments } });
 
-    console.log(latestItems);
     handleHomeOnDeleteUpdates('latestItems', itemToDelete._id);
-    console.log(latestItems);
-    console.log(largestCollections);
-    if (
-        largestCollections.findIndex((collection) =>
-            collection._id.equals(parentCollection._id)
-        ) !== -1 &&
-        parentCollection.items.length < largestCollections.at(-2)?.items?.length
-    ) {
-        handleHomeOnDeleteUpdates('largestCollections', parentCollection._id);
+    const indInLargestCollections = largestCollections.findIndex((collection) =>
+        collection._id.equals(parentCollection._id)
+    );
+    if (indInLargestCollections !== -1) {
+        if (indInLargestCollections === largestCollections.length - 1)
+            handleHomeOnDeleteUpdates('largestCollections', parentCollection._id);
+        else largestCollections[indInLargestCollections].itemNumber--;
     }
-    console.log(largestCollections);
 
     await itemToDelete.deleteOne();
 
