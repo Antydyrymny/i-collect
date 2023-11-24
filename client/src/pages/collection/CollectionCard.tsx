@@ -51,6 +51,7 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
         () => collection.format.map((field) => ({ id: nanoid(), new: false, ...field })),
         [collection.format]
     );
+
     const defaultImgState = useMemo(
         () => ({
             file: null,
@@ -93,6 +94,7 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
     const [deleteCollection, deleteOptions] = useDeleteCollectionMutation();
 
     const navigate = useNavigate();
+
     const handleSubmitUpdate = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!editing || updateOptions.isLoading || deleteOptions.isLoading) return;

@@ -1,9 +1,13 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { EditedFormatField } from '../types';
 import { nanoid } from '@reduxjs/toolkit';
 
 export const useCollectionOptionalFields = (defaultState: EditedFormatField[]) => {
     const [optionalFields, setOptionalFields] = useState(defaultState);
+
+    useEffect(() => {
+        setOptionalFields(defaultState);
+    }, [defaultState]);
 
     const addOptionalField = useCallback(() => {
         setOptionalFields((fields) => [

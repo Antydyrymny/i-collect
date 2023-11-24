@@ -42,6 +42,7 @@ export const getCollectionItems = (builder: ApiBuilder) =>
         },
         forceRefetch: ({ currentArg, previousArg }) => {
             return (
+                currentArg?.page === 0 ||
                 typeof currentArg !== typeof previousArg ||
                 (!!currentArg &&
                     !!previousArg &&
