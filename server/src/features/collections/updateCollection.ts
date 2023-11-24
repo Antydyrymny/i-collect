@@ -62,7 +62,6 @@ export const updateCollection = async (
             }
             existingCollection.items.forEach((item) => {
                 const editingField = item[field.fieldType + 'Fields'];
-                console.log(field, editingField);
                 if (field.action === 'add') {
                     editingField.set(
                         field.fieldName,
@@ -104,14 +103,12 @@ export const updateCollection = async (
 
     let validatedName = newName ?? existingCollection.name;
     if (newName && existingAuthor.populated('collections')) {
-        validatedName = getNameVersion(
-            validatedName,
-            existingAuthor.collections.reduce(
-                (acc: string[], collection) =>
-                    collection._id === _id ? acc : acc.concat(collection.name),
-                []
-            )
+        const names = existingAuthor.collections.reduce(
+            (acc: string[], collection) =>
+                collection._id === _id ? acc : acc.concat(collection.name),
+            []
         );
+        validatedName = getNameVersion(validatedName, names);
     }
 
     existingCollection.name = validatedName;

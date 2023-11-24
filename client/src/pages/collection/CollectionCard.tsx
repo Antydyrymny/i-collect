@@ -58,6 +58,7 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
         }),
         [collection.image]
     );
+
     const {
         mainFields: editState,
         resetMainState,
@@ -307,7 +308,7 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
                                     {editing && (
                                         <CloseButton
                                             onClick={deleteOptionalField(field.id)}
-                                            className='d-none d-lg-block mt-1 me-3'
+                                            className='d-none p-absolute z-3 d-lg-block mt-1 me-3'
                                         />
                                     )}
                                     <hr className='d-block d-lg-none me-4' />
