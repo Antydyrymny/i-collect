@@ -6,7 +6,7 @@ import { NewCollectionReq, NewCollectionRes, ResponseError } from '../../types';
 import { uploadImage } from '../../utils';
 
 export const parseNewCollection = (req: Request, res: Response, next: NextFunction) => {
-    req.body.format = JSON.parse(req.body.format);
+    if (req.body.format) req.body.format = JSON.parse(req.body.format);
     next();
 };
 

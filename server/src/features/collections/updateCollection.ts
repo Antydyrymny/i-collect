@@ -14,7 +14,7 @@ export const parseCollectionUpdate = (
     res: Response,
     next: NextFunction
 ) => {
-    req.body.format = JSON.parse(req.body.format);
+    if (req.body.format) req.body.format = JSON.parse(req.body.format);
     next();
 };
 
