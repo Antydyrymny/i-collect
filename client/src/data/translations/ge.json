@@ -131,6 +131,7 @@
         "descriptionPlaceholder": "შეიყვანეთ კოლექციის აღწერა",
         "additionalFields": "დამატებითი ველები",
         "fieldName": "ველის სახელი:",
+        "fieldNamePlaceholder": "ველის სახელი",
         "fieldType": "ველის ტიპი:",
         "save": "შენახვის ცვლილებები",
         "totalItems": "სულ ელემენტები: ",

@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
-import { Button, Card, Col, Form, Row, Spinner } from 'react-bootstrap';
-import { collectionThemes } from '../../data';
+import { useCallback, useMemo } from 'react';
+import { Button, Card, CloseButton, Col, Form, Row, Spinner } from 'react-bootstrap';
+import { collectionThemes, fieldTypes } from '../../data';
 import {
     ClientRoutes,
     CollectionResponse,
+    EditedFormatField,
     ItemCollection,
     isStringError,
 } from '../../types';
@@ -19,11 +20,18 @@ import {
     useDeleteCollectionMutation,
     useUpdateCollectionMutation,
 } from '../../app/services/api';
-import { useCollectionHandlers, useEditing, useInformOfError } from '../../hooks';
+import {
+    useCollectionMainFields,
+    useCollectionOptionalFields,
+    useEditing,
+    useInformOfError,
+} from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getUpdatedFields } from '../../utils/getUpdatedFields';
 import { useLocale } from '../../contexts/locale';
+import { nanoid } from '@reduxjs/toolkit';
+import { getUpdatedOptionalFields } from '../../utils';
 
 type CollectionProps = {
     collection: CollectionResponse;
@@ -38,6 +46,10 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
             theme: collection.theme,
         }),
         [collection.description, collection.name, collection.theme]
+    );
+    const defaultOptionalFieldsState = useMemo<EditedFormatField[]>(
+        () => collection.format.map((field) => ({ id: nanoid(), new: false, ...field })),
+        [collection.format]
     );
     const defaultImgState = useMemo(
         () => ({
@@ -54,9 +66,25 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
         imageData,
         handleImageChange: handleEditImage,
         clearImage,
-    } = useCollectionHandlers(defaultState, defaultImgState);
+    } = useCollectionMainFields(defaultState, defaultImgState);
 
-    const { editing, onChange, stopEditing } = useEditing(allowEdit, resetMainState);
+    const {
+        optionalFields,
+        addOptionalField,
+        deleteOptionalField,
+        changeOptionalFields,
+        resetOptionalFields,
+    } = useCollectionOptionalFields(defaultOptionalFieldsState);
+
+    const resetCollectionState = useCallback(() => {
+        resetMainState();
+        resetOptionalFields();
+    }, [resetMainState, resetOptionalFields]);
+
+    const { editing, onChange, stopEditing } = useEditing(
+        allowEdit,
+        resetCollectionState
+    );
 
     const [updateCollection, updateOptions] = useUpdateCollectionMutation();
     useInformOfError({ isError: updateOptions.isError, error: updateOptions.error });
@@ -74,13 +102,22 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
             !imageData.file && !imageData.imgPreview && defaultImgState.imgPreview
                 ? { deleteImage: true }
                 : false;
+        const optionalFieldsUpdate = getUpdatedOptionalFields(
+            defaultOptionalFieldsState,
+            optionalFields
+        );
+        const updateFormat = optionalFieldsUpdate.length
+            ? { format: JSON.stringify(optionalFieldsUpdate) }
+            : false;
 
         let finalUpdate = { _id: collection._id };
         if (mainFieldsUpdate) finalUpdate = { ...finalUpdate, ...mainFieldsUpdate };
         if (imgUpdate) finalUpdate = { ...finalUpdate, ...imgUpdate };
         if (deleteImg) finalUpdate = { ...finalUpdate, ...deleteImg };
+        if (updateFormat) finalUpdate = { ...finalUpdate, ...updateFormat };
 
-        if (mainFieldsUpdate || imgUpdate || deleteImg) updateCollection(finalUpdate);
+        if (mainFieldsUpdate || imgUpdate || deleteImg || updateFormat)
+            updateCollection(finalUpdate);
         stopEditing();
     };
 
@@ -96,6 +133,7 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
 
     const t = useLocale('collectionPage');
     const tDict = useLocale('dictionary');
+    const tNCol = useLocale('newCollection');
 
     return (
         <CardWrapper>
@@ -155,7 +193,7 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
                                 />
                                 <Form.Group as={Row}>
                                     <Col sm={3}>
-                                        <Form.Label className='text-center'>
+                                        <Form.Label className='text-center text-secondary-emphasis'>
                                             {t('descriptionLabel')}
                                         </Form.Label>
                                     </Col>
@@ -173,7 +211,7 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
                                 </Form.Group>
                             </Col>
                             {(collection.image || allowEdit) && (
-                                <Col>
+                                <Col className='pb-2'>
                                     <CollectionImg
                                         imgPreview={imageData.imgPreview}
                                         imgName={imageData.file?.name}
@@ -187,43 +225,102 @@ function CollectionCard({ collection, allowEdit }: CollectionProps) {
                         </Row>
                     </Card.Body>
                 </Card>
-                <Card className='mt-4'>
-                    <Card.Body>
-                        <h6 className='mt-2 mb-4'>{t('additionalFields')}</h6>
-                        {collection.format.map((field, ind) => (
-                            <div
-                                key={ind}
-                                className='d-block d-lg-flex gap-5 mb-3'
-                                style={{ paddingTop: '0.4375rem' }}
-                            >
-                                <Row className='w-lg-50 w-100'>
-                                    <Col
-                                        xs={6}
-                                        sm={3}
-                                        className='text-secondary-emphasis'
-                                    >
-                                        {t('fieldName')}
-                                    </Col>
-                                    <Col xs={6} sm={9}>
-                                        {field.fieldName}
-                                    </Col>
-                                </Row>
-                                <Row className='w-lg-50 w-100'>
-                                    <Col
-                                        xs={6}
-                                        sm={3}
-                                        className='text-secondary-emphasis'
-                                    >
-                                        {t('fieldType')}
-                                    </Col>
-                                    <Col xs={6} sm={9}>
-                                        {tDict(field.fieldType)}
-                                    </Col>
-                                </Row>
-                            </div>
-                        ))}
-                    </Card.Body>
-                </Card>
+                {(!!optionalFields.length || editing) && (
+                    <Card className='mt-4'>
+                        <Card.Body>
+                            <h6 className='mt-2 mb-4'>{t('additionalFields')}</h6>
+                            {optionalFields.map((field) => (
+                                <div
+                                    key={field.id}
+                                    className='d-block d-lg-flex align-items-center mb-3'
+                                >
+                                    <Row className='w-lg-50 w-100'>
+                                        <Col xs={12}>
+                                            <GenericInputField
+                                                editing={editing}
+                                                type={'string'}
+                                                value={field.fieldName}
+                                                onChange={changeOptionalFields(
+                                                    field.id,
+                                                    'name'
+                                                )}
+                                                label={t('fieldName')}
+                                                placeholder={t('fieldNamePlaceholder')}
+                                                sm
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Row className='w-lg-50 w-100 position-relative'>
+                                        {!field.new && (
+                                            <Col xs={12} sm={12} className='ms-lg-5'>
+                                                <GenericInputField
+                                                    type={'string'}
+                                                    value={field.fieldType}
+                                                    onChange={changeOptionalFields(
+                                                        field.id,
+                                                        'name'
+                                                    )}
+                                                    editing={false}
+                                                    label={t('fieldType')}
+                                                    sm
+                                                />
+                                            </Col>
+                                        )}
+                                        {field.new && (
+                                            <Col
+                                                xs={12}
+                                                sm={12}
+                                                lg={11}
+                                                className='ms-lg-5 mt-2 mt-lg-0'
+                                            >
+                                                <GenericInputField
+                                                    type={'select'}
+                                                    value={field.fieldType}
+                                                    onChange={changeOptionalFields(
+                                                        field.id,
+                                                        'type'
+                                                    )}
+                                                    editing={editing}
+                                                    options={fieldTypes.map((type) =>
+                                                        tDict(type)
+                                                    )}
+                                                    label={t('fieldType')}
+                                                    inlineProportions={[3, 8]}
+                                                    sm
+                                                />
+                                            </Col>
+                                        )}
+                                        {editing && (
+                                            <Col
+                                                xs={1}
+                                                className='position-absolute end-0 mt-2 me-1 d-flex align-items-center'
+                                            >
+                                                <CloseButton
+                                                    onClick={deleteOptionalField(
+                                                        field.id
+                                                    )}
+                                                    className='d-block d-lg-none mx-0 my-0'
+                                                />
+                                            </Col>
+                                        )}
+                                    </Row>
+                                    {editing && (
+                                        <CloseButton
+                                            onClick={deleteOptionalField(field.id)}
+                                            className='d-none d-lg-block mt-1 me-3'
+                                        />
+                                    )}
+                                    <hr className='d-block d-lg-none me-4' />
+                                </div>
+                            ))}
+                            {editing && (
+                                <Button onClick={addOptionalField} className='mt-3 mb-2'>
+                                    {tNCol('addField')}
+                                </Button>
+                            )}
+                        </Card.Body>
+                    </Card>
+                )}
                 {(editing || updateOptions.isLoading) && (
                     <div className='d-flex mt-4 mb-2 justify-content-end'>
                         <Button

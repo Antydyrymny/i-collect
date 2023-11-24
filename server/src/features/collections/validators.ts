@@ -16,6 +16,7 @@ import {
     GetItemCommentsQuery,
     GetUserCollectionQuery,
     FindCollectionItemQuery,
+    FormatFieldUpdate,
 } from '../../types';
 
 export const validateNewCollection = object({
@@ -37,23 +38,19 @@ export const validateNewCollection = object({
             ],
             'Theme is not recognized'
         ),
-        format: array()
-            .of(
-                object({
-                    fieldName: string()
-                        .max(255, 'Field name is too long')
-                        .required('Field name is required'),
-                    fieldType: string().oneOf(
+        format: array().of(
+            object({
+                fieldName: string()
+                    .max(255, 'Field name is too long')
+                    .required('Field name is required'),
+                fieldType: string()
+                    .oneOf(
                         ['boolean', 'number', 'string', 'text', 'date'],
                         'Field type is not recognized'
-                    ),
-                })
-            )
-            .test(
-                'formatLength',
-                'Collection should not hold more than 15 additional fields',
-                (array) => !array || array.length < 16
-            ),
+                    )
+                    .required('Field type is required'),
+            })
+        ),
     }),
 });
 
@@ -78,6 +75,24 @@ export const validateUpdateCollection = object({
             'Theme is not recognized'
         ),
         deleteImage: boolean().isTrue(),
+        format: array().of(
+            object<FormatFieldUpdate>().shape({
+                action: string()
+                    .oneOf(['add', 'rename', 'delete'], 'Action is not recognized')
+                    .required('Action is required'),
+
+                fieldName: string()
+                    .max(255, 'Field name is too long')
+                    .required('Field name is required'),
+                fieldType: string()
+                    .oneOf(
+                        ['boolean', 'number', 'string', 'text', 'date'],
+                        'Field type is not recognized'
+                    )
+                    .required('Field type is required'),
+                newName: string().max(255, 'Field name is too long'),
+            })
+        ),
     }),
 });
 

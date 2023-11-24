@@ -26,10 +26,6 @@ function RichTextInput({
     sm = false,
     xs = false,
 }: RichTextInputProps) {
-    useEffect(() => {
-        if (!editing) setEditedContent(initialContent);
-    }, [editing, initialContent, setEditedContent]);
-
     const displayer = useRichTextEditor({ content: initialContent, asComment: false });
     const editor = useRichTextEditor({
         content: editedContent,
@@ -46,6 +42,10 @@ function RichTextInput({
 
         displayer?.commands.setContent(initialContent);
     }, [initialContent, displayer]);
+
+    useEffect(() => {
+        if (!editing) editor?.commands.setContent(initialContent);
+    }, [editing, editor?.commands, initialContent]);
 
     const t = useLocale('itemPage');
 

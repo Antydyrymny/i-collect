@@ -63,6 +63,7 @@ function RequiredFields({
                                 editing
                                 placeholder={t('descriptionPlaceholder')}
                                 required
+                                sm
                             />
                         </Form.Group>
                         <Form.Group className='mt-3 mb-2' controlId='collectionTheme'>

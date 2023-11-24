@@ -94,6 +94,7 @@ export const updateCollection = (builder: ApiBuilder) =>
     builder.mutation<CollectionResponse, UpdateCollectionReq>({
         query: (request) => {
             const formDataReq = getFormDataRequest(request);
+
             return {
                 url: Routes.Auth + Routes.UpdateCollection,
                 method: 'PATCH',
@@ -101,21 +102,7 @@ export const updateCollection = (builder: ApiBuilder) =>
                 formData: true,
             };
         },
-        async onQueryStarted({ _id }, { dispatch, queryFulfilled }) {
-            try {
-                const { data: collectionUpdate } = await queryFulfilled;
-                dispatch(
-                    api.util.updateQueryData('getCollection', _id, (draft) => {
-                        Object.assign(draft, collectionUpdate);
-                    })
-                );
-            } catch (error) {
-                dispatch(api.util.invalidateTags(['CurCollection']));
-                toast.error(
-                    isStringError(error) ? error.data : 'Error connecting to server'
-                );
-            }
-        },
+        invalidatesTags: ['CurCollection'],
     });
 
 export const deleteCollection = (builder: ApiBuilder) =>

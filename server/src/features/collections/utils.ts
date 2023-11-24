@@ -133,7 +133,7 @@ export const getCollectionPreview = (
 });
 
 export const getCollectionResponse = (
-    collection: CollectionModelType
+    collection: Omit<CollectionModelType, 'items'> & { items: unknown[] }
 ): CollectionResponse => ({
     ...getCollectionPreview(collection),
     format: collection.format,

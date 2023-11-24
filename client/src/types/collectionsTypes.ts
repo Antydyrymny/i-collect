@@ -15,6 +15,8 @@ export type FormatField = {
     fieldName: string;
     fieldType: FieldType;
 };
+export type EditedFormatField = { id: string; new: boolean } & FormatField;
+
 export type FieldType = 'boolean' | 'number' | 'string' | 'text' | 'date';
 export type FieldValueMap = {
     [K in FieldType]: K extends 'boolean'
@@ -50,6 +52,13 @@ export type NewCollectionRes = {
     _id: string;
 };
 
+export type FormatFieldUpdate =
+    | ({
+          action: 'add';
+      } & FormatField)
+    | ({ action: 'rename' } & FormatField & { newName: string })
+    | ({ action: 'delete' } & FormatField);
+
 export type UpdateCollectionReq = {
     _id: string;
     name?: string;
@@ -57,6 +66,7 @@ export type UpdateCollectionReq = {
     theme?: CollectionTheme;
     image?: File;
     deleteImage?: true;
+    format?: FormatFieldUpdate[];
 };
 
 export type DeleteCollectionReq = {

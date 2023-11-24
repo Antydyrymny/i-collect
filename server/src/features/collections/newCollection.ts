@@ -1,9 +1,14 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { CollectionModel, UserModel } from '../../models';
 import { getNameVersion } from '../../utils/nameVersioning';
 import { authorizeResourceOwnership } from '../manageUsers';
 import { NewCollectionReq, NewCollectionRes, ResponseError } from '../../types';
 import { uploadImage } from '../../utils';
+
+export const parseNewCollection = (req: Request, res: Response, next: NextFunction) => {
+    req.body.format = JSON.parse(req.body.format);
+    next();
+};
 
 export const newCollection = async (req: Request, res: Response<NewCollectionRes>) => {
     const { name, description, theme, format }: NewCollectionReq = req.body;

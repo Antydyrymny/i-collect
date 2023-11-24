@@ -19,6 +19,7 @@ type GenericInputFieldProps<T extends FieldType | 'select'> = {
     inlineLabel?: boolean;
     inlineProportions?: [number, number];
     asHeading?: boolean;
+    sm?: boolean;
 } & (T extends 'select' ? { options: string[] } : { options?: never });
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -33,6 +34,7 @@ function GenericInputField<T extends FieldType | 'select'>({
     asHeading = false,
     inlineProportions = asHeading ? [12, 0] : [3, 9],
     options,
+    sm = false,
 }: GenericInputFieldProps<T>) {
     let mainComponent;
 
@@ -127,7 +129,7 @@ function GenericInputField<T extends FieldType | 'select'>({
         <Form.Group
             as={inlineLabel ? Row : undefined}
             controlId={editing ? label : undefined}
-            className={`${asHeading ? 'mb-md-0 mb-4' : 'mb-3'}`}
+            className={`${asHeading ? 'mb-md-0 mb-4' : sm ? 'mb-0' : 'mb-3'}`}
             style={{ maxHeight: asHeading ? '2.57625rem' : undefined }}
         >
             {!!label && (
@@ -135,7 +137,7 @@ function GenericInputField<T extends FieldType | 'select'>({
                     column={inlineLabel || undefined}
                     sm={inlineLabel ? labelCol : undefined}
                     className={inlineLabel ? 'text-secondary-emphasis' : ''}
-                    style={{ whiteSpace: 'pre-wrap' }}
+                    style={{ whiteSpace: sm ? 'nowrap' : 'pre-wrap' }}
                 >
                     {label}
                 </Form.Label>

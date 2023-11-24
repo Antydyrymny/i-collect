@@ -49,7 +49,8 @@ function CommentCard({ comment, allowEdit }: CommentCardProps) {
 
     const resetContent = useCallback(() => {
         setEditedContent(comment.content);
-    }, [comment.content]);
+        editor?.commands.setContent(comment.content);
+    }, [comment.content, editor?.commands]);
 
     const onEditingChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -131,6 +131,7 @@
         "descriptionPlaceholder": "Введите описание коллекции",
         "additionalFields": "Дополнительные поля",
         "fieldName": "Имя поля:",
+        "fieldNamePlaceholder": "Введите имя поля",
         "fieldType": "Тип поля:",
         "save": "Сохранить изменения",
         "totalItems": "Всего элементов: ",

@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useNewCollectionMutation } from '../../../app/services/api';
 import { useSelectUser } from '../../../app/services/features/auth';
 import { useLocale } from '../../../contexts/locale';
-import { useCollectionHandlers } from '../../../hooks';
+import { useCollectionMainFields } from '../../../hooks';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import { CardWrapper } from '../../../components';
 import RequiredFields from './RequiredFields';
@@ -45,7 +45,7 @@ function NewCollection() {
         imageData,
         handleImageChange,
         clearImage,
-    } = useCollectionHandlers(defaultState, defaultImgState);
+    } = useCollectionMainFields(defaultState, defaultImgState);
 
     const [optionalFields, setOptionalFields] = useState<FormatField[]>([]);
     const addOptionalField = useCallback(() => {

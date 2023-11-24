@@ -131,6 +131,7 @@
         "descriptionPlaceholder": "Enter collection's description",
         "additionalFields": "Additional fields",
         "fieldName": "Field name:",
+        "fieldNamePlaceholder": "Enter field name",
         "fieldType": "Field type:",
         "save": "Save changes",
         "totalItems": "Total items: ",

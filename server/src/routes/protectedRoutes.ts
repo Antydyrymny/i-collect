@@ -28,6 +28,8 @@ import {
     getUserCollections,
     validateGetUserCollection,
     findUserCollection,
+    parseCollectionUpdate,
+    parseNewCollection,
 } from '../features/collections';
 import { Routes } from '../types';
 import { upload } from './mutlerConfig';
@@ -42,10 +44,7 @@ protectedRouter.get(Routes.GetUserPage, forwardErrors(getUserPage));
 protectedRouter.post(
     Routes.NewCollection,
     upload.single('image'),
-    (req, res, next) => {
-        req.body.format = JSON.parse(req.body.format);
-        next();
-    },
+    parseNewCollection,
     validate(validateNewCollection),
     forwardErrors(newCollection)
 );
@@ -53,6 +52,7 @@ protectedRouter.post(
 protectedRouter.patch(
     Routes.UpdateCollection,
     upload.single('image'),
+    parseCollectionUpdate,
     validate(validateUpdateCollection),
     forwardErrors(updateCollection)
 );

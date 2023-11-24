@@ -16,7 +16,15 @@ export type FormatField = {
     fieldName: string;
     fieldType: FieldType;
 };
+
 export type FieldType = 'boolean' | 'number' | 'string' | 'text' | 'date';
+export type FieldTypeInItemSchema =
+    | 'booleanFields'
+    | 'numberFields'
+    | 'stringFields'
+    | 'textFields'
+    | 'dateFields';
+
 export type CollectionTheme =
     | 'Books'
     | 'Signs'
@@ -40,10 +48,12 @@ export type NewCollectionRes = {
     _id: string;
 };
 
-export type FormatFieldUpdate = {
-    action: 'add';
-    fields: FormatField[];
-} & { action: 'update' };
+export type FormatFieldUpdate =
+    | ({
+          action: 'add';
+      } & FormatField)
+    | ({ action: 'rename' } & FormatField & { newName: string })
+    | ({ action: 'delete' } & FormatField);
 
 export type UpdateCollectionReq = {
     _id: string;
@@ -52,7 +62,7 @@ export type UpdateCollectionReq = {
     theme?: CollectionTheme;
     image?: File;
     deleteImage?: true;
-    format;
+    format?: FormatFieldUpdate[];
 };
 
 export type DeleteCollectionReq = {

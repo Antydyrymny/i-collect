@@ -22,6 +22,10 @@ const CollectionCardPreview = memo(function CollectionCardPreview({
         deleteCollection({ collectionToDeleteId: collection._id, userId });
     };
 
+    const parser = new DOMParser();
+    const parsedString = parser.parseFromString(collection.description, 'text/html');
+    const pureStringDescription = parsedString.body.textContent || '';
+
     return (
         <Card className='mt-4'>
             <div className='position-absolute top-0 mt-3 end-0 me-2'>
@@ -49,7 +53,7 @@ const CollectionCardPreview = memo(function CollectionCardPreview({
                         src={collection.image}
                     />
                 )}
-                <Card.Text>{collection.description}</Card.Text>
+                <Card.Text>{pureStringDescription}</Card.Text>
 
                 <Card.Text className='d-flex justify-content-end mb-1'>
                     {t('totalItems') + collection.itemNumber}
