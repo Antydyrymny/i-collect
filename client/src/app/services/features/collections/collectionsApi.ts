@@ -6,6 +6,7 @@ import {
     CollectionResponse,
     CollectionsPreviewQuery,
     DeleteCollectionReq,
+    GetCollectionItemsQuery,
     GetCollectionQuery,
     GetUserCollectionQuery,
     NewCollectionReq,
@@ -101,6 +102,23 @@ export const updateCollection = (builder: ApiBuilder) =>
                 body: formDataReq,
                 formData: true,
             };
+        },
+        async onQueryStarted({ format }, { dispatch, queryFulfilled }) {
+            try {
+                await queryFulfilled;
+                if (format && format.length > 0)
+                    dispatch(
+                        api.util.updateQueryData(
+                            'getCollectionItems',
+                            'getCollectionItems' as unknown as GetCollectionItemsQuery,
+                            (draft) => {
+                                draft.moreToFetch = true;
+                            }
+                        )
+                    );
+            } catch {
+                // do nothing with items api, inform of error has to run in the component
+            }
         },
         invalidatesTags: ['CurCollection'],
     });

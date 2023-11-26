@@ -21,14 +21,17 @@ export function useInfiniteScrollLoading(
 ) {
     const observerRef = useRef<IntersectionObserver | null>(null);
     const isLoadingRef = useRef<boolean>(isLoading);
+    const moreToFetchRef = useRef<boolean>(moreToFetch);
 
     useEffect(() => {
         isLoadingRef.current = isLoading;
-    }, [isLoading]);
+        moreToFetchRef.current = moreToFetch;
+    }, [isLoading, moreToFetch]);
 
     useEffect(() => {
         observerRef.current = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting && !isLoadingRef.current) callback();
+            if (entry.isIntersecting && !isLoadingRef.current && moreToFetchRef.current)
+                callback();
         }, options);
 
         if (ref.current) observerRef.current.observe(ref.current);
@@ -38,10 +41,4 @@ export function useInfiniteScrollLoading(
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ref]);
-
-    useEffect(() => {
-        if (!moreToFetch) {
-            observerRef.current?.disconnect();
-        }
-    }, [moreToFetch]);
 }

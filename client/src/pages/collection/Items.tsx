@@ -77,6 +77,10 @@ function Items({
         [formatFields]
     );
 
+    useEffect(() => {
+        setPage(1);
+    }, [formatFields]);
+
     const itemsToDisplay = useMemo(
         () =>
             searching && searchOptions.isSuccess
