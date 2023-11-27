@@ -80,7 +80,6 @@ function Items({
     useEffect(() => {
         setPage((oldPage) => (oldPage === 0 ? 1 : oldPage === 1 ? 0 : 0));
     }, [formatFields]);
-    console.log(page);
 
     const itemsToDisplay = useMemo(
         () =>
